@@ -20,5 +20,5 @@ pip install sphinx-autobuild
 cd docs
 
 # 启动 autobuild。它会监听 source/ 目录和源主题目录
-sphinx-autobuild . build/html --watch ../src/zcnote_sphinx_theme/theme --port 8008
+sphinx-autobuild . _build/html --watch ../src/zcnote_sphinx_theme/theme --port 8008
 ```
