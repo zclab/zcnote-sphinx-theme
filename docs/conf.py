@@ -10,6 +10,8 @@ copyright = '2026, ZCNote'
 author = 'ZCNote'
 
 extensions = [
+    "sphinx.ext.todo",
+    "sphinx.ext.viewcode",
     "sphinx_design",
     "sphinx_copybutton",
     "myst_parser",
@@ -28,7 +30,14 @@ html_theme_options = {
     "enable_collapse_sidebar": True,
     "navigation_depth": 4,
     "show_toc_level": 2,
-    "search_as_you_type": True
+    "search_as_you_type": True,
+    "icon_links": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/zclab/zcnote-sphinx-theme",
+            "icon": "fa-brands fa-github",
+        },
+    ],
 }
 
 # 静态文件路径（文档级别的静态文件，非主题级别）

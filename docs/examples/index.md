@@ -8,4 +8,5 @@
 test_layout
 math
 web-components
+admonitions
 ```
