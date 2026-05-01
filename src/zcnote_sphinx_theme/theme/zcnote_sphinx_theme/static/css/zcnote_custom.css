@@ -103,3 +103,37 @@ div.admonition.seealso {
 div.admonition:not(.note):not(.info):not(.hint):not(.tip):not(.success):not(.warning):not(.attention):not(.important):not(.caution):not(.danger):not(.error):not(.seealso) {
     border-color: var(--pst-color-primary) !important;
 }
+
+/* =========================================================
+   终极修复：彻底抹杀 MathJax/Sphinx 公式垂直滚动条
+   ========================================================= */
+
+/* 1. 镇压 Sphinx 的外层容器 (增加特定选择器权重) */
+.bd-article div.math,
+.bd-article div.math-wrapper,
+div.math.notranslate {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    /* 使用 em 而不是 px，使其随公式字号等比缩放，提供更安全的缓冲 */
+    padding-top: 0.5em !important;
+    padding-bottom: 0.5em !important;
+    /* 解决部分浏览器在 flex 布局下高度坍塌导致的滚动条 */
+    min-height: min-content !important;
+}
+
+/* 2. 镇压 MathJax 3 的原生渲染容器 */
+mjx-container[display="true"],
+.MathJax_Display {
+    overflow-y: hidden !important; /* 强制拦截 MathJax 自带的滚动设定 */
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    /* 防止 MathJax 内部的 outline 撑破容器 */
+    outline: none !important;
+}
+
+/* 3. 镇压 MathJax 最深层的数学节点 (导致滚动条的最终元凶) */
+mjx-container[display="true"] > mjx-math,
+mjx-container[display="true"] > mjx-math * {
+    /* 严格禁止任何子元素在 Y 轴上产生滚动边界 */
+    overflow-y: visible !important;
+}
