@@ -55,3 +55,54 @@ body {
         transition: none !important;
     }
 }
+
+
+/* =========================================================
+   Admonition (提示框) 极简定制 - 四边等宽彩色边框
+   ========================================================= */
+
+/* 1. 基础容器：强制四边统一宽度（例如 1px 或 2px） */
+div.admonition {
+    border-width: 1px !important;  /* 四边宽度绝对一致 */
+    border-style: solid !important;
+    border-radius: 0.25rem !important; /* 保持轻微的圆角 */
+}
+
+/* 2. 精准映射：为不同的提示类型赋予对应的边框颜色 */
+
+/* Note, Info, Hint (信息类 - 蓝色/主色) */
+div.admonition.note,
+div.admonition.info,
+div.admonition.hint {
+    border-color: var(--pst-color-info) !important;
+}
+
+/* Tip, Success (成功类 - 绿色) */
+div.admonition.tip,
+div.admonition.success {
+    border-color: var(--pst-color-success) !important;
+}
+
+/* Warning, Attention, Important, Caution (警告类 - 黄色/橙色) */
+div.admonition.warning,
+div.admonition.attention,
+div.admonition.important,
+div.admonition.caution {
+    border-color: var(--pst-color-warning) !important;
+}
+
+/* Danger, Error (危险/错误类 - 红色) */
+div.admonition.danger,
+div.admonition.error {
+    border-color: var(--pst-color-danger) !important;
+}
+
+/* See Also (参考类 - 副色) */
+div.admonition.seealso {
+    border-color: var(--pst-color-secondary) !important;
+}
+
+/* 兜底：未指定的其他类型默认使用主色 */
+div.admonition:not(.note):not(.info):not(.hint):not(.tip):not(.success):not(.warning):not(.attention):not(.important):not(.caution):not(.danger):not(.error):not(.seealso) {
+    border-color: var(--pst-color-primary) !important;
+}
