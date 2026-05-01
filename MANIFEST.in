@@ -1,0 +1,7 @@
+# 递归包含 theme 目录下的所有文件（HTML, CSS, JS, conf 等）
+recursive-include src/zcnote_sphinx_theme/theme *
+
+# 排除可能存在的缓存或不需要打包的文件
+global-exclude *.pyc
+global-exclude __pycache__
+global-exclude .DS_Store
