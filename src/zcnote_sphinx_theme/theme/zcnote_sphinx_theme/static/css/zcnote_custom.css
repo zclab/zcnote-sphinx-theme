@@ -1,42 +1,59 @@
-/* 1. 针对正文段落进行两端对齐 */
+/* 1. 初始化变量 */
+:root {
+    --zcnote-footer-h: 0px;
+}
+
+/* 2. 文本两端对齐 */
 .bd-article p {
     text-align: justify;
     text-justify: inter-word;
 }
 
-/* 使用精确的 ID 进行样式覆盖，仅在宽屏应用强吸附 */
+/* 3. 页面基准设定 */
+body {
+    position: relative !important;
+    min-height: 100vh;
+    overflow-x: clip; /* 防止绝对定位引发的横向滚动条 */
+}
+
+/* 取消页面外层包装的定位，防止 Footer 被限制 */
+.bd-page-width {
+    position: static !important;
+}
+
+/* 4. Footer 绝对覆盖图层 */
+.bd-footer {
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100vw !important; /* 真正意义上的全屏横跨 */
+    margin: 0 !important;
+    z-index: 100 !important; /* 确保覆盖在侧边栏之上 */
+    background-color: var(--pst-color-background) !important;
+    border-top: 1px solid var(--pst-color-border) !important;
+}
+
+/* 5. 纯静态常驻侧边栏 */
 @media (min-width: 1200px) {
     #pst-primary-sidebar,
     #pst-secondary-sidebar {
-        /* 脱离 Flex/Grid 的等高拉伸，获得滑动空间 */
         align-self: start !important;
-
         position: sticky !important;
         top: var(--pst-header-height) !important;
 
-        /* 强制接管高度计算 */
+        /* 永远固定的高度，不再使用 JS 计算 */
         height: calc(100vh - var(--pst-header-height)) !important;
         max-height: calc(100vh - var(--pst-header-height)) !important;
+
+        /* 【关键细节】由于侧边栏下半部分会钻进 Footer 背后，
+           这里增加内边距，确保用户滚动侧边栏时，最底部的链接能浮出水面 */
+        padding-bottom: calc(var(--zcnote-footer-h) + 2rem) !important;
+
         overflow-y: auto !important;
-
-        /* 清除右侧边栏可能的底部边距，防止提前触底 */
         margin-bottom: 0 !important;
-        padding-bottom: 0 !important;
-
-        /* 优化滚动条（可选） */
         scrollbar-width: thin;
+
+        /* 彻底斩断动画，交由显卡原生渲染 */
+        transition: none !important;
     }
-}
-
-/* 移入正文区的 Footer 设定样式 */
-#zcnote-moved-footer {
-    margin-top: 4rem;
-    width: 100%;
-}
-
-#zcnote-moved-footer .bd-footer-content,
-#zcnote-moved-footer .bd-footer {
-    background-color: transparent !important;
-    border-top: 1px solid var(--pst-color-border) !important;
-    padding-top: 2rem !important;
 }

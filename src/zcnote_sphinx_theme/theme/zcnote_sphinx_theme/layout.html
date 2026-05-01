@@ -1,34 +1,40 @@
 {% extends "pydata_sphinx_theme/layout.html" %}
 
-{# 1. 侧边栏折叠控制逻辑（保持不变） #}
 {% block docs_sidebar_header %}
     {% if theme_enable_collapse_sidebar|lower == 'true' %}
         {{ super() }}
     {% else %}
-        <div class="sidebar-brand">
-            <!-- 仅渲染 Logo，去除 toggle 按钮 -->
-        </div>
+        <div class="sidebar-brand"></div>
     {% endif %}
 {% endblock docs_sidebar_header %}
 
 {% block footer %}
-    {# 捕获官方完整 Footer，初始隐藏 #}
-    <div id="zcnote-moved-footer" style="display: none;">
-        {{ super() }}
-    </div>
+    {{ super() }}
 
-    {# 利用极小的脚本，将 Footer 挂载到专属的文章容器内部 #}
     <script>
-        (function() {
-            // 【关键修改】寻找 .bd-article-container 而不是 .bd-content
-            // 这样 Footer 就会严格垂直排列在文章的正下方，不会变成并排的列
-            var articleContainer = document.querySelector(".bd-article-container") || document.querySelector(".bd-article");
-            var footerContent = document.getElementById("zcnote-moved-footer");
+        document.addEventListener("DOMContentLoaded", function() {
+            const footer = document.querySelector(".bd-footer");
+            const main = document.querySelector(".bd-main");
+            if (!footer || !main) return;
 
-            if (articleContainer && footerContent) {
-                articleContainer.appendChild(footerContent);
-                footerContent.style.display = "block";
-            }
-        })();
+            // 1. 降维转移：将 Footer 直接提升到 body 下，彻底脱离 Grid 束缚
+            document.body.appendChild(footer);
+
+            // 2. 网格拉伸：在主内容区注入幽灵占位符，强制拉长同行的侧边栏轨道
+            const spacer = document.createElement("div");
+            spacer.style.width = "100%";
+            spacer.style.pointerEvents = "none";
+            main.appendChild(spacer);
+
+            // 3. 精准测量：使用 ResizeObserver 获取 Footer 实际高度并更新 CSS 变量
+            const observer = new ResizeObserver(entries => {
+                for (let entry of entries) {
+                    const h = entry.contentRect.height;
+                    document.documentElement.style.setProperty('--zcnote-footer-h', `${h}px`);
+                    spacer.style.height = `${h}px`; // 同步更新占位符高度
+                }
+            });
+            observer.observe(footer);
+        });
     </script>
 {% endblock %}
