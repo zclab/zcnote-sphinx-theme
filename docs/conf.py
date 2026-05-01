@@ -25,3 +25,10 @@ html_theme_options = {
 
 # 静态文件路径（文档级别的静态文件，非主题级别）
 html_static_path = ['_static']
+
+# 覆盖默认的网页标题和侧边栏顶部标题（不再自动拼接 documentation）
+html_title = "ZCNote 主题文档"
+
+# （可选）如果你觉得 html_title 太长，还可以设置一个极简标题
+# html_short_title 通常会显示在左侧边栏顶部的 Logo 旁边
+html_short_title = "ZCNote"
