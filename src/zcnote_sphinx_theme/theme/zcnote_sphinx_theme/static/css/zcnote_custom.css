@@ -41,19 +41,26 @@ body {
         position: sticky !important;
         top: var(--pst-header-height) !important;
 
-        /* 永远固定的高度，不再使用 JS 计算 */
         height: calc(100vh - var(--pst-header-height)) !important;
         max-height: calc(100vh - var(--pst-header-height)) !important;
 
-        /* 【关键细节】由于侧边栏下半部分会钻进 Footer 背后，
-           这里增加内边距，确保用户滚动侧边栏时，最底部的链接能浮出水面 */
-        padding-bottom: calc(var(--zcnote-footer-h) + 2rem) !important;
+        /* 【修复 1】：将导致滚动条常驻的 padding-bottom 彻底归零 */
+        padding-bottom: 0 !important;
 
         overflow-y: auto !important;
         margin-bottom: 0 !important;
         scrollbar-width: thin;
-
-        /* 彻底斩断动画，交由显卡原生渲染 */
         transition: none !important;
+    }
+
+    /* 【修复 2】：使用伪元素，在侧边栏内部的最末尾动态追加一个占位方块 */
+    #pst-primary-sidebar::after,
+    #pst-secondary-sidebar::after {
+        content: "";
+        display: block;
+        /* 高度等于 Footer 的高度再加上一点呼吸空间 */
+        height: calc(var(--zcnote-footer-h) + 2rem);
+        /* 防止在 Flex 布局下被浏览器自动压缩 */
+        flex-shrink: 0;
     }
 }

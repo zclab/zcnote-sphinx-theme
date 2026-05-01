@@ -14,24 +14,30 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const footer = document.querySelector(".bd-footer");
-            const main = document.querySelector(".bd-main");
-            if (!footer || !main) return;
 
-            // 1. 降维转移：将 Footer 直接提升到 body 下，彻底脱离 Grid 束缚
+            // 【核心修正】：找到最深处的文章容器，而不是外层的 main
+            const targetContainer = document.querySelector(".bd-article-container") || document.querySelector(".bd-content");
+
+            if (!footer || !targetContainer) return;
+
+            // 1. 降维转移：将 Footer 直接提升到 body 下，脱离所有网格束缚
             document.body.appendChild(footer);
 
-            // 2. 网格拉伸：在主内容区注入幽灵占位符，强制拉长同行的侧边栏轨道
+            // 2. 内部支撑：将幽灵占位符注入到正文的最底部
             const spacer = document.createElement("div");
             spacer.style.width = "100%";
             spacer.style.pointerEvents = "none";
-            main.appendChild(spacer);
+            // 确保占位符作为块级元素独占一行，提供纯粹的垂直高度
+            spacer.style.display = "block";
+            spacer.style.clear = "both";
+            targetContainer.appendChild(spacer);
 
-            // 3. 精准测量：使用 ResizeObserver 获取 Footer 实际高度并更新 CSS 变量
+            // 3. 高度同步：测量 Footer 实际高度并更新占位符
             const observer = new ResizeObserver(entries => {
                 for (let entry of entries) {
                     const h = entry.contentRect.height;
                     document.documentElement.style.setProperty('--zcnote-footer-h', `${h}px`);
-                    spacer.style.height = `${h}px`; // 同步更新占位符高度
+                    spacer.style.height = `${h}px`; // 同步撑开文章底部
                 }
             });
             observer.observe(footer);
