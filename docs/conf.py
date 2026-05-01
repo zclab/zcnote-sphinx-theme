@@ -9,16 +9,22 @@ project = 'ZCNote Theme Docs'
 copyright = '2026, ZCNote'
 author = 'ZCNote'
 
-# --- 核心主题配置 ---
-# 指定我们自定义的主题名称
+extensions = [
+    "sphinx_design",
+    "sphinx_copybutton",
+    "myst_parser",
+]
+
+# This allows us to use ::: to denote directives, useful for admonitions
+myst_enable_extensions = ["colon_fence", "substitution"]
+myst_heading_anchors = 2
+
+
 html_theme = 'zcnote_sphinx_theme'
 
 # 测试我们的自定义选项以及继承自 pydata 的选项
 html_theme_options = {
-    # 这是我们在 theme.conf 中新增的选项
     "enable_collapse_sidebar": True,
-
-    # pydata 的原生选项，用于测试继承是否正常
     "navigation_depth": 4,
     "show_toc_level": 2,
 }
