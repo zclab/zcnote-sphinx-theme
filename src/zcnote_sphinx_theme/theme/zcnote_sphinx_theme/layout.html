@@ -14,33 +14,52 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const footer = document.querySelector(".bd-footer");
-
-            // 【核心修正】：找到最深处的文章容器，而不是外层的 main
             const targetContainer = document.querySelector(".bd-article-container") || document.querySelector(".bd-content");
-
             if (!footer || !targetContainer) return;
 
-            // 1. 降维转移：将 Footer 直接提升到 body 下，脱离所有网格束缚
+            // 1. Footer 降维转移到 body 最底层
             document.body.appendChild(footer);
 
-            // 2. 内部支撑：将幽灵占位符注入到正文的最底部
+            // 2. 在正文底部注入“幽灵占位符”，它负责稳定整个页面的滚动高度，防止跳动
             const spacer = document.createElement("div");
             spacer.style.width = "100%";
-            spacer.style.pointerEvents = "none";
-            // 确保占位符作为块级元素独占一行，提供纯粹的垂直高度
             spacer.style.display = "block";
             spacer.style.clear = "both";
             targetContainer.appendChild(spacer);
 
-            // 3. 高度同步：测量 Footer 实际高度并更新占位符
-            const observer = new ResizeObserver(entries => {
-                for (let entry of entries) {
-                    const h = entry.contentRect.height;
-                    document.documentElement.style.setProperty('--zcnote-footer-h', `${h}px`);
-                    spacer.style.height = `${h}px`; // 同步撑开文章底部
+            let ticking = false;
+
+            // 3. 终极计算引擎
+            function syncLayout() {
+                const footerRect = footer.getBoundingClientRect();
+
+                // 同步占位符高度，确保滑动轨道永远足够长
+                spacer.style.height = `${footer.offsetHeight}px`;
+
+                // 计算 Footer 侵入屏幕的高度
+                let overlap = window.innerHeight - footerRect.top;
+                if (overlap < 0) overlap = 0;
+
+                // 将侵入高度写入 CSS 变量，用于动态裁剪侧边栏
+                document.documentElement.style.setProperty('--zcnote-footer-overlap', `${Math.ceil(overlap)}px`);
+
+                ticking = false;
+            }
+
+            function onScrollResize() {
+                if (!ticking) {
+                    window.requestAnimationFrame(syncLayout);
+                    ticking = true;
                 }
-            });
-            observer.observe(footer);
+            }
+
+            // 监听滚动与窗口变化
+            window.addEventListener("scroll", onScrollResize, { passive: true });
+            window.addEventListener("resize", onScrollResize, { passive: true });
+
+            // 使用 ResizeObserver 监听 Footer 自身的高度变化
+            const ro = new ResizeObserver(() => onScrollResize());
+            ro.observe(footer);
         });
     </script>
 {% endblock %}
