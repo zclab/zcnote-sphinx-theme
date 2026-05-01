@@ -1,31 +1,39 @@
-/* 针对正文段落进行两端对齐 */
-div.bd-article p {
+/* 1. 针对正文段落进行两端对齐 */
+/* 0.16.0+ 中文章容器由 div 变成了 <article class="bd-article">，直接使用类选择器更稳妥 */
+.bd-article p {
     text-align: justify;
     text-justify: inter-word;
 }
 
-/* 覆写 pydata 的 sidebars，使其像 mkdocs-material 一样常驻视口 */
-
-.bd-sidebar-primary,
-.bd-sidebar-secondary {
+/* 2. 覆写侧边栏行为，使其像 mkdocs-material 一样常驻视口 */
+/* 0.16.0+ 侧边栏使用了具体的 ID：pst-primary-sidebar 和 pst-secondary-sidebar */
+#pst-primary-sidebar,
+#pst-secondary-sidebar {
     /* 使用粘性定位，并从顶部导航栏下方开始 */
     position: sticky !important;
     top: var(--pst-header-height) !important;
 
-    /* 强制其高度为视口高度减去导航栏高度，不受底部 footer 影响 */
+    /* 强制其高度为视口高度减去导航栏高度 */
     height: calc(100vh - var(--pst-header-height)) !important;
     max-height: calc(100vh - var(--pst-header-height)) !important;
 
-    /* 允许内部滚动 */
+    /* 允许内部独立滚动 */
     overflow-y: auto !important;
+
+    /* (可选) 让滚动条更细，视觉上更接近 mkdocs-material */
+    scrollbar-width: thin;
 }
 
-/* 消除主容器底部可能对侧边栏产生的挤压 */
+/* 3. 确保主容器的高度路径能够支撑侧边栏的 sticky 行为 */
 .bd-main {
-    align-items: stretch; /* 确保 grid/flex 容器的高度行为不会切断侧边栏 */
+    align-items: stretch !important;
 }
 
-/* 如果 footer 覆盖在了侧边栏上方，调整层级或将其限制在文章区下方 */
+/* 4. 处理页面底部 Footer 的行为 */
+/* 降低 footer 的层级。注意：纯 CSS 的 sticky 会在父容器（bd-main）滚动结束时随之向上移动。
+   如果你希望侧边栏即使遇到了 Footer 绝对不往上走（悬浮在 Footer 上方），
+   可以保留较低的 z-index 设置，并在实际排版中接受两者的层叠关系。 */
 .bd-footer {
-    z-index: 1;
+    z-index: 1 !important;
+    position: relative;
 }
