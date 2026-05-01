@@ -1,25 +1,31 @@
-/* 1. 初始化变量 */
+/* =========================================================
+   1. 全局变量与基础重置
+   ========================================================= */
 :root {
     --zcnote-footer-overlap: 0px;
 }
 
-/* 2. 文本两端对齐 */
+/* 文本两端对齐 */
 .bd-article p {
     text-align: justify;
     text-justify: inter-word;
 }
 
-/* 3. 页面基准设定 */
+/* 页面基准设定，打破外层包裹限制 */
 body {
     position: relative !important;
     min-height: 100vh;
     overflow-x: clip;
 }
+
 .bd-page-width {
     position: static !important;
 }
 
-/* 4. Footer 绝对覆盖图层 */
+/* =========================================================
+   2. Footer 绝对覆盖图层与侧边栏动态引擎
+   ========================================================= */
+/* Footer 100% 物理横跨视口 */
 .bd-footer {
     position: absolute !important;
     bottom: 0 !important;
@@ -31,7 +37,7 @@ body {
     border-top: 1px solid var(--pst-color-border) !important;
 }
 
-/* 5. 动态裁剪侧边栏 (终极形态) */
+/* 侧边栏动态裁剪 */
 @media (min-width: 1200px) {
     #pst-primary-sidebar,
     #pst-secondary-sidebar {
@@ -39,51 +45,44 @@ body {
         position: sticky !important;
         top: var(--pst-header-height) !important;
 
-        /* 魔法发生在这里：侧边栏高度会随着 Footer 的出现动态缩小。
-           当高度缩小到小于菜单实际长度时，滚动条才会自然出现！ */
-        height: calc(100vh - var(--pst-header-height) - var(--zcnote-footer-overlap)) !important;
-        max-height: calc(100vh - var(--pst-header-height) - var(--zcnote-footer-overlap)) !important;
+        /* 【核心优化】使用 dvh 兼容移动端地址栏伸缩，配合 overlap 实现动态滚动条 */
+        height: calc(100dvh - var(--pst-header-height) - var(--zcnote-footer-overlap)) !important;
+        max-height: calc(100dvh - var(--pst-header-height) - var(--zcnote-footer-overlap)) !important;
 
-        /* 还原所有的内外边距，把空间还给内容 */
+        /* 还原空间，防滚动条误触 */
         padding-bottom: 0 !important;
         margin-bottom: 0 !important;
 
         overflow-y: auto !important;
         scrollbar-width: thin;
 
-        /* 【极其重要】：彻底剥夺默认主题的动画权，确保 JS 计算无缝生效 */
+        /* 彻底剥夺动画，保证 JS 帧同步零延迟 */
         transition: none !important;
     }
 }
 
-
 /* =========================================================
-   Admonition (提示框) 极简定制 - 四边等宽彩色边框
+   3. Admonition (提示框) 极简定制 - 四边等宽彩色边框
    ========================================================= */
-
-/* 1. 基础容器：强制四边统一宽度（例如 1px 或 2px） */
+/* 基础容器 */
 div.admonition {
-    border-width: 1px !important;  /* 四边宽度绝对一致 */
+    border-width: 1px !important;  /* 统一四边宽度 */
     border-style: solid !important;
-    border-radius: 0.25rem !important; /* 保持轻微的圆角 */
+    border-radius: 0.25rem !important;
 }
 
-/* 2. 精准映射：为不同的提示类型赋予对应的边框颜色 */
-
-/* Note, Info, Hint (信息类 - 蓝色/主色) */
+/* 颜色语义映射 */
 div.admonition.note,
 div.admonition.info,
 div.admonition.hint {
     border-color: var(--pst-color-info) !important;
 }
 
-/* Tip, Success (成功类 - 绿色) */
 div.admonition.tip,
 div.admonition.success {
     border-color: var(--pst-color-success) !important;
 }
 
-/* Warning, Attention, Important, Caution (警告类 - 黄色/橙色) */
 div.admonition.warning,
 div.admonition.attention,
 div.admonition.important,
@@ -91,18 +90,16 @@ div.admonition.caution {
     border-color: var(--pst-color-warning) !important;
 }
 
-/* Danger, Error (危险/错误类 - 红色) */
 div.admonition.danger,
 div.admonition.error {
     border-color: var(--pst-color-danger) !important;
 }
 
-/* See Also (参考类 - 副色) */
 div.admonition.seealso {
     border-color: var(--pst-color-secondary) !important;
 }
 
-/* 兜底：未指定的其他类型默认使用主色 */
+/* 兜底映射 */
 div.admonition:not(.note):not(.info):not(.hint):not(.tip):not(.success):not(.warning):not(.attention):not(.important):not(.caution):not(.danger):not(.error):not(.seealso) {
     border-color: var(--pst-color-primary) !important;
 }
