@@ -1,0 +1,57 @@
+/* 1. 初始化变量 */
+:root {
+    --zcnote-footer-overlap: 0px;
+}
+
+/* 2. 文本两端对齐 */
+.bd-article p {
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+/* 3. 页面基准设定 */
+body {
+    position: relative !important;
+    min-height: 100vh;
+    overflow-x: clip;
+}
+.bd-page-width {
+    position: static !important;
+}
+
+/* 4. Footer 绝对覆盖图层 */
+.bd-footer {
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    margin: 0 !important;
+    z-index: 100 !important;
+    background-color: var(--pst-color-background) !important;
+    border-top: 1px solid var(--pst-color-border) !important;
+}
+
+/* 5. 动态裁剪侧边栏 (终极形态) */
+@media (min-width: 1200px) {
+    #pst-primary-sidebar,
+    #pst-secondary-sidebar {
+        align-self: start !important;
+        position: sticky !important;
+        top: var(--pst-header-height) !important;
+
+        /* 魔法发生在这里：侧边栏高度会随着 Footer 的出现动态缩小。
+           当高度缩小到小于菜单实际长度时，滚动条才会自然出现！ */
+        height: calc(100vh - var(--pst-header-height) - var(--zcnote-footer-overlap)) !important;
+        max-height: calc(100vh - var(--pst-header-height) - var(--zcnote-footer-overlap)) !important;
+
+        /* 还原所有的内外边距，把空间还给内容 */
+        padding-bottom: 0 !important;
+        margin-bottom: 0 !important;
+
+        overflow-y: auto !important;
+        scrollbar-width: thin;
+
+        /* 【极其重要】：彻底剥夺默认主题的动画权，确保 JS 计算无缝生效 */
+        transition: none !important;
+    }
+}

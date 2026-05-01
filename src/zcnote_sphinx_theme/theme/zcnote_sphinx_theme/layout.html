@@ -1,0 +1,71 @@
+{% extends "pydata_sphinx_theme/layout.html" %}
+
+{# 1. 动态控制侧边栏折叠按钮的显示与隐藏 #}
+{% block extrahead %}
+    {{ super() }}
+
+    {# 【关键修复】：强制将变量转为 string 再转 lower，完美兼容 Python 的 False #}
+    {% if theme_enable_collapse_sidebar | string | lower == 'false' %}
+        <style>
+            /* 使用你抓取到的精确 ID 和类名，将其彻底从文档流和视觉中抹除 */
+            .sidebar-primary-item.pst-sidebar-collapse,
+            #pst-collapse-sidebar-button {
+                display: none !important;
+                visibility: hidden !important;
+                height: 0 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                pointer-events: none !important;
+            }
+        </style>
+    {% endif %}
+{% endblock extrahead %}
+
+{# 2. 终极 Footer 绝对覆盖与高度计算引擎 (保持不变) #}
+{% block footer %}
+    {{ super() }}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const footer = document.querySelector(".bd-footer");
+            const targetContainer = document.querySelector(".bd-article-container") || document.querySelector(".bd-content");
+            if (!footer || !targetContainer) return;
+
+            // 转移 Footer
+            document.body.appendChild(footer);
+
+            // 注入幽灵占位符
+            const spacer = document.createElement("div");
+            spacer.style.width = "100%";
+            spacer.style.display = "block";
+            spacer.style.clear = "both";
+            targetContainer.appendChild(spacer);
+
+            let ticking = false;
+
+            function syncLayout() {
+                const footerRect = footer.getBoundingClientRect();
+                spacer.style.height = `${footer.offsetHeight}px`;
+
+                let overlap = window.innerHeight - footerRect.top;
+                if (overlap < 0) overlap = 0;
+
+                document.documentElement.style.setProperty('--zcnote-footer-overlap', `${Math.ceil(overlap)}px`);
+                ticking = false;
+            }
+
+            function onScrollResize() {
+                if (!ticking) {
+                    window.requestAnimationFrame(syncLayout);
+                    ticking = true;
+                }
+            }
+
+            window.addEventListener("scroll", onScrollResize, { passive: true });
+            window.addEventListener("resize", onScrollResize, { passive: true });
+
+            const ro = new ResizeObserver(() => onScrollResize());
+            ro.observe(footer);
+        });
+    </script>
+{% endblock %}

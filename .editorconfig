@@ -1,0 +1,32 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# ==============================================
+# YAML 文件 (.yml, .yaml)
+# 严格标准：YAML 必须使用空格，且通常约定为 2 个空格
+# ==============================================
+[*.{yml,yaml}]
+indent_size = 2
+
+# ==============================================
+# JSON 文件 (.json)
+# 为了结构紧凑且易读，通常约定为 2 个空格（前端/配置标准）
+# ==============================================
+[*.json]
+indent_size = 2
+
+# ==============================================
+# Markdown (可选，通常项目里会有 README.md)
+# ==============================================
+[*.md]
+trim_trailing_whitespace = false
