@@ -14,7 +14,7 @@ authors = [
 ]
 dependencies = [
     "sphinx>=8.0, <10",
-    "pydata-sphinx-theme>=0.16.0"
+    "pydata-sphinx-theme>=0.16.0, <0.18.0"
 ]
 
 [project.urls]
@@ -25,6 +25,7 @@ doc = [
     "sphinx_design",
     "myst-parser",
     "sphinx_copybutton",
+    "sphinx-togglebutton",
 ]
 
 [project.entry-points."sphinx.html_themes"]

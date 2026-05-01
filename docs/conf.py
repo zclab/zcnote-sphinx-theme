@@ -13,6 +13,7 @@ extensions = [
     "sphinx_design",
     "sphinx_copybutton",
     "myst_parser",
+    "sphinx_togglebutton",
 ]
 
 # This allows us to use ::: to denote directives, useful for admonitions
@@ -27,6 +28,7 @@ html_theme_options = {
     "enable_collapse_sidebar": True,
     "navigation_depth": 4,
     "show_toc_level": 2,
+    "search_as_you_type": True
 }
 
 # 静态文件路径（文档级别的静态文件，非主题级别）

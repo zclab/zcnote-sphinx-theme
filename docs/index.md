@@ -1,3 +1,7 @@
+---
+html_theme.sidebar_secondary.remove: true
+---
+
 # ZCNote Sphinx Theme 测试文档
 
 :::{note}
@@ -15,9 +19,9 @@ this is a test!
 
 ```{toctree}
 :maxdepth: 2
-:caption: 测试专区
+:caption: 例子
 
-test_layout
+examples/index
 ```
 
 
