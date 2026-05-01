@@ -1,13 +1,27 @@
 {% extends "pydata_sphinx_theme/layout.html" %}
 
-{% block docs_sidebar_header %}
-    {% if theme_enable_collapse_sidebar|lower == 'true' %}
-        {{ super() }}
-    {% else %}
-        <div class="sidebar-brand"></div>
-    {% endif %}
-{% endblock docs_sidebar_header %}
+{# 1. 动态控制侧边栏折叠按钮的显示与隐藏 #}
+{% block extrahead %}
+    {{ super() }}
 
+    {# 【关键修复】：强制将变量转为 string 再转 lower，完美兼容 Python 的 False #}
+    {% if theme_enable_collapse_sidebar | string | lower == 'false' %}
+        <style>
+            /* 使用你抓取到的精确 ID 和类名，将其彻底从文档流和视觉中抹除 */
+            .sidebar-primary-item.pst-sidebar-collapse,
+            #pst-collapse-sidebar-button {
+                display: none !important;
+                visibility: hidden !important;
+                height: 0 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                pointer-events: none !important;
+            }
+        </style>
+    {% endif %}
+{% endblock extrahead %}
+
+{# 2. 终极 Footer 绝对覆盖与高度计算引擎 (保持不变) #}
 {% block footer %}
     {{ super() }}
 
@@ -17,10 +31,10 @@
             const targetContainer = document.querySelector(".bd-article-container") || document.querySelector(".bd-content");
             if (!footer || !targetContainer) return;
 
-            // 1. Footer 降维转移到 body 最底层
+            // 转移 Footer
             document.body.appendChild(footer);
 
-            // 2. 在正文底部注入“幽灵占位符”，它负责稳定整个页面的滚动高度，防止跳动
+            // 注入幽灵占位符
             const spacer = document.createElement("div");
             spacer.style.width = "100%";
             spacer.style.display = "block";
@@ -29,20 +43,14 @@
 
             let ticking = false;
 
-            // 3. 终极计算引擎
             function syncLayout() {
                 const footerRect = footer.getBoundingClientRect();
-
-                // 同步占位符高度，确保滑动轨道永远足够长
                 spacer.style.height = `${footer.offsetHeight}px`;
 
-                // 计算 Footer 侵入屏幕的高度
                 let overlap = window.innerHeight - footerRect.top;
                 if (overlap < 0) overlap = 0;
 
-                // 将侵入高度写入 CSS 变量，用于动态裁剪侧边栏
                 document.documentElement.style.setProperty('--zcnote-footer-overlap', `${Math.ceil(overlap)}px`);
-
                 ticking = false;
             }
 
@@ -53,11 +61,9 @@
                 }
             }
 
-            // 监听滚动与窗口变化
             window.addEventListener("scroll", onScrollResize, { passive: true });
             window.addEventListener("resize", onScrollResize, { passive: true });
 
-            // 使用 ResizeObserver 监听 Footer 自身的高度变化
             const ro = new ResizeObserver(() => onScrollResize());
             ro.observe(footer);
         });
