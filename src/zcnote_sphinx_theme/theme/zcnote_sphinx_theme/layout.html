@@ -1,15 +1,34 @@
 {% extends "pydata_sphinx_theme/layout.html" %}
 
-{# 覆写父主题中包含侧边栏切换按钮的区块。具体 block 名称视你所用的 pydata 版本而定 #}
-{# 例如，如果是覆盖左侧边栏顶部的部分： #}
+{# 1. 侧边栏折叠控制逻辑（保持不变） #}
 {% block docs_sidebar_header %}
     {% if theme_enable_collapse_sidebar|lower == 'true' %}
-        {# 如果开启，渲染父主题的默认行为 #}
         {{ super() }}
     {% else %}
-        {# 如果关闭，你可以选择只渲染 Logo，不渲染 toggle 按钮，或者用自定义的非折叠区块替代 #}
         <div class="sidebar-brand">
-            <!-- 仅渲染 Logo 等静态元素，去除 toggle 按钮 -->
+            <!-- 仅渲染 Logo，去除 toggle 按钮 -->
         </div>
     {% endif %}
 {% endblock docs_sidebar_header %}
+
+{% block footer %}
+    {# 捕获官方完整 Footer，初始隐藏 #}
+    <div id="zcnote-moved-footer" style="display: none;">
+        {{ super() }}
+    </div>
+
+    {# 利用极小的脚本，将 Footer 挂载到专属的文章容器内部 #}
+    <script>
+        (function() {
+            // 【关键修改】寻找 .bd-article-container 而不是 .bd-content
+            // 这样 Footer 就会严格垂直排列在文章的正下方，不会变成并排的列
+            var articleContainer = document.querySelector(".bd-article-container") || document.querySelector(".bd-article");
+            var footerContent = document.getElementById("zcnote-moved-footer");
+
+            if (articleContainer && footerContent) {
+                articleContainer.appendChild(footerContent);
+                footerContent.style.display = "block";
+            }
+        })();
+    </script>
+{% endblock %}
