@@ -94,9 +94,12 @@ body {
     }
 
     /* 微调左侧边栏内部留白，向正文归还更多阅读空间 */
-    #pst-primary-sidebar .sidebar-primary-item,
-    #pst-primary-sidebar .bd-toc-item {
+    #pst-primary-sidebar .sidebar-primary-item {
         padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+
+    #pst-primary-sidebar .bd-toc-item {
         padding-right: 0.5rem !important;
     }
 
