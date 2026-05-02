@@ -7,18 +7,28 @@ name = "zcnote-sphinx-theme"
 version = "0.1.0"
 description = "A customized Sphinx theme based on pydata-sphinx-theme."
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 license = "MIT"
 authors = [
-    {name = "Your Name", email = "your.email@example.com"},
+    {name = "zclab", email = "your.email@example.com"},
 ]
 dependencies = [
-    "sphinx>=8.0",
-    "pydata-sphinx-theme>=0.16.0"
+    "sphinx>=8.0, <10",
+    "pydata-sphinx-theme>=0.16.0, <0.18.0"
+]
+
+[project.urls]
+"Source" = "https://github.com/zclab/zcnote-sphinx-theme"
+
+[project.optional-dependencies]
+doc = [
+    "sphinx_design",
+    "myst-parser",
+    "sphinx_copybutton",
+    "sphinx-togglebutton",
 ]
 
 [project.entry-points."sphinx.html_themes"]
-# 这是让 Sphinx 能通过 html_theme = 'zcnote_sphinx_theme' 自动找到该包的关键
 zcnote_sphinx_theme = "zcnote_sphinx_theme"
 
 [tool.setuptools.packages.find]
