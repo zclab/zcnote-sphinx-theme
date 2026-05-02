@@ -12,6 +12,7 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx_design",
     "sphinx_copybutton",
+    "_extension.gallery_directive",
     "myst_parser",
     "sphinx_togglebutton",
 ]
@@ -46,6 +47,10 @@ html_theme_options = {
         "text": "ZCNote Theme",
         "image_dark": "_static/logo.png",
     },
+    "secondary_sidebar_items": {
+        "**/*": ["page-toc", "edit-this-page", "sourcelink"],
+        "examples/no-sidebar": [],
+    },
     # "announcement": "https://raw.githubusercontent.com/pydata/pydata-sphinx-theme/main/docs/_templates/custom-template.html",
 }
 
@@ -54,6 +59,11 @@ html_context = {
     "github_repo": "zcnote-sphinx-theme",
     "github_version": "main",
     "doc_path": "docs",
+}
+
+html_sidebars = {
+    "examples/no-sidebar": [],  # Test what page looks like with no sidebar items
+    "examples/persistent-search-field": ["search-field"],
 }
 
 
