@@ -1,18 +1,36 @@
 # zcnote-sphinx-theme
-A sphinx based on pydata-sphinx-theme
+
+Modify and build upon [pydata-sphinx-theme](https://pydata-sphinx-theme.readthedocs.io/).
+
+<!-- start badges -->
+
+[![PyPI](https://img.shields.io/pypi/v/zcnote-sphinx-theme?style=flat-square&logo=python&logoColor=white&color=orange)](https://pypi.org/project/zcnote-sphinx-theme/)
+[![status](https://img.shields.io/pypi/status/zcnote-sphinx-theme.svg?style=flat-square)](https://pypi.org/project/zcnote-sphinx-theme/)
+[![license](https://img.shields.io/pypi/l/zcnote-sphinx-theme.svg?style=flat-square&logo=opensourceinitiative&logoColor=white)](https://github.com/zclab/zcnote-sphinx-theme/blob/main/LICENSE)
 
 
-## Installation and usage
+<!-- end badges -->
 
-To get started, firt install it with:
-```bash
-python -m build
+
+## Get started
+
+<!-- start quickstart -->
+
+To use this theme in your documentation build environment, first install the `zcnote-sphinx-theme` with `pip`:
+
+```
+pip install zcnote-sphinx-theme
 ```
 
-then, activate the theme in your Sphinx configuration (conf.py):
+then, configure the Sphinx docs to use the theme by editing `conf.py`
+
 ```python
 html_theme = "zcnote_sphinx_theme"
 ```
+
+Your Sphinx documentation's HTML pages will now be generated with this theme! 🎉
+
+<!-- end quickstart -->
 
 ## Documentation
 See the zcnote sphinx theme documentation for more information.
