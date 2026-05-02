@@ -1,6 +1,6 @@
 # zcnote-sphinx-theme
 
-Modify and build upon [pydata-sphinx-theme](https://pydata-sphinx-theme.readthedocs.io/).
+Modify and build upon [pydata-sphinx-theme](https://pydata-sphinx-theme.readthedocs.io/) with minor style altered.
 
 <!-- start badges -->
 
