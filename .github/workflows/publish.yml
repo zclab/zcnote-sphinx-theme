@@ -1,0 +1,47 @@
+name: Publish Package to PyPI
+
+on:
+  push:
+    # 只有当推送了包含特定前缀的 tag 时才触发
+    tags:
+      - 'v*'  # 例如：推送 v0.1.0, v1.2.3 等 tag 时会触发此工作流
+
+jobs:
+  build-and-publish:
+    name: Build and publish to PyPI
+    runs-on: ubuntu-latest
+
+    # 定义环境，推荐与 PyPI 配置保持一致
+    environment:
+      name: pypi
+      url: https://pypi.org/p/zcnote-sphinx-theme  # 这里可以替换为你实际的 PyPI 项目地址
+
+    # 必须配置的权限，用于 OIDC 身份验证
+    permissions:
+      id-token: write  # 允许请求 OIDC token (PyPI 验证必须)
+      contents: read   # 允许检出代码仓库
+
+    steps:
+    # 1. 检出代码
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # 2. 设置 Python 环境
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    # 3. 安装构建工具
+    - name: Install build tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install build
+
+    # 4. 构建项目 (生成 sdist 和 wheel)
+    - name: Build the package
+      run: python -m build
+
+    # 5. 上传到 PyPI (使用官方 Action)
+    - name: Publish package to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
