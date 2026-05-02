@@ -38,6 +38,7 @@ html_theme_options = {
             "icon": "fa-brands fa-github",
         },
     ],
+    # "announcement": "https://raw.githubusercontent.com/pydata/pydata-sphinx-theme/main/docs/_templates/custom-template.html",
 }
 
 # 静态文件路径（文档级别的静态文件，非主题级别）
