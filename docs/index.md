@@ -39,9 +39,3 @@ examples/index
 guide/index
 ```
 
-```{toctree}
-:maxdepth: 2
-:caption: 参考文档
-
-reference/api
-```
