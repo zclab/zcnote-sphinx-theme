@@ -8,5 +8,5 @@
 test_layout
 math
 web-components
-admonitions
+kitchen-sink/index
 ```
