@@ -26,7 +26,7 @@ If you are looking for a Sphinx theme that puts all of its sub-pages in the side
 
 ```{toctree}
 :maxdepth: 2
-:caption: 例子
+:caption: Examples
 
 examples/index
 ```
