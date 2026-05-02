@@ -12,7 +12,6 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx_design",
     "sphinx_copybutton",
-    "_extension.gallery_directive",
     "myst_parser",
     "sphinx_togglebutton",
     "sphinxcontrib.mermaid",
