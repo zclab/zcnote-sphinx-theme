@@ -1,15 +1,14 @@
 {% extends "pydata_sphinx_theme/layout.html" %}
 
 {# ==========================================================
-   模块 1：动态控制侧边栏折叠按钮
+   模块 1：动态控制侧边栏折叠按钮与 Section 标题的互斥显示
    ========================================================== #}
 {% block extrahead %}
     {{ super() }}
 
-    {# 强制变量类型转换，完美兼容 Python 的 False 布尔值 #}
     {% if theme_enable_collapse_sidebar | string | lower == 'false' %}
         <style>
-            /* 精确抹除原生的折叠组件，不影响同级其他元素 */
+            /* 状态 B：关闭折叠功能 -> 隐藏按钮，保留原标题 */
             .sidebar-primary-item.pst-sidebar-collapse,
             #pst-collapse-sidebar-button {
                 display: none !important;
@@ -18,6 +17,16 @@
                 padding: 0 !important;
                 margin: 0 !important;
                 pointer-events: none !important;
+            }
+            #pst-primary-sidebar .bd-links__title {
+                display: block !important;
+            }
+        </style>
+    {% else %}
+        <style>
+            /* 状态 A：开启折叠功能 -> 隐藏原标题，按钮保留 */
+            #pst-primary-sidebar .bd-links__title {
+                display: none !important;
             }
         </style>
     {% endif %}
@@ -31,6 +40,28 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+
+            // ---------------------------------------------------------
+            // 【新增】：极轻量级 DOM 文本替换（无损修改官方 Collapse 按钮）
+            // ---------------------------------------------------------
+            {% if theme_enable_collapse_sidebar | string | lower != 'false' %}
+            const collapseBtn = document.getElementById("pst-collapse-sidebar-button");
+            if (collapseBtn) {
+                const newText = "Section Navigation";
+
+                // 1. 替换按钮内部的文字节点
+                const collapseLabel = collapseBtn.querySelector(".pst-collapse-sidebar-label");
+                const expandLabel = collapseBtn.querySelector(".pst-expand-sidebar-label");
+                if (collapseLabel) collapseLabel.textContent = newText;
+                if (expandLabel) expandLabel.textContent = newText;
+
+                // 2. 暴力覆写 Bootstrap Tooltip (悬浮提示框) 的所有关联属性
+                collapseBtn.setAttribute("title", newText);
+                collapseBtn.setAttribute("data-bs-original-title", newText);
+                collapseBtn.setAttribute("aria-label", newText);
+            }
+            {% endif %}
+
             const footer = document.querySelector(".bd-footer");
 
             // 【核心优化】DOM 级联兜底：确保在搜索页、404 等非常规页面依然能找到挂载点
