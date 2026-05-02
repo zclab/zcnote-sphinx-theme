@@ -4,17 +4,29 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "zcnote-sphinx-theme"
-version = "0.1.0"
+dynamic = ["version"]
 description = "A customized Sphinx theme based on pydata-sphinx-theme."
 readme = "README.md"
 requires-python = ">=3.10"
-license = "MIT"
+license = "BSD-3-Clause"
 authors = [
-    {name = "zclab", email = "your.email@example.com"},
+    {name = "zclab", email = "yshi009@foxmail.com"},
 ]
 dependencies = [
     "sphinx>=8.0, <10",
     "pydata-sphinx-theme>=0.16.0, <0.18.0"
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Framework :: Sphinx",
+  "Framework :: Sphinx :: Theme",
+  "Operating System :: OS Independent",
 ]
 
 [project.urls]
@@ -33,3 +45,6 @@ zcnote_sphinx_theme = "zcnote_sphinx_theme"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.dynamic]
+version = {attr = "zcnote_sphinx_theme.__version__"}
