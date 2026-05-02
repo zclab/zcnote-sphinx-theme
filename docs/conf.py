@@ -12,7 +12,6 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx_design",
     "sphinx_copybutton",
-    "_extension.gallery_directive",
     "myst_parser",
     "sphinx_togglebutton",
     "sphinxcontrib.mermaid",
@@ -23,7 +22,13 @@ myst_enable_extensions = ["colon_fence", "substitution"]
 myst_heading_anchors = 2
 
 templates_path = ["_templates"]
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "**.ipynb_checkpoints"]
+exclude_patterns = [
+    "_build",
+    "Thumbs.db",
+    ".DS_Store",
+    "**.ipynb_checkpoints",
+    "guide/**"
+]
 html_theme = 'zcnote_sphinx_theme'
 html_logo = "_static/logo.png"
 html_favicon = "_static/logo.png"

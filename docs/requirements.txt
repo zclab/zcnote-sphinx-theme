@@ -1,0 +1,5 @@
+sphinx_design
+sphinx_copybutton
+myst_parser
+sphinx_togglebutton
+sphinxcontrib-mermaid
