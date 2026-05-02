@@ -1,20 +1,15 @@
 /* =========================================================
-   终极防抖：消除长短页面切换时的“滚动条布局偏移”
+   1. 防抖：消除长短页面切换时的“滚动条布局偏移”
    ========================================================= */
 html {
-    /* 【现代标准】：告诉浏览器，始终为滚动条预留出物理空间。
-       如果页面短不需要滚动条，这块空间就透明留白；
-       如果页面长需要滚动条，就直接填进去。
-       从此彻底告别页面左右横跳！ */
+    /* 现代标准：始终为滚动条预留出物理空间 */
     scrollbar-gutter: stable;
-
-    /* 【兜底防御】：针对不支持 scrollbar-gutter 的极少数老旧浏览器，
-       强制显示垂直滚动条轨道，确保绝对的布局稳定。 */
+    /* 兜底防御：针对不支持 scrollbar-gutter 的老旧浏览器 */
     overflow-y: scroll;
 }
 
 /* =========================================================
-   全局变量与基础重置
+   2. 全局变量与基础重置
    ========================================================= */
 :root {
     /* JS 动态注入的 Footer 重叠高度计算值（勿动） */
@@ -28,7 +23,6 @@ html {
 .bd-article p, .bd-article li {
     text-align: justify;
     text-justify: inter-word;
-    /* 【优化】：防止超长代码变量或链接撑破版面，并在必要时断词 */
     overflow-wrap: break-word;
     word-wrap: break-word;
 }
@@ -45,14 +39,12 @@ body {
 }
 
 /* =========================================================
-   Footer 绝对覆盖图层
+   3. Footer 绝对覆盖图层
    ========================================================= */
-/* Footer 100% 物理横跨视口，脱离 Grid/Flex 束缚 */
 .bd-footer {
     position: absolute !important;
     bottom: 0 !important;
     left: 0 !important;
-    /* 【优化】：将 100vw 改为 100%，彻底消灭 Windows 下的横向滚动条 Bug */
     width: 100% !important;
     margin: 0 !important;
     z-index: 100 !important;
@@ -61,11 +53,11 @@ body {
 }
 
 /* =========================================================
-   大屏布局控制：侧边栏、Header对齐与零跳动滚动
+   4. 大屏布局控制：侧边栏、Header对齐与零跳动滚动
    ========================================================= */
 @media (min-width: 1200px) {
 
-    /* --- 1. Header 顶部栏与左侧边栏像素级对齐 --- */
+    /* --- 4.1 Header 顶部栏与左侧边栏像素级对齐 --- */
     .bd-header .navbar-header-items__start {
         width: var(--zcnote-sidebar-width) !important;
         flex: 0 0 var(--zcnote-sidebar-width) !important;
@@ -82,7 +74,7 @@ body {
         padding-left: 0.5rem !important;
     }
 
-    /* --- 2. 左侧边栏尺寸接管与折叠兼容 (精准 10 分权重) --- */
+    /* --- 4.2 左侧边栏尺寸接管与折叠兼容 --- */
     .bd-sidebar-primary {
         width: var(--zcnote-sidebar-width);
         max-width: var(--zcnote-sidebar-width);
@@ -103,7 +95,7 @@ body {
         padding-right: 0.5rem !important;
     }
 
-    /* --- 3. 双侧边栏动态防跳动滚动计算 --- */
+    /* --- 4.3 双侧边栏动态防跳动滚动计算 --- */
     #pst-primary-sidebar,
     #pst-secondary-sidebar {
         align-self: start !important;
@@ -124,18 +116,16 @@ body {
 }
 
 /* =========================================================
-   Admonition (提示框) 极简定制 - 四边等宽彩色边框
+   5. Admonition (提示框) 极简定制 - 四边等宽彩色边框
    ========================================================= */
-/* 基础容器 */
+/* 基础容器：设置默认主色（Primary）边框，替代冗长的 :not() 兜底选择器 */
 div.admonition {
-    border-width: 1px !important;  /* 统一四边宽度 */
-    border-style: solid !important;
+    border: 1px solid var(--pst-color-primary) !important;
     border-radius: 0.25rem !important;
-    /* 【优化】：抹平原生自带的阴影，让线框风格更加干净纯粹 */
     box-shadow: none !important;
 }
 
-/* 颜色语义精准映射 */
+/* 颜色语义精准映射（利用 CSS 层叠性自动覆盖上方默认的 Primary 颜色） */
 div.admonition.note,
 div.admonition.info,
 div.admonition.hint {
@@ -163,25 +153,18 @@ div.admonition.seealso {
     border-color: var(--pst-color-secondary) !important;
 }
 
-/* 兜底映射：未指定的其他类型默认使用主色 */
-div.admonition:not(.note):not(.info):not(.hint):not(.tip):not(.success):not(.warning):not(.attention):not(.important):not(.caution):not(.danger):not(.error):not(.seealso) {
-    border-color: var(--pst-color-primary) !important;
-}
-
 /* =========================================================
-   修复：MathJax/Sphinx 公式垂直滚动条
+   6. 修复：MathJax/Sphinx 公式垂直滚动条
    remove this when pydata fix it!!
    ========================================================= */
 /* 1. 镇压 Sphinx 的外层容器 */
 .bd-article div.math,
 .bd-article div.math-wrapper,
 div.math.notranslate {
-    overflow-x: auto !important;   /* 保留横向滚动 */
-    overflow-y: hidden !important; /* 强制关闭垂直滚动条 */
-    /* 使用 em 随字号等比缩放，提供安全缓冲，防止高大数学符号被削平 */
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
     padding-top: 0.5em !important;
     padding-bottom: 0.5em !important;
-    /* 解决 flex 布局下高度坍塌导致的误判滚动条 */
     min-height: min-content !important;
 }
 
@@ -197,6 +180,5 @@ mjx-container[display="true"],
 /* 3. 镇压 MathJax 最深层的数学节点 */
 mjx-container[display="true"] > mjx-math,
 mjx-container[display="true"] > mjx-math * {
-    /* 严格禁止任何子元素在 Y 轴上产生滚动边界 */
     overflow-y: visible !important;
 }

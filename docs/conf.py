@@ -15,6 +15,7 @@ extensions = [
     "_extension.gallery_directive",
     "myst_parser",
     "sphinx_togglebutton",
+    "sphinxcontrib.mermaid",
 ]
 
 # This allows us to use ::: to denote directives, useful for admonitions

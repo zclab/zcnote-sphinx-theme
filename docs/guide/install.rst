@@ -6,8 +6,8 @@
 
 系统要求
 ========
-* Python 3.8+
-* Sphinx 5.0+
+* Python 3.10+
+* Sphinx 8.0+
 
 安装步骤
 ========
@@ -18,7 +18,8 @@
    pip install zcnote-sphinx-theme
 
 
-## 开发测试
+开发测试
+========
 
 步骤 1：安装依赖与本地主题包：
 
