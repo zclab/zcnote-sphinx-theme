@@ -1,11 +1,15 @@
 name: Test Package Build
 
 on:
-  # 1. PR 自动触发：只有当代码准备合并进主干（发起或更新 PR）时才自动进行严格测试
+  # 1. PR 自动触发：只有当代码准备合并进主干，且指定目录的文件发生修改时才触发
   pull_request:
     branches: [ "main" ]
+    paths:
+      - 'src/**'
+      - 'pyproject.toml'
+      - 'MANIFEST.in'
 
-  # 2. 手动触发：允许你在 Actions 页面随时选择任意分支（哪怕没提 PR）手动跑测试
+  # 2. 手动触发：允许你在 Actions 页面随时选择任意分支手动跑测试
   workflow_dispatch:
 
 jobs:
@@ -44,11 +48,3 @@ jobs:
 
     - name: Check package metadata with Twine
       run: twine check dist/*
-
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: python-package-distributions-${{ matrix.python-version }}
-        path: dist/
-        # 只保留 5 天，避免占用过多 GitHub 存储空间
-        retention-days: 5
