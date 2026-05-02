@@ -166,7 +166,8 @@ div.admonition:not(.note):not(.info):not(.hint):not(.tip):not(.success):not(.war
 }
 
 /* =========================================================
-   终极修复：彻底抹杀 MathJax/Sphinx 公式垂直滚动条
+   修复：MathJax/Sphinx 公式垂直滚动条
+   remove this when pydata fix it!!
    ========================================================= */
 /* 1. 镇压 Sphinx 的外层容器 */
 .bd-article div.math,
