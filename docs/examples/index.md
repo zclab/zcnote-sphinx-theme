@@ -12,3 +12,15 @@ web-components
 kitchen-sink/index
 
 ```
+
+
+```{toctree}
+:maxdepth: 2
+:caption: Reference and test section. Mostly meant for developers to check that things look OK.
+
+no-sidebar
+persistent-search-field
+in-page-toc
+mult_headers
+Link to an external site <https://jupyterbook.org/>
+```
