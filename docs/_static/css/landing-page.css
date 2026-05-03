@@ -1,0 +1,270 @@
+/* =========================================================
+   zcnote-sphinx-theme: 首页落地页 (Landing Page) 专属样式
+   ========================================================= */
+
+/* =========================================================
+   1. 底层排版修复：打破宽度枷锁与偏移修复
+   ========================================================= */
+/* 当检测到首页特有的 ghost-card 时，强制文档区域 100% 全宽 */
+.bd-main:has(.zcnote-landing-page) .bd-article-container,
+.bd-main:has(.zcnote-landing-page) .bd-article {
+    max-width: 100% !important;
+}
+
+/* 消除文档底部的多余留白 */
+.bd-main:has(.zcnote-landing-page) .bd-content {
+    padding-bottom: 0 !important;
+}
+
+/* 隐藏侧边栏后，重置主容器的 margin 和 padding */
+.bd-main:has(.zcnote-landing-page) {
+    margin-left: 0 !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+}
+
+/* =========================================================
+   2. 现代科技调色板 (Pure Flat Colors & Slates)
+   ========================================================= */
+.bd-main:has(.zcnote-landing-page) {
+    /* 核心主色：电光蓝 (Cerulean) */
+    --landing-primary: #0ea5e9;
+    --landing-primary-hover: #0284c7;
+    /* 极客紫 (仅保留给伪标题渐变使用) */
+    --landing-secondary: #8b5cf6;
+    /* 高级 Slate 冷灰 (代替生硬的纯黑文字) */
+    --slate-text-base: #0f172a;
+    --slate-text-muted: #475569;
+    /* 极浅纯色交互底色 (取代所有的弥散阴影) */
+    --landing-surface-hover: rgba(14, 165, 233, 0.06);
+}
+
+/* 完美适配 Sphinx 黑暗模式 */
+html[data-theme="dark"] .bd-main:has(.zcnote-landing-page) {
+    --landing-primary: #38bdf8;
+    --landing-primary-hover: #7dd3fc;
+    --landing-surface-hover: rgba(56, 189, 248, 0.1);
+    --slate-text-base: #f8fafc;
+    --slate-text-muted: #94a3b8;
+}
+
+/* =========================================================
+   3. Hero 区域排版 (左文右码 & 消除 Warning)
+   ========================================================= */
+
+/* 核心隐藏术：隐藏由 Sphinx 强制生成的真实 H1，消除 Docutils 警告的同时不破坏布局 */
+.bd-main:has(.zcnote-landing-page) > .bd-article-container .bd-article > section:first-of-type > h1:first-child {
+    display: none !important;
+}
+
+/* ====================================
+   🔥 重塑伪标题 (Hero Title) 终极优化版
+   ==================================== */
+.hero-h1 {
+    display: block !important;    /* 强制块级元素，防止被周围元素挤压 */
+    text-align: left !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+
+    /* 核心修复：放弃不稳定的 clamp，使用 max 函数确保字体绝对够大 */
+    font-size: 3.5rem !important;
+    font-size: max(3.5rem, 4.5vw) !important;
+
+    /* 核心修复：增大行高，防止多行文字重叠 */
+    line-height: 1.2 !important;
+
+    font-weight: 900 !important;
+
+    /* 核心修复：恢复正常字间距，让字母舒展透气 */
+    letter-spacing: 0 !important;
+
+    margin-top: 0 !important;
+    margin-bottom: 1.5rem !important;
+    width: 100%;
+
+    /* 核心修复：增加底部留白，防止渐变文字下半部分 (如 p, y) 被裁剪 */
+    padding-bottom: 0.15em !important;
+
+    color: var(--landing-primary) !important;
+
+    /* 视觉升级：更具冲击力的三色 SaaS 流光渐变 */
+    background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 50%, #ec4899 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* 副标题：左对齐，限定阅读宽度 */
+.bd-main:has(.zcnote-landing-page) p {
+    text-align: left !important;
+    font-size: 1.25rem !important;
+    line-height: 1.6 !important;
+    width: 100%;
+    max-width: 600px;
+    margin-left: 0 !important;
+    color: var(--slate-text-muted);
+    font-weight: 500;
+}
+
+.bd-main:has(.zcnote-landing-page) p strong {
+    color: var(--slate-text-base);
+    font-weight: 600;
+}
+
+/* =========================================================
+   4. 徽章优化 (Flat Badges)
+   ========================================================= */
+.landing-page-badges {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.landing-page-badges p {
+    display: contents; /* 消除 Docutils 强制包裹的 <p> 标签 */
+}
+
+.landing-page-badges img {
+    border-radius: 2px;
+    box-shadow: none !important;
+    transition: filter 0.2s ease;
+}
+
+.landing-page-badges:hover img {
+    filter: brightness(1.15); /* 悬浮仅改变亮度，保持绝对扁平 */
+    transform: none !important;
+}
+
+/* 徽章与按钮靠左排版辅助类 */
+.justify-content-start {
+    justify-content: flex-start !important;
+}
+
+/* =========================================================
+   5. 极致扁平化按钮 (True Flat Buttons)
+   ========================================================= */
+.landing-page-btns {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.2rem;
+    width: 100%;
+}
+
+.landing-page-btns p { display: contents; }
+
+/* 核心：完全向 badge 风格靠拢的按钮基类 */
+.landing-page-btns .sd-btn {
+    margin: 0 !important;
+    font-size: 1.05rem !important;
+    font-weight: 600 !important;
+    border-radius: 2px !important; /* 2px 极小直角，与徽章视觉高度统一 */
+    box-shadow: none !important;   /* 彻底干掉阴影 */
+    border: none !important;       /* 彻底干掉边框 */
+    padding: 0.6rem 1.5rem !important;
+    transition: background-color 0.2s ease, opacity 0.2s ease !important;
+}
+
+/* 主按钮：纯净的电光蓝色块，无任何渐变 */
+.btn-modern-primary {
+    background-color: var(--landing-primary) !important;
+    color: #ffffff !important;
+}
+.btn-modern-primary:hover {
+    background-color: var(--landing-primary-hover) !important;
+    transform: none !important; /* 禁止跳动 */
+}
+
+/* 次按钮：高对比度的实心 Slate 色块 (致敬 GitHub 原生按钮) */
+.btn-modern-secondary {
+    background-color: #334155 !important;
+    color: #ffffff !important;
+}
+.btn-modern-secondary:hover {
+    opacity: 0.85 !important;
+    transform: none !important;
+}
+
+/* =========================================================
+   6. 幽灵卡片 (Ghost Cards) - 极致扁平几何
+   ========================================================= */
+
+/* 强制清除 Sphinx-Design 注入的内部白底 */
+.ghost-card,
+.ghost-card .sd-card-body,
+.ghost-card .sd-card-header {
+    background-color: transparent !important;
+    background: transparent !important;
+    border: none !important;
+}
+
+/* 卡片外框：零阴影，纯粹的几何线框 */
+.ghost-card {
+    border: 1px solid var(--pst-color-border) !important;
+    box-shadow: none !important;
+    border-radius: 8px !important;
+    transition: background-color 0.2s ease, border-color 0.2s ease !important;
+    padding: 0.5rem !important;
+    overflow: hidden;
+}
+
+/* 悬浮状态：填入极浅纯色，绝对禁止上下浮动 */
+.ghost-card:hover {
+    border-color: var(--landing-primary) !important;
+    background-color: var(--landing-surface-hover) !important;
+    transform: none !important;
+}
+
+/* 标题与图标绝对对齐 (Flexbox 魔法) */
+.ghost-card .sd-card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.8rem !important;
+    font-weight: 700 !important;
+    font-size: 1.15rem !important;
+    color: var(--slate-text-base);
+}
+
+/* 扁平化图标 */
+.icon-modern {
+    margin-bottom: 0 !important;
+    font-size: 1.25em;
+    color: var(--landing-primary);
+    transition: color 0.2s ease;
+}
+
+/* 图标交互：仅加深颜色 */
+.ghost-card:hover .icon-modern {
+    color: var(--landing-primary-hover);
+    transform: none !important;
+}
+
+/* =========================================================
+   7. 右侧硬核代码块 (Dev-Tool Split Layout)
+   ========================================================= */
+.code-card-split {
+    padding: 1.5rem !important;
+    background-color: transparent !important;
+    border-radius: 4px !important;
+    color: var(--slate-text-base);
+}
+
+.code-card-split strong {
+    font-size: 1.1rem;
+    color: var(--landing-primary); /* 代码块提示文字使用主题蓝 */
+}
+
+/* 消除代码块下方多余的留白 */
+.code-card-split p { margin: 0 !important; text-align: left !important;}
+.code-card-split p + strong { margin-top: 1.2rem !important; display: inline-block; }
+
+/* 现代几何描边类 (用于代码外框) */
+.shadow-hard {
+    border: 1px solid #d1d5db !important; /* 亮色模式：slate-300 */
+}
+
+html[data-theme="dark"] .shadow-hard {
+    border: 1px solid #475569 !important; /* 暗色模式：slate-600 */
+}

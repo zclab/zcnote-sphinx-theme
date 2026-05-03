@@ -76,4 +76,7 @@ html_sidebars = {
 html_static_path = ['_static']
 html_title = "ZCNote 主题文档"
 html_short_title = "ZCNote"
+html_css_files = [
+    'css/landing-page.css',
+]
 todo_include_todos = True
