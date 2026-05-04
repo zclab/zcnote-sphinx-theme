@@ -280,6 +280,11 @@ html[data-theme="dark"] .bd-main:has(.zcnote-landing-page) {
     gap: 0.5rem;
 }
 
+/* 🔥 核心修复：彻底打掉 Sphinx 偷偷包裹的 <p> 标签带来的幽灵空行！ */
+.mock-window-header p {
+    display: contents !important;
+}
+
 .mock-dot {
     width: 12px;
     height: 12px;
@@ -290,12 +295,14 @@ html[data-theme="dark"] .bd-main:has(.zcnote-landing-page) {
 .mock-dot.yellow { background-color: #ffbd2e; }
 .mock-dot.green { background-color: #27c93f; }
 
-/* 修复：终端标题靠左，紧挨着红黄绿按钮 */
+/* 终端标题靠左，紧挨着红黄绿按钮 */
 .mock-title {
     margin-left: 0.8rem;
     margin-right: auto;
     padding-right: 0;
+    margin-bottom: 0 !important; /* 强制消除任何可能的底部边距 */
     font-size: 0.85rem;
+    line-height: 1 !important;   /* 收紧行高 */
     color: #94a3b8;
     font-family: SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
