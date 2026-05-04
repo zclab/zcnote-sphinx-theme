@@ -363,8 +363,19 @@ html[data-theme="dark"] .bd-main:has(.zcnote-landing-page) {
     margin-top: 0 !important;
 }
 
-/* 消除 Grid 网格自带的多余底部留白 */
-.center-terminal .sd-grid {
+/* ====================================
+   🔥 核心修复：强杀 Sphinx Grid 自动注入的底层 Margin
+   拦截 .sd-mb-4 和 .sd-my-4，防止终端底部留白翻倍
+   ==================================== */
+.center-terminal .mock-window-body .sd-grid,
+.center-terminal .mock-window-body .sd-mb-4,
+.center-terminal .mock-window-body .sd-my-4,
+.center-terminal .mock-window-body > div:last-child {
+    margin-bottom: 0 !important;
+}
+
+/* 如果你的内部网格列 (columns) 也带有底边距，一并打掉 */
+.center-terminal .mock-window-body .sd-col {
     margin-bottom: 0 !important;
 }
 
