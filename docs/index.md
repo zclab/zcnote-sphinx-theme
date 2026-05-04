@@ -90,6 +90,8 @@ Sidebars anchored to the viewport. No jumping or shifting when readers scroll to
 :::
 
 :::{grid-item-card}  Slightly modified styles
+:link: examples-admonitions
+:link-type: ref
 :class-card: ghost-card
 :class-title: font-weight-bold
 Symmetrical padding, minimalist borders, and color mapping for admonition.
