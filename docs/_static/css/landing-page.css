@@ -1,11 +1,11 @@
 /* =========================================================
-   zcnote-sphinx-theme: 首页落地页 (Landing Page) 专属样式
+   zcnote-sphinx-theme: 首页落地页 (Landing Page) 终极样式
    ========================================================= */
 
 /* =========================================================
-   1. 底层排版修复：打破宽度枷锁与偏移修复
+   1. 底层排版修复：打破宽度枷锁与偏移修复 (安全隔离版)
    ========================================================= */
-/* 当检测到首页特有的 ghost-card 时，强制文档区域 100% 全宽 */
+/* 仅当容器包含 .zcnote-landing-page 时，强制文档区域 100% 全宽 */
 .bd-main:has(.zcnote-landing-page) .bd-article-container,
 .bd-main:has(.zcnote-landing-page) .bd-article {
     max-width: 100% !important;
@@ -30,12 +30,12 @@
     /* 核心主色：电光蓝 (Cerulean) */
     --landing-primary: #0ea5e9;
     --landing-primary-hover: #0284c7;
-    /* 极客紫 (仅保留给伪标题渐变使用) */
+    /* 极客紫 (用于伪标题渐变) */
     --landing-secondary: #8b5cf6;
     /* 高级 Slate 冷灰 (代替生硬的纯黑文字) */
     --slate-text-base: #0f172a;
     --slate-text-muted: #475569;
-    /* 极浅纯色交互底色 (取代所有的弥散阴影) */
+    /* 极浅纯色交互底色 (取代弥散阴影) */
     --landing-surface-hover: rgba(14, 165, 233, 0.06);
 }
 
@@ -49,65 +49,76 @@ html[data-theme="dark"] .bd-main:has(.zcnote-landing-page) {
 }
 
 /* =========================================================
-   3. Hero 区域排版 (左文右码 & 消除 Warning)
+   3. Hero 区域排版 (全局居中三级阶梯 & 消除 Warning)
    ========================================================= */
 
-/* 核心隐藏术：隐藏由 Sphinx 强制生成的真实 H1，消除 Docutils 警告的同时不破坏布局 */
-.bd-main:has(.zcnote-landing-page) > .bd-article-container .bd-article > section:first-of-type > h1:first-child {
+/* 核心隐藏术：极其暴力的隐藏，无视底层嵌套层级，彻底干掉原生 H1 */
+.bd-main:has(.zcnote-landing-page) h1 {
     display: none !important;
 }
 
-/* ====================================
-   🔥 重塑伪标题 (Hero Title) 终极优化版
-   ==================================== */
-.hero-h1 {
-    display: block !important;    /* 强制块级元素，防止被周围元素挤压 */
-    text-align: left !important;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-
-    /* 核心修复：放弃不稳定的 clamp，使用 max 函数确保字体绝对够大 */
-    font-size: 3.5rem !important;
-    font-size: max(3.5rem, 4.5vw) !important;
-
-    /* 核心修复：增大行高，防止多行文字重叠 */
-    line-height: 1.2 !important;
-
-    font-weight: 900 !important;
-
-    /* 核心修复：恢复正常字间距，让字母舒展透气 */
-    letter-spacing: 0 !important;
-
-    margin-top: 0 !important;
-    margin-bottom: 1.5rem !important;
+/* 容器基础重置 */
+.hero-h1, .hero-slogan, .hero-description {
     width: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+}
 
-    /* 核心修复：增加底部留白，防止渐变文字下半部分 (如 p, y) 被裁剪 */
-    padding-bottom: 0.15em !important;
+/* 第一级：巨型渐变主标题 (项目名) */
+.hero-h1 p {
+    display: block !important;
+    text-align: center !important;
+    margin: 0 auto 0.5rem auto !important; /* 紧抱下方的 Slogan */
+    padding: 0 !important;
 
-    color: var(--landing-primary) !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-size: max(3.2rem, 4vw) !important;
+    line-height: 1.15 !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.01em !important;
 
-    /* 视觉升级：更具冲击力的三色 SaaS 流光渐变 */
-    background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 50%, #ec4899 100%);
+    /* 柔和的现代科技渐变：电光蓝 -> 极客紫 */
+    background: linear-gradient(135deg, var(--landing-primary) 0%, #8b5cf6 80%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    color: var(--landing-primary) !important;
 }
 
-/* 副标题：左对齐，限定阅读宽度 */
-.bd-main:has(.zcnote-landing-page) p {
-    text-align: left !important;
-    font-size: 1.25rem !important;
+/* 第二级：Slogan 桥梁 (大号纯色粗体) */
+.hero-slogan p {
+    display: block !important;
+    text-align: center !important;
+    font-size: clamp(1.4rem, 2.5vw, 1.8rem) !important;
+    font-weight: 700 !important;
+    color: var(--slate-text-base) !important;
+    margin: 0 auto 1rem auto !important;
+    line-height: 1.4 !important;
+    letter-spacing: -0.01em !important;
+}
+
+/* 第三级：补充说明 (中号灰字) */
+.hero-description p {
+    text-align: center !important;
+    font-size: 1.15rem !important;
     line-height: 1.6 !important;
     width: 100%;
-    max-width: 600px;
-    margin-left: 0 !important;
-    color: var(--slate-text-muted);
-    font-weight: 500;
+    max-width: 650px;
+    margin: 0 auto 2rem auto !important; /* 底部撑开，与徽章拉开距离 */
+    color: var(--slate-text-muted) !important;
+    font-weight: 500 !important;
 }
 
-.bd-main:has(.zcnote-landing-page) p strong {
-    color: var(--slate-text-base);
-    font-weight: 600;
+/* 优化描述文字中的链接颜色 */
+.hero-description p a {
+    font-weight: 600 !important;
+    color: var(--landing-primary) !important;
+    text-decoration: none !important;
+    transition: color 0.2s ease;
+}
+.hero-description p a:hover {
+    color: var(--landing-primary-hover) !important;
+    text-decoration: underline !important;
 }
 
 /* =========================================================
@@ -132,13 +143,15 @@ html[data-theme="dark"] .bd-main:has(.zcnote-landing-page) {
 }
 
 .landing-page-badges:hover img {
-    filter: brightness(1.15); /* 悬浮仅改变亮度，保持绝对扁平 */
+    filter: brightness(1.15); /* 仅提亮，不浮动 */
     transform: none !important;
 }
 
-/* 徽章与按钮靠左排版辅助类 */
-.justify-content-start {
-    justify-content: flex-start !important;
+/* 徽章与按钮居中排版辅助类 */
+.justify-content-center {
+    justify-content: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
 }
 
 /* =========================================================
@@ -154,29 +167,27 @@ html[data-theme="dark"] .bd-main:has(.zcnote-landing-page) {
 
 .landing-page-btns p { display: contents; }
 
-/* 核心：完全向 badge 风格靠拢的按钮基类 */
+/* 向 badge 风格靠拢的 2px 圆角无阴影按钮 */
 .landing-page-btns .sd-btn {
     margin: 0 !important;
     font-size: 1.05rem !important;
     font-weight: 600 !important;
-    border-radius: 2px !important; /* 2px 极小直角，与徽章视觉高度统一 */
-    box-shadow: none !important;   /* 彻底干掉阴影 */
-    border: none !important;       /* 彻底干掉边框 */
+    border-radius: 2px !important;
+    box-shadow: none !important;
+    border: none !important;
     padding: 0.6rem 1.5rem !important;
     transition: background-color 0.2s ease, opacity 0.2s ease !important;
 }
 
-/* 主按钮：纯净的电光蓝色块，无任何渐变 */
 .btn-modern-primary {
     background-color: var(--landing-primary) !important;
     color: #ffffff !important;
 }
 .btn-modern-primary:hover {
     background-color: var(--landing-primary-hover) !important;
-    transform: none !important; /* 禁止跳动 */
+    transform: none !important;
 }
 
-/* 次按钮：高对比度的实心 Slate 色块 (致敬 GitHub 原生按钮) */
 .btn-modern-secondary {
     background-color: #334155 !important;
     color: #ffffff !important;
@@ -189,8 +200,6 @@ html[data-theme="dark"] .bd-main:has(.zcnote-landing-page) {
 /* =========================================================
    6. 幽灵卡片 (Ghost Cards) - 极致扁平几何
    ========================================================= */
-
-/* 强制清除 Sphinx-Design 注入的内部白底 */
 .ghost-card,
 .ghost-card .sd-card-body,
 .ghost-card .sd-card-header {
@@ -199,7 +208,7 @@ html[data-theme="dark"] .bd-main:has(.zcnote-landing-page) {
     border: none !important;
 }
 
-/* 卡片外框：零阴影，纯粹的几何线框 */
+/* 零阴影，纯粹的几何线框 */
 .ghost-card {
     border: 1px solid var(--pst-color-border) !important;
     box-shadow: none !important;
@@ -209,14 +218,13 @@ html[data-theme="dark"] .bd-main:has(.zcnote-landing-page) {
     overflow: hidden;
 }
 
-/* 悬浮状态：填入极浅纯色，绝对禁止上下浮动 */
+/* 填入极浅纯色，绝对禁止上下浮动 */
 .ghost-card:hover {
     border-color: var(--landing-primary) !important;
     background-color: var(--landing-surface-hover) !important;
     transform: none !important;
 }
 
-/* 标题与图标绝对对齐 (Flexbox 魔法) */
 .ghost-card .sd-card-title {
     display: flex;
     align-items: center;
@@ -227,7 +235,6 @@ html[data-theme="dark"] .bd-main:has(.zcnote-landing-page) {
     color: var(--slate-text-base);
 }
 
-/* 扁平化图标 */
 .icon-modern {
     margin-bottom: 0 !important;
     font-size: 1.25em;
@@ -235,36 +242,255 @@ html[data-theme="dark"] .bd-main:has(.zcnote-landing-page) {
     transition: color 0.2s ease;
 }
 
-/* 图标交互：仅加深颜色 */
 .ghost-card:hover .icon-modern {
     color: var(--landing-primary-hover);
     transform: none !important;
 }
 
 /* =========================================================
-   7. 右侧硬核代码块 (Dev-Tool Split Layout)
+   7. 悬浮控制台 (Mock Window) - 深空极客版
    ========================================================= */
-.code-card-split {
-    padding: 1.5rem !important;
-    background-color: transparent !important;
+
+/* 赋予终端更强的“体量感” */
+.mock-window {
+    background-color: #0f172a !important; /* 深空蓝 slate-900 */
+    border-radius: 12px !important;
+    border: 1px solid #1e293b !important;
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.3), 0 0 40px rgba(14, 165, 233, 0.15) !important;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 🖥️ 居中宽版悬浮终端专属控制 */
+.center-terminal {
+    max-width: 850px !important; /* 限制最大宽度，不至于撑满屏幕 */
+    margin-left: auto !important;
+    margin-right: auto !important;
+    min-height: auto !important;
+}
+
+/* Mac 风格顶部控制栏 */
+.mock-window-header {
+    background-color: #1e293b !important;
+    border-bottom: 1px solid #334155 !important;
+    padding: 0.75rem 1.2rem !important;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* 🔥 核心修复：彻底打掉 Sphinx 偷偷包裹的 <p> 标签带来的幽灵空行！ */
+.mock-window-header p {
+    display: contents !important;
+}
+
+.mock-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+.mock-dot.red { background-color: #ff5f56; }
+.mock-dot.yellow { background-color: #ffbd2e; }
+.mock-dot.green { background-color: #27c93f; }
+
+/* 终端标题靠左，紧挨着红黄绿按钮 */
+.mock-title {
+    margin-left: 0.8rem;
+    margin-right: auto;
+    padding-right: 0;
+    margin-bottom: 0 !important; /* 强制消除任何可能的底部边距 */
+    font-size: 0.85rem;
+    line-height: 1 !important;   /* 收紧行高 */
+    color: #94a3b8;
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* ====================================
+   修复 1：重塑终端容器的边界与对齐
+   ==================================== */
+/* 窗口代码内容区 */
+.mock-window-body {
+    padding: 1.2rem 1.5rem !important; /* 收紧内边距 */
+    color: #cbd5e1 !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: left !important; /* 核心修复：拦截居中污染 */
+}
+
+/* 强制覆盖 Sphinx Grid 列的继承，防止左右并排网格居中 */
+.mock-window-body .sd-col,
+.mock-window-body p,
+.mock-window-body pre,
+.mock-window-body code {
+    text-align: left !important;
+}
+
+/* 覆盖 Sphinx Grid 可能引入的深色文字，强制所有普通段落为亮色 */
+.mock-window-body p,
+.mock-window-body .sd-col {
+    color: #f1f5f9 !important;
+}
+
+/* 代码段落上的提示文字 */
+.mock-window-body strong {
+    font-size: 1rem;
+    color: #38bdf8 !important;
+    letter-spacing: 0.5px;
+}
+
+/* 🔥 核心修复：彻底改造 Sphinx 默认的内联代码 (Inline Code) */
+.mock-window-body code,
+.mock-window-body code.literal {
+    background-color: rgba(56, 189, 248, 0.15) !important; /* 浅蓝透明底 */
+    color: #7dd3fc !important; /* 亮蓝文字 */
+    border: 1px solid rgba(56, 189, 248, 0.2) !important;
+    padding: 0.1rem 0.4rem !important;
     border-radius: 4px !important;
-    color: var(--slate-text-base);
+    font-size: 0.9em !important;
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
 }
 
-.code-card-split strong {
-    font-size: 1.1rem;
-    color: var(--landing-primary); /* 代码块提示文字使用主题蓝 */
+.mock-window-body p {
+    margin-bottom: 0.5rem !important;
+    text-align: left !important;
 }
 
-/* 消除代码块下方多余的留白 */
-.code-card-split p { margin: 0 !important; text-align: left !important;}
-.code-card-split p + strong { margin-top: 1.2rem !important; display: inline-block; }
-
-/* 现代几何描边类 (用于代码外框) */
-.shadow-hard {
-    border: 1px solid #d1d5db !important; /* 亮色模式：slate-300 */
+/* 消除并排显示时的多余顶部间距 */
+.center-terminal .mock-window-body p + strong {
+    margin-top: 0 !important;
 }
 
-html[data-theme="dark"] .shadow-hard {
-    border: 1px solid #475569 !important; /* 暗色模式：slate-600 */
+/* ====================================
+   🔥 核心修复：强杀 Sphinx Grid 自动注入的底层 Margin
+   拦截 .sd-mb-4 和 .sd-my-4，防止终端底部留白翻倍
+   ==================================== */
+.center-terminal .mock-window-body .sd-grid,
+.center-terminal .mock-window-body .sd-mb-4,
+.center-terminal .mock-window-body .sd-my-4,
+.center-terminal .mock-window-body > div:last-child {
+    margin-bottom: 0 !important;
+}
+
+/* 如果你的内部网格列 (columns) 也带有底边距，一并打掉 */
+.center-terminal .mock-window-body .sd-col {
+    margin-bottom: 0 !important;
+}
+
+/* ====================================
+   🎨 彻底重构代码块面板 & 定制极简滚动条
+   ==================================== */
+
+/* 1. 彻底扒光 Sphinx 的套娃外壳：清除所有的 wrapper 背景、边框和内外边距 */
+.mock-window-body .literal-block-wrapper,
+.mock-window-body div[class^="highlight"],
+.mock-window-body .highlight {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+}
+
+/* ====================================
+   修复 2：收紧代码内嵌面板的边距
+   ==================================== */
+/* 2. 核心内嵌面板：将样式精准、唯一地赋予最底层的 pre 标签 */
+.mock-window-body pre {
+    background-color: #1e293b !important; /* 略亮于终端底色的 Slate-800 */
+    border: 1px solid #334155 !important; /* 极细高光轮廓线 */
+    border-radius: 6px !important;        /* 柔和圆角 */
+    padding: 0.8rem 1rem !important;      /* 修复：收紧代码块内部呼吸空间 */
+    margin: 0.5rem 0 0 0 !important;      /* 与上方文字拉开距离 */
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1) !important; /* 内凹质感 */
+
+    /* 文字排版 */
+    color: #f1f5f9 !important; /* slate-100 */
+    text-shadow: none !important;
+    font-size: 0.95rem !important;
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace !important;
+
+    /* 允许横向滚动，但不超出面板 */
+    overflow-x: auto !important;
+}
+
+/* ====================================
+   🖱️ 定制现代滚动条 (Scrollbar)
+   完美融入深色终端，绝不突兀
+   ==================================== */
+
+/* 滚动条整体宽度/高度 */
+.mock-window-body pre::-webkit-scrollbar {
+    height: 8px; /* 水平滚动条的高度，做得很纤细 */
+    width: 8px;
+}
+
+/* 滚动条轨道 (透明底色) */
+.mock-window-body pre::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 0 0 6px 6px; /* 贴合 pre 的底部圆角 */
+}
+
+/* 滚动条滑块 (半透明 Slate 冷灰) */
+.mock-window-body pre::-webkit-scrollbar-thumb {
+    background-color: #475569;
+    border-radius: 4px;
+    border: 2px solid #1e293b; /* 利用边框与背景色同色，制造出更细的视觉错觉 */
+}
+
+/* 滑块悬浮态 (稍微提亮) */
+.mock-window-body pre::-webkit-scrollbar-thumb:hover {
+    background-color: #64748b;
+}
+
+
+/* ====================================
+   💡 注入微型暗黑高亮 (Pygments Overrides)
+   ==================================== */
+
+/* 强制所有 Span 脱离原有的浅色阴影干扰 */
+.mock-window-body pre span {
+    text-shadow: none !important;
+    color: #cbd5e1 !important; /* 兜底色：浅灰 */
+}
+
+/* 关键字 (import, pip 等指令) -> 赛博紫粉色 */
+.mock-window-body pre .k,
+.mock-window-body pre .kn,
+.mock-window-body pre .kc {
+    color: #f472b6 !important;
+    font-weight: 600 !important;
+}
+
+/* 字符串 ("zcnote_sphinx_theme" 等) -> 荧光薄荷绿 */
+.mock-window-body pre .s,
+.mock-window-body pre .s2 {
+    color: #34d399 !important;
+}
+
+/* 变量名、对象名 (html_theme 等) -> 电光蓝 */
+.mock-window-body pre .n,
+.mock-window-body pre .nn,
+.mock-window-body pre .nc {
+    color: #38bdf8 !important;
+}
+
+/* 符号与操作符 (= 等) -> 纯白 */
+.mock-window-body pre .o,
+.mock-window-body pre .p {
+    color: #f8fafc !important;
+}
+
+/* 注释 (# 这是注释) -> 暗灰斜体 */
+.mock-window-body pre .c,
+.mock-window-body pre .c1 {
+    color: #64748b !important;
+    font-style: italic !important;
+}
+
+/* 兼容暗黑模式下的终端外侧悬浮阴影 */
+html[data-theme="dark"] .mock-window {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(14, 165, 233, 0.15) !important;
 }
