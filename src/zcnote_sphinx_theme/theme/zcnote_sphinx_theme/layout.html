@@ -1,12 +1,8 @@
 {% extends "pydata_sphinx_theme/layout.html" %}
 
-{# ==========================================================
-   模块 1：动态控制侧边栏折叠按钮
-   ========================================================== #}
+{# 模块 1：动态控制侧边栏折叠按钮 #}
 {% block extrahead %}
     {{ super() }}
-
-    {# 强制变量类型转换，完美兼容 Python 的 False 布尔值 #}
     {% if theme_enable_collapse_sidebar | string | lower == 'false' %}
         <style>
             .sidebar-primary-item.pst-sidebar-collapse,
@@ -22,52 +18,53 @@
     {% endif %}
 {% endblock extrahead %}
 
-{# ==========================================================
-   模块 2：绝对覆盖 Footer 与零跳动滚动引擎
-   ========================================================== #}
+{# 模块 2：MkDocs-Material 零跳动滚动引擎 #}
 {% block footer %}
     {{ super() }}
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-
             const footer = document.querySelector(".bd-footer");
+            if (!footer) return;
 
-            // 【核心优化】DOM 级联兜底：确保在搜索页、404 等非常规页面依然能找到挂载点
+            // 1. 寻找最佳挂载点（沿用你的原始设计，优先拉长正文区，绝不挤压 Flex 宽度）
             const targetContainer = document.querySelector(".bd-article-container") ||
                                     document.querySelector(".bd-content") ||
                                     document.querySelector(".bd-main") ||
                                     document.body;
 
-            if (!footer) return;
+            // 2. 将 Footer 降维转移到 Body 末尾，脱离 Sphinx 布局束缚
+            if (footer.parentNode !== document.body) {
+                document.body.appendChild(footer);
+            }
 
-            // 降维转移：将 Footer 提升到 body 级，脱离 Grid 束缚
-            document.body.appendChild(footer);
-
-            // 注入幽灵占位符：稳定主容器高度，打通侧边栏滑动轨道
+            // 3. 注入幽灵占位符：给正文区垫高，为侧边栏创造出足够长的“不触底”防跳轨道！
             const spacer = document.createElement("div");
-            spacer.style.width = "100%";
-            spacer.style.display = "block";
-            spacer.style.clear = "both";
+            spacer.id = "zcnote-footer-spacer";
+            spacer.style.cssText = "width: 100%; display: block; clear: both; pointer-events: none; flex-shrink: 0;";
             targetContainer.appendChild(spacer);
 
             let ticking = false;
+            const root = document.documentElement;
 
             // 渲染同步引擎
             function updateLayout() {
-                // Read Phase (批量读 DOM，防止布局抖动)
+                // Read Phase
                 const footerHeight = footer.offsetHeight;
                 const footerTop = footer.getBoundingClientRect().top;
-                const viewportHeight = window.innerHeight;
+                const viewportHeight = window.innerHeight; // 获取真实视口高度
 
-                let overlap = viewportHeight - footerTop;
-                overlap = overlap > 0 ? Math.ceil(overlap) : 0;
+                // Write Phase 1: 动态注入真实的视口高度（解决移动端地址栏伸缩抖动）
+                root.style.setProperty('--zcnote-vh', `${viewportHeight}px`);
 
-                // Write Phase (批量写 DOM，利用 GPU 加速)
+                // Write Phase 2: 物理撑开正文轨道，高度与 Footer 完全一致
                 if (spacer.style.height !== `${footerHeight}px`) {
                     spacer.style.height = `${footerHeight}px`;
                 }
-                document.documentElement.style.setProperty('--zcnote-footer-overlap', `${overlap}px`);
+
+                // Write Phase 3: 计算重叠高度，裁短侧边栏
+                let overlap = Math.max(0, viewportHeight - footerTop);
+                root.style.setProperty('--zcnote-footer-overlap', `${overlap}px`);
 
                 ticking = false;
             }
@@ -79,13 +76,16 @@
                 }
             }
 
-            // 绑定无源侦听器 (Passive Listeners) 提升滚动流畅度
             window.addEventListener("scroll", requestTick, { passive: true });
             window.addEventListener("resize", requestTick, { passive: true });
 
-            // 监控 Footer 自身响应式高度的变化
-            const ro = new ResizeObserver(() => requestTick());
-            ro.observe(footer);
+            if (window.ResizeObserver) {
+                const ro = new ResizeObserver(() => requestTick());
+                ro.observe(footer);
+                ro.observe(document.body);
+            }
+
+            requestTick();
         });
     </script>
 {% endblock %}

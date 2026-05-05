@@ -23,7 +23,7 @@ def setup(app):
     app.config.templates_path.append(components_path)
 
     # 3. 自动加载自定义样式，无需用户在 conf.py 中手动配置 html_css_files
-    app.add_css_file("css/zcnote_custom.css")
+    app.add_css_file("css/zcnote.css")
 
     return {
         "version": __version__,
