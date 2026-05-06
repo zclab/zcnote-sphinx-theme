@@ -1,0 +1,54 @@
+{% set nav_style = theme_nav_style | default('header') %}
+{% set show_nav_level = meta['html_theme.show_nav_level'] if (meta is defined and meta is not none and 'html_theme.show_nav_level' in meta) else theme_show_nav_level %}
+
+{% if nav_style == 'header' %}
+  {# ==========================================
+     模式 A: PyData 默认 (仅显示当前上下文子树)
+     ========================================== #}
+  <nav class="bd-docs-nav bd-links" aria-label="{{ _('Section Navigation') }}">
+    <p class="bd-links__title" role="heading" aria-level="1">{{ _("Section Navigation") }}</p>
+    <div class="bd-toc-item navbar-nav">
+      {{- generate_toctree_html(
+        "sidebar",
+        show_nav_level=show_nav_level | int,
+        maxdepth=theme_navigation_depth | int,
+        collapse=theme_collapse_navigation | tobool,
+        includehidden=theme_sidebar_includehidden | tobool,
+        titles_only=True
+        )
+      -}}
+    </div>
+  </nav>
+
+{% elif nav_style == 'sidebar' %}
+  {# ==========================================
+     模式 B: Book-Theme 风格 (显示全局树)
+     ========================================== #}
+  <nav class="bd-docs-nav bd-links" aria-label="{{ _('Main Navigation') }}">
+    <div class="bd-toc-item navbar-nav active">
+
+      {# 可选的 Home 链接增强 #}
+      {% if theme_home_page_in_toc | default(False) | tobool %}
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1{% if pagename == root_doc %} current active{% endif %}">
+                <a class="reference internal" href="{{ pathto(root_doc) }}">
+                    <i class="fa-solid fa-house"></i>&nbsp; {{ root_title | default('Home') }}
+                </a>
+            </li>
+        </ul>
+      {% endif %}
+
+      {# 核心差异点：传入 startdepth=0 渲染全量树 #}
+      {{- generate_toctree_html(
+          startdepth=0,
+          kind="sidebar",
+          maxdepth=theme_navigation_depth | int,
+          collapse=theme_collapse_navigation | tobool,
+          includehidden=theme_sidebar_includehidden | tobool,
+          titles_only=True,
+          show_nav_level=show_nav_level | int
+        )
+      -}}
+    </div>
+  </nav>
+{% endif %}
