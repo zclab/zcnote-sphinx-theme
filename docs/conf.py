@@ -57,6 +57,7 @@ html_theme_options = {
         "**/*": ["page-toc", "edit-this-page", "sourcelink"],
         "examples/no-sidebar": [],
     },
+    "primary_sidebar_end":[]
     # "announcement": "https://raw.githubusercontent.com/pydata/pydata-sphinx-theme/main/docs/_templates/custom-template.html",
 }
 
