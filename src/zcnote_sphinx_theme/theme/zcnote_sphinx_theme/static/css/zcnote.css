@@ -12,10 +12,13 @@ html {
    2. 全局变量与基础重置
    ========================================================= */
 :root {
-    /* JS 动态注入的 Footer 重叠高度计算值（勿动） */
+    /* JS 动态注入的 Footer 重叠高度计算值（默认 0px） */
     --zcnote-footer-overlap: 0px;
 
-    /* 左侧边栏宽度控制阀（自由调节，推荐 12rem ~ 15rem，原版为22rem左右） */
+    /* JS 动态注入的真实视口高度，解决移动端地址栏伸缩抖动 */
+    --zcnote-vh: 100vh;
+
+    /* 左侧边栏宽度控制阀（自由调节，推荐 12rem ~ 20rem） */
     --zcnote-sidebar-width: 20rem;
 }
 
@@ -30,16 +33,18 @@ html {
 /* 页面基准设定，打破外层包裹限制，为 Footer 绝对定位做准备 */
 body {
     position: relative !important;
-    min-height: 100vh;
+    min-height: var(--zcnote-vh);
+    /* 极其重要：防止绝对定位的 Footer 或动画溢出导致横向滚动条 */
     overflow-x: clip;
 }
 
+/* 解除 PyData 可能存在的 relative 限制，确保 Footer 能基于 Body 定位 */
 .bd-page-width {
     position: static !important;
 }
 
 /* =========================================================
-   3. Footer 绝对覆盖图层
+   3. Footer 绝对覆盖图层及版心修复 (MkDocs 零跳动效果基石)
    ========================================================= */
 .bd-footer {
     position: absolute !important;
@@ -47,9 +52,23 @@ body {
     left: 0 !important;
     width: 100% !important;
     margin: 0 !important;
+    /* Z-index 必须足够大，确保滑动到底部时能遮盖住侧边栏的底部 */
     z-index: 100 !important;
     background-color: var(--pst-color-background) !important;
     border-top: 1px solid var(--pst-color-border) !important;
+}
+
+/* 修复 Footer 移出容器后的内容宽度，保持与上方正文居中对齐 */
+.bd-footer .bd-footer-content,
+.bd-footer .bd-footer__inner {
+    max-width: 88rem; /* PyData 默认的版心宽度 */
+    margin: 0 auto !important;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+.bd-footer-content {
+    display: none !important;
 }
 
 /* =========================================================
@@ -95,21 +114,20 @@ body {
         padding-right: 0.5rem !important;
     }
 
-    /* --- 4.3 双侧边栏动态防跳动滚动计算 --- */
+    /* --- 4.3 双侧边栏动态防跳动滚动计算 (终极防抖引擎) --- */
     #pst-primary-sidebar,
     #pst-secondary-sidebar {
         align-self: start !important;
         position: sticky !important;
         top: var(--pst-header-height) !important;
+        z-index: 10 !important;
 
-        /* 使用 dvh 兼容移动端浏览器地址栏的伸缩，并减去 Footer 遮挡 */
-        height: calc(100dvh - var(--pst-header-height) - var(--zcnote-footer-overlap)) !important;
-        max-height: calc(100dvh - var(--pst-header-height) - var(--zcnote-footer-overlap)) !important;
+        /* 核心裁剪公式：真实视口高度 - 顶部Header - 底部Footer侵入高度 */
+        height: calc(var(--zcnote-vh) - var(--pst-header-height) - var(--zcnote-footer-overlap)) !important;
+        max-height: calc(var(--zcnote-vh) - var(--pst-header-height) - var(--zcnote-footer-overlap)) !important;
 
-        /* 还原空间，防滚动条误触 */
         padding-bottom: 0 !important;
         margin-bottom: 0 !important;
-
         overflow-y: auto !important;
         scrollbar-width: thin;
     }
@@ -118,14 +136,14 @@ body {
 /* =========================================================
    5. Admonition (提示框) 极简定制 - 四边等宽彩色边框
    ========================================================= */
-/* 基础容器：设置默认主色（Primary）边框，替代冗长的 :not() 兜底选择器 */
+/* 基础容器：设置默认主色（Primary）边框 */
 div.admonition {
     border: 1px solid var(--pst-color-primary) !important;
     border-radius: 0.25rem !important;
     box-shadow: none !important;
 }
 
-/* 颜色语义精准映射（利用 CSS 层叠性自动覆盖上方默认的 Primary 颜色） */
+/* 颜色语义精准映射 */
 div.admonition.note,
 div.admonition.info,
 div.admonition.hint {
@@ -155,7 +173,6 @@ div.admonition.seealso {
 
 /* =========================================================
    6. 修复：MathJax/Sphinx 公式垂直滚动条
-   remove this when pydata fix it!!
    ========================================================= */
 /* 1. 镇压 Sphinx 的外层容器 */
 .bd-article div.math,
@@ -181,4 +198,28 @@ mjx-container[display="true"],
 mjx-container[display="true"] > mjx-math,
 mjx-container[display="true"] > mjx-math * {
     overflow-y: visible !important;
+}
+
+/* =========================================================
+   7. 打印模式兼容 (防御文档导出 PDF 崩溃)
+   ========================================================= */
+@media print {
+    /* 1. 关闭 Footer 绝对定位，恢复静态流 */
+    .bd-footer {
+        position: static !important;
+    }
+
+    /* 2. 隐藏为绝对定位服务的占位符 */
+    #zcnote-footer-spacer {
+        display: none !important;
+    }
+
+    /* 3. 关闭侧边栏的固定高度限制，让它自然展开以便打印 */
+    #pst-primary-sidebar,
+    #pst-secondary-sidebar {
+        position: static !important;
+        height: auto !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+    }
 }
