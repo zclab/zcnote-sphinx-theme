@@ -1,11 +1,23 @@
 import os
 from pathlib import Path
 
-__version__ = "0.0.2"
+__version__ = "0.0.3rc"
 
 def get_html_theme_path():
     """返回主题文件夹的绝对路径"""
     return os.path.abspath(os.path.join(os.path.dirname(__file__), "theme"))
+
+
+def override_pydata_sidebar_logic(app, pagename, templatename, context, doctree):
+    """
+    拦截并覆盖 PyData 默认的上下文变量。
+    """
+    nav_style = context.get("theme_nav_style", "header")
+
+    if nav_style == "sidebar":
+        # 劫持：确保它不被 PyData 覆盖
+        context["suppress_sidebar_toctree"] = lambda **kwargs: False
+
 
 def setup(app):
     """Sphinx 扩展注册入口"""
@@ -24,6 +36,12 @@ def setup(app):
 
     # 3. 自动加载自定义样式，无需用户在 conf.py 中手动配置 html_css_files
     app.add_css_file("css/zcnote.css")
+
+    # =========================================================
+    # 增加 priority=999
+    # 强制让我们的拦截器在 PyData 的拦截器之后执行，实现最终覆盖！
+    # =========================================================
+    app.connect("html-page-context", override_pydata_sidebar_logic, priority=999)
 
     return {
         "version": __version__,

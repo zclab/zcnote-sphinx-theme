@@ -40,13 +40,13 @@
 
       {# 核心差异点：传入 startdepth=0 渲染全量树 #}
       {{- generate_toctree_html(
-          startdepth=0,
-          kind="sidebar",
-          maxdepth=theme_navigation_depth | int,
-          collapse=theme_collapse_navigation | tobool,
-          includehidden=theme_sidebar_includehidden | tobool,
-          titles_only=True,
-          show_nav_level=show_nav_level | int
+            "sidebar",
+            startdepth=0,
+            maxdepth=theme_navigation_depth | int,
+            collapse=theme_collapse_navigation | tobool,
+            includehidden=theme_sidebar_includehidden | tobool,
+            titles_only=True,
+            show_nav_level=show_nav_level | int
         )
       -}}
     </div>
