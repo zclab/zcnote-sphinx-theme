@@ -1,0 +1,11 @@
+{% if theme_nav_style | default('header') == 'header' %}
+  {# 模式 A：默认情况，顶部显示顶级分类 #}
+  <nav>
+    <ul class="bd-navbar-elements navbar-nav">
+      {{ generate_header_nav_html(n_links_before_dropdown=theme_header_links_before_dropdown, dropdown_text=theme_header_dropdown_text) }}
+    </ul>
+  </nav>
+{% else %}
+  {# 模式 B：全侧边栏模式下，清空顶部导航中心区域的内容 #}
+  <!-- Header navigation moved to sidebar by zcnote-sphinx-theme -->
+{% endif %}
