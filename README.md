@@ -1,6 +1,6 @@
 # zcnote-sphinx-theme
 
-Modify and build upon [pydata-sphinx-theme](https://pydata-sphinx-theme.readthedocs.io/) with minor style altered.
+A lightweight wrapper theme for Sphinx based on the [pydata-sphinx-theme](https://pydata-sphinx-theme.readthedocs.io/).
 
 <!-- start badges -->
 [![PyPI](https://img.shields.io/pypi/v/zcnote-sphinx-theme?style=flat-square&logo=python&logoColor=white&color=orange)](https://pypi.org/project/zcnote-sphinx-theme/)
