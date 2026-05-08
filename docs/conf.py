@@ -58,8 +58,8 @@ html_theme_options = {
         "examples/no-sidebar": [],
     },
     "primary_sidebar_end":[],
-    # "nav_style": "sidebar",
-    # "home_page_in_toc": True,
+    "nav_style": "sidebar",
+    "home_page_in_toc": True,
     # "announcement": "https://raw.githubusercontent.com/pydata/pydata-sphinx-theme/main/docs/_templates/custom-template.html",
 }
 
