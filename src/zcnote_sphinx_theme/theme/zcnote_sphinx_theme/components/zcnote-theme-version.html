@@ -1,0 +1,10 @@
+{# Displays the version of zcnote-sphinx-theme used to build the documentation. #}
+<p class="theme-version">
+  <!-- # L10n: We pass both versions to the translation block -->
+  {% trans trimmed
+      zcnote_version=zcnote_theme_version|e,
+      zcnote_url="https://github.com/zcnote/zcnote-sphinx-theme"
+  %}
+    Built with the <a href="{{ zcnote_url }}">zcnote-sphinx-theme</a> {{ zcnote_version }}.
+  {% endtrans %}
+</p>
