@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-__version__ = "0.0.3"
+__version__ = "0.0.4rc"
 
 def get_html_theme_path():
     """返回主题文件夹的绝对路径"""
