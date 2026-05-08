@@ -18,74 +18,81 @@
     {% endif %}
 {% endblock extrahead %}
 
-{# 模块 2：MkDocs-Material 零跳动滚动引擎 #}
+{# 模块 2 & 3：JS 布局引擎 #}
 {% block footer %}
     {{ super() }}
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+
+            // =========================================================
+            // 模块 2：MkDocs-Material 零跳动滚动引擎
+            // =========================================================
             const footer = document.querySelector(".bd-footer");
-            if (!footer) return;
+            if (footer) {
+                const targetContainer = document.querySelector(".bd-article-container") ||
+                                        document.querySelector(".bd-content") ||
+                                        document.querySelector(".bd-main") ||
+                                        document.body;
 
-            // 1. 寻找最佳挂载点（沿用你的原始设计，优先拉长正文区，绝不挤压 Flex 宽度）
-            const targetContainer = document.querySelector(".bd-article-container") ||
-                                    document.querySelector(".bd-content") ||
-                                    document.querySelector(".bd-main") ||
-                                    document.body;
-
-            // 2. 将 Footer 降维转移到 Body 末尾，脱离 Sphinx 布局束缚
-            if (footer.parentNode !== document.body) {
-                document.body.appendChild(footer);
-            }
-
-            // 3. 注入幽灵占位符：给正文区垫高，为侧边栏创造出足够长的“不触底”防跳轨道！
-            const spacer = document.createElement("div");
-            spacer.id = "zcnote-footer-spacer";
-            spacer.style.cssText = "width: 100%; display: block; clear: both; pointer-events: none; flex-shrink: 0;";
-            targetContainer.appendChild(spacer);
-
-            let ticking = false;
-            const root = document.documentElement;
-
-            // 渲染同步引擎
-            function updateLayout() {
-                // Read Phase
-                const footerHeight = footer.offsetHeight;
-                const footerTop = footer.getBoundingClientRect().top;
-                const viewportHeight = window.innerHeight; // 获取真实视口高度
-
-                // Write Phase 1: 动态注入真实的视口高度（解决移动端地址栏伸缩抖动）
-                root.style.setProperty('--zcnote-vh', `${viewportHeight}px`);
-
-                // Write Phase 2: 物理撑开正文轨道，高度与 Footer 完全一致
-                if (spacer.style.height !== `${footerHeight}px`) {
-                    spacer.style.height = `${footerHeight}px`;
+                if (footer.parentNode !== document.body) {
+                    document.body.appendChild(footer);
                 }
 
-                // Write Phase 3: 计算重叠高度，裁短侧边栏
-                let overlap = Math.max(0, viewportHeight - footerTop);
-                root.style.setProperty('--zcnote-footer-overlap', `${overlap}px`);
+                const spacer = document.createElement("div");
+                spacer.id = "zcnote-footer-spacer";
+                spacer.style.cssText = "width: 100%; display: block; clear: both; pointer-events: none; flex-shrink: 0;";
+                targetContainer.appendChild(spacer);
 
-                ticking = false;
-            }
+                let ticking = false;
+                const root = document.documentElement;
 
-            function requestTick() {
-                if (!ticking) {
-                    window.requestAnimationFrame(updateLayout);
-                    ticking = true;
+                function updateLayout() {
+                    const footerHeight = footer.offsetHeight;
+                    const footerTop = footer.getBoundingClientRect().top;
+                    const viewportHeight = window.innerHeight;
+
+                    root.style.setProperty('--zcnote-vh', `${viewportHeight}px`);
+
+                    if (spacer.style.height !== `${footerHeight}px`) {
+                        spacer.style.height = `${footerHeight}px`;
+                    }
+
+                    let overlap = Math.max(0, viewportHeight - footerTop);
+                    root.style.setProperty('--zcnote-footer-overlap', `${overlap}px`);
+
+                    ticking = false;
                 }
+
+                function requestTick() {
+                    if (!ticking) {
+                        window.requestAnimationFrame(updateLayout);
+                        ticking = true;
+                    }
+                }
+
+                window.addEventListener("scroll", requestTick, { passive: true });
+                window.addEventListener("resize", requestTick, { passive: true });
+
+                if (window.ResizeObserver) {
+                    const ro = new ResizeObserver(() => requestTick());
+                    ro.observe(footer);
+                    ro.observe(document.body);
+                }
+                requestTick();
             }
 
-            window.addEventListener("scroll", requestTick, { passive: true });
-            window.addEventListener("resize", requestTick, { passive: true });
+            // =========================================================
+            // 模块 3：侧边栏折叠按钮 - 原生物理流布局同步 (100% 无跳动)
+            // =========================================================
+            const sidebar = document.querySelector(".bd-sidebar-primary");
+            const collapseBtnWrapper = document.querySelector(".sidebar-primary-item.pst-sidebar-collapse");
 
-            if (window.ResizeObserver) {
-                const ro = new ResizeObserver(() => requestTick());
-                ro.observe(footer);
-                ro.observe(document.body);
+            if (sidebar && collapseBtnWrapper) {
+                // 核心越狱行动：将按钮容器从 overflow: hidden 的侧边栏内部移出，
+                // 精准插入到 "侧边栏" 与 "主内容区" 的物理接缝处！
+                sidebar.parentNode.insertBefore(collapseBtnWrapper, sidebar.nextSibling);
             }
-
-            requestTick();
         });
     </script>
 {% endblock %}
