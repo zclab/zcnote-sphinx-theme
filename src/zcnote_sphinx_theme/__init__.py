@@ -12,6 +12,8 @@ def override_pydata_sidebar_logic(app, pagename, templatename, context, doctree)
     """
     拦截并覆盖 PyData 默认的上下文变量。
     """
+    context["zcnote_theme_version"] = __version__
+
     nav_style = context.get("theme_nav_style", "header")
 
     if nav_style == "sidebar":

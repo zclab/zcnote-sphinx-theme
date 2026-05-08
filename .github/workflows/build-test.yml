@@ -7,7 +7,6 @@ on:
     paths:
       - 'src/**'
       - 'pyproject.toml'
-      - 'MANIFEST.in'
 
   # 2. 手动触发：允许你在 Actions 页面随时选择任意分支手动跑测试
   workflow_dispatch:
@@ -18,33 +17,34 @@ jobs:
     strategy:
       matrix:
         # 测试多个 Python 版本，确保跨版本兼容性
-        python-version: ["3.10", "3.11", "3.12"]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+    # 1. 安装 uv (极速，且自带缓存管理，替代旧的 setup-python + pip cache)
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
       with:
-        python-version: ${{ matrix.python-version }}
-        cache: 'pip'
+        enable-cache: true
 
-    - name: Install build tools
-      run: |
-        python -m pip install --upgrade pip
-        # 安装官方推荐的打包工具 build 和元数据检查工具 twine
-        pip install build twine
+    # 2. 安装指定的 Python 版本 (由 uv 接管，速度极快)
+    - name: Set up Python ${{ matrix.python-version }}
+      run: uv python install ${{ matrix.python-version }}
 
-    # (可选) 如果你后续添加了 pytest 等单元测试，可以取消这里的注释
-    # - name: Install dependencies
-    #   run: pip install -r requirements.txt
+    # (可选) 如果你后续添加了 pytest 等测试，这里是使用 uv 的推荐姿势
+    # - name: Install package and dependencies
+    #   run: uv pip install -e ".[doc]" pytest
     #
     # - name: Run tests
-    #   run: pytest
+    #   run: uv run pytest
 
+    # 3. 构建项目 (秒级生成 sdist 和 wheel)
     - name: Build the package
-      run: python -m build
+      run: uv build
 
+    # 4. 检查包元数据 (使用 uvx 临时运行 twine，无需显式 pip install twine)
     - name: Check package metadata with Twine
-      run: twine check dist/*
+      run: uvx twine check dist/*
+
