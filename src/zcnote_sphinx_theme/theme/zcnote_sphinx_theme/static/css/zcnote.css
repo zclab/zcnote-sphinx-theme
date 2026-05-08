@@ -225,7 +225,7 @@ mjx-container[display="true"] > mjx-math * {
 }
 
 /* =========================================================
-   方案 B：边缘悬浮小拉手 (侧边栏内嵌 & 智能翻转版)
+   方案 B：边缘悬浮小拉手 (全局靠左内嵌 · 极致一致性版)
    ========================================================= */
 
 @media (min-width: 1200px) {
@@ -246,22 +246,22 @@ mjx-container[display="true"] > mjx-math * {
         opacity: 1 !important;
     }
 
+    /* 无论怎么折叠，保住轨道的存活 */
     body[data-sidebar-primary-collapsed="true"] .bd-page-width > .pst-sidebar-collapse,
     .bd-sidebar-primary.is-collapsed ~ .pst-sidebar-collapse {
         display: block !important;
         visibility: visible !important;
     }
 
-    /* 2. 按钮本体：向左跨越接缝！ */
+    /* 2. 按钮本体：永远锚定在左侧 */
     #pst-collapse-sidebar-button {
         position: sticky !important;
         top: calc(var(--pst-header-height, 4rem) + 1.25rem) !important;
         left: 0 !important;
 
         /*
-         * 🏆 【核心魔法：向左拉扯】
-         * 因为轨道在分割线上，向左平移自身宽度的 100%，
-         * 按钮就完美地跨过了分割线，进入了 Primary Sidebar 的内部领地！
+         * 🏆 【核心：永远向左跨越接缝】
+         * 无论展开还是折叠，它始终向左平移自身宽度，待在对齐线的左侧！
          */
         transform: translateX(-100%) !important;
 
@@ -273,28 +273,24 @@ mjx-container[display="true"] > mjx-math * {
         align-items: center !important;
         justify-content: center !important;
 
-        /*
-         * 🏆 【形状重塑：左圆右平】
-         * 因为它现在在左侧，直边必须在右侧贴合分割线，圆角在左侧
-         */
+        /* 🏆 【形状：永远左圆右平】 */
         border-radius: 6px 0 0 6px !important;
         background-color: var(--pst-color-background) !important;
         border: 1px solid var(--pst-color-border) !important;
-        /* border-right: none !important; 隐藏右边框，与物理分割线无缝融合 */
-        box-shadow: -2px 0 6px rgba(0,0,0,0.05) !important; /* 阴影向左发散 */
+        /* border-right: none !important; 右侧无缝衔接对齐线 */
+        box-shadow: -2px 0 6px rgba(0,0,0,0.05) !important; /* 阴影永远向左 */
         color: var(--pst-color-text-muted) !important;
 
-        /* 增加 transform 和 border-radius 的过渡，实现丝滑的“智能翻转” */
-        transition: transform 0.25s, border-radius 0.25s, background-color 0.25s, box-shadow 0.25s, width 0.25s !important;
+        /* 去除了形状和位移的过渡动画，因为它现在稳如泰山，不再变形 */
+        transition: background-color 0.25s, box-shadow 0.25s, width 0.25s !important;
 
         pointer-events: auto !important;
         visibility: visible !important;
         opacity: 1 !important;
     }
 
-    /* 悬停反馈 */
+    /* 悬停反馈：永远向左侧优雅地延伸 */
     #pst-collapse-sidebar-button:hover {
-        /* width 变大，因为右边界被 translateX(-100%) 锁死了，所以它会优雅地向左侧（内部）延伸！ */
         width: 28px !important;
         background-color: var(--pst-color-primary) !important;
         color: #ffffff !important;
@@ -303,29 +299,15 @@ mjx-container[display="true"] > mjx-math * {
     }
 
     /* =========================================================
-       3. 智能保命翻转 (折叠状态)
+       3. 折叠状态 UI (极简)
        ========================================================= */
 
-    /*
-     * 🏆 【智能翻转机制】
-     * 侧边栏折叠时，分割线来到了屏幕最左边缘 (0px)。
-     * 此时必须取消 translateX(-100%) 并变成右侧圆角，
-     * 否则按钮就会飞出屏幕外！
-     */
-    #pst-collapse-sidebar-button[aria-expanded="false"] {
-        transform: translateX(0) !important;
-        border-radius: 0 6px 6px 0 !important; /* 变成左平右圆 */
-        border: 1px solid var(--pst-color-border) !important;
-        border-left: none !important; /* 隐藏左边框贴边 */
-        box-shadow: 2px 0 6px rgba(0,0,0,0.05) !important; /* 阴影向右发散 */
-    }
-
-    /* 内部箭头始终同步翻转 */
+    /* 仅仅让内部箭头翻转 180 度，外壳绝不移动和变形 */
     #pst-collapse-sidebar-button[aria-expanded="false"] svg {
         transform: rotate(180deg) !important;
     }
 
-    /* 隐藏文本与调整图标 */
+    /* 隐藏无关文本与调整图标 */
     #pst-collapse-sidebar-button .pst-collapse-sidebar-label,
     #pst-collapse-sidebar-button .pst-expand-sidebar-label {
         display: none !important;
@@ -336,7 +318,7 @@ mjx-container[display="true"] > mjx-math * {
     }
 }
 
-/* 移动端防御 */
+/* 移动端防御 (屏幕极小且没有留白时直接隐藏，避免飞出屏幕) */
 @media (max-width: 1199.98px) {
     .bd-page-width > .sidebar-primary-item.pst-sidebar-collapse {
         display: none !important;
