@@ -16,11 +16,11 @@ zcnote-sphinx-theme
 ::::
 
 ::::{container} hero-slogan
-A Sphinx Theme with Sticky Sidebars.
+A thin customized sphinx theme for my projects.
 ::::
 
 ::::{container} hero-description
-Modify and build upon [pydata-sphinx-theme](https://pydata-sphinx-theme.readthedocs.io/) with minor style altered.
+A lightweight wrapper theme based on the [pydata-sphinx-theme](https://pydata-sphinx-theme.readthedocs.io/).
 ::::
 
 ::::{container} landing-page-badges justify-content-center mt-3

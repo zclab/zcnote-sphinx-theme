@@ -16,11 +16,13 @@ kitchen-sink/index
 
 ```{toctree}
 :maxdepth: 2
+:numbered:
 :caption: Reference and test section. Mostly meant for developers to check that things look OK.
 
 no-sidebar
 persistent-search-field
 in-page-toc
+subpages/index
 mult_headers
 Link to an external site <https://jupyterbook.org/>
 ```
