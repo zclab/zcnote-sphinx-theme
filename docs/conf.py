@@ -38,7 +38,7 @@ html_last_updated_fmt = ""  # to reveal the build date in the pages meta
 
 html_theme_options = {
     "enable_collapse_sidebar": True,
-    "navigation_depth": 4,
+    "navigation_depth": 5,
     "show_toc_level": 2,
     "search_as_you_type": True,
     "use_edit_page_button": True,
