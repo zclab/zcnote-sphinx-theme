@@ -8,16 +8,46 @@ html {
     overflow-y: scroll;
 }
 
+/* =========================================================
+   2. 现代科技感色彩系统 V3.0 (雅致现代 Clean Modern - 量子青 & 深空灰)
+   ========================================================= */
+
+/* --- [Light 模式] - 清水混凝土般的极简与干净 --- */
 html[data-theme="light"] {
-    --pst-color-primary: #3451b2;
+    --pst-color-primary: #0284c7;        /* 沉稳的科技蓝 (量子青) */
+    --pst-color-secondary: #0ea5e9;
+    --pst-color-background: #ffffff;     /* 纯白主背景 */
+    --pst-color-surface: #f8fafc;        /* 极浅冷灰（用于侧边栏） */
+
+    --pst-color-text-base: #334155;      /* 正文（深石板灰） */
+    --pst-color-text-muted: #64748b;
+    --pst-color-border: #e2e8f0;         /* 极细实线边框 */
+
+    --pst-color-info: #0ea5e9;
+    --pst-color-success: #10b981;
+    --pst-color-warning: #f59e0b;
+    --pst-color-danger: #ef4444;
 }
 
+/* --- [Dark 模式] - 深邃内敛的深空实验室 --- */
 html[data-theme="dark"] {
-    --pst-color-primary: #a8b1ff;
+    --pst-color-primary: #38bdf8;        /* 清透的亮青色 (量子青) */
+    --pst-color-secondary: #7dd3fc;
+    --pst-color-background: #0f172a;     /* 极致深邃的蓝灰色主背景 (深空灰) */
+    --pst-color-surface: #1e293b;        /* 稍浅一点的表面色 */
+
+    --pst-color-text-base: #f8fafc;      /* 正文（冷白） */
+    --pst-color-text-muted: #94a3b8;
+    --pst-color-border: #334155;         /* 低对比度边框 */
+
+    --pst-color-info: #38bdf8;
+    --pst-color-success: #34d399;
+    --pst-color-warning: #fbbf24;
+    --pst-color-danger: #f87171;
 }
 
 /* =========================================================
-   2. 全局变量与基础重置
+   3. 全局变量与字体排版
    ========================================================= */
 :root {
     /* JS 动态注入的 Footer 重叠高度计算值（默认 0px） */
@@ -28,7 +58,15 @@ html[data-theme="dark"] {
 
     /* 左侧边栏宽度控制阀（自由调节，推荐 12rem ~ 20rem） */
     --zcnote-sidebar-width: 20rem;
+
+    /* 现代无衬线字体与等宽字体，提升代码和正文的阅读体验 */
+    --pst-font-family-base: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+    --pst-font-family-monospace: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, monospace;
 }
+
+/* =========================================================
+   4. 基础重置与优化
+   ========================================================= */
 
 /* 文本两端对齐与长词换行保护，提升技术文档阅读体验 */
 .bd-article p, .bd-article li {
@@ -44,4 +82,14 @@ body {
     min-height: var(--zcnote-vh);
     /* 极其重要：防止绝对定位的 Footer 或动画溢出导致横向滚动条 */
     overflow-x: clip;
+}
+
+/* --- 行内代码块 (Inline Code) 的扁平化处理 --- */
+code.literal {
+    color: var(--pst-color-primary) !important;
+    background-color: rgba(14, 165, 233, 0.08) !important; /* 极弱的主色背景，与量子青呼应 */
+    border: none !important; /* 彻底扁平化，无边框 */
+    border-radius: 4px;
+    padding: 0.15em 0.4em;
+    font-size: 0.85em;
 }
