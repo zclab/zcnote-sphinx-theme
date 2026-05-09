@@ -229,7 +229,17 @@ mjx-container[display="true"] > mjx-math * {
    ========================================================= */
 
 @media (min-width: 1200px) {
-    /* 1. 幽灵轨道 (保持不变) */
+
+    /* ★ 新增核心修复：防御性隐藏，杜绝刷新和点击时的 FOUC 闪烁
+       在 JS 将按钮移出原生侧边栏之前，彻底隐藏它，防止 `left: 0` 在旧容器内引发错位跳动 */
+    .bd-sidebar-primary > .sidebar-primary-item.pst-sidebar-collapse {
+        display: none !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
+    /* 1. 幽灵轨道 (保持不变)
+       当 JS 把它移动到 .bd-page-width 的直接子级后，此条规则生效，重新覆盖掉上面的 display: none */
     .bd-page-width > .sidebar-primary-item.pst-sidebar-collapse {
         width: 0 !important;
         flex: 0 0 0 !important;
@@ -241,7 +251,7 @@ mjx-container[display="true"] > mjx-math * {
         z-index: 1050 !important;
 
         overflow: visible !important;
-        display: block !important;
+        display: block !important;    /* 关键：移出后恢复显示 */
         visibility: visible !important;
         opacity: 1 !important;
     }

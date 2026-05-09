@@ -23,11 +23,39 @@
     {{ super() }}
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        // =========================================================
+        // 模块 3：侧边栏折叠按钮 (阻断渲染闪烁)
+        // =========================================================
+        (function() {
+            const sidebar = document.querySelector(".bd-sidebar-primary");
+            const collapseBtnWrapper = document.querySelector(".sidebar-primary-item.pst-sidebar-collapse");
+            const collapseBtn = document.querySelector("#pst-collapse-sidebar-button");
 
-            // =========================================================
-            // 模块 2：零跳动滚动
-            // =========================================================
+            if (sidebar && collapseBtnWrapper) {
+                // 1. 抢在浏览器渲染前，瞬间移出侧边栏，插入到接缝处
+                sidebar.parentNode.insertBefore(collapseBtnWrapper, sidebar.nextSibling);
+
+                // 2. 状态接管
+                if (collapseBtn) {
+                    const toggleScrollbar = () => {
+                        if (collapseBtn.getAttribute("aria-expanded") === "false") {
+                            sidebar.classList.add("zcnote-hide-scrollbar");
+                        } else {
+                            sidebar.classList.remove("zcnote-hide-scrollbar");
+                        }
+                    };
+                    const observer = new MutationObserver(toggleScrollbar);
+                    observer.observe(collapseBtn, { attributes: true, attributeFilter: ["aria-expanded"] });
+                    toggleScrollbar();
+                }
+            }
+        })();
+
+        // =========================================================
+        // 模块 2：零跳动滚动 (★ 保留在 DOMContentLoaded 中)
+        // 这个模块依赖完整的页面高度、Footer 等，需要等整个页面就绪
+        // =========================================================
+        document.addEventListener("DOMContentLoaded", function() {
             const footer = document.querySelector(".bd-footer");
             if (footer) {
                 const targetContainer = document.querySelector(".bd-article-container") ||
@@ -80,38 +108,6 @@
                     ro.observe(document.body);
                 }
                 requestTick();
-            }
-
-            // =========================================================
-            // 模块 3：侧边栏折叠按钮
-            // =========================================================
-            const sidebar = document.querySelector(".bd-sidebar-primary");
-            const collapseBtnWrapper = document.querySelector(".sidebar-primary-item.pst-sidebar-collapse");
-            const collapseBtn = document.querySelector("#pst-collapse-sidebar-button");
-
-            if (sidebar && collapseBtnWrapper) {
-                // 1. 移出侧边栏，插入到接缝处 (原生物理轨道)
-                sidebar.parentNode.insertBefore(collapseBtnWrapper, sidebar.nextSibling);
-
-                // 2. 状态接管：死死盯住按钮的展开/折叠状态
-                if (collapseBtn) {
-                    const toggleScrollbar = () => {
-                        if (collapseBtn.getAttribute("aria-expanded") === "false") {
-                            // 折叠时，强行注入我们专属的封杀类名
-                            sidebar.classList.add("zcnote-hide-scrollbar");
-                        } else {
-                            // 展开时恢复
-                            sidebar.classList.remove("zcnote-hide-scrollbar");
-                        }
-                    };
-
-                    // 监听按钮属性变化
-                    const observer = new MutationObserver(toggleScrollbar);
-                    observer.observe(collapseBtn, { attributes: true, attributeFilter: ["aria-expanded"] });
-
-                    // 初始化执行一次
-                    toggleScrollbar();
-                }
             }
         });
     </script>
