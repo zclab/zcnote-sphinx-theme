@@ -223,3 +223,138 @@ mjx-container[display="true"] > mjx-math * {
         overflow-y: visible !important;
     }
 }
+
+/* =========================================================
+   方案 B：边缘悬浮小拉手 (全局靠左内嵌 · 极致一致性版)
+   ========================================================= */
+
+@media (min-width: 1200px) {
+    /* 1. 幽灵轨道 (保持不变) */
+    .bd-page-width > .sidebar-primary-item.pst-sidebar-collapse {
+        width: 0 !important;
+        flex: 0 0 0 !important;
+        min-width: 0 !important;
+        padding: 0 !important; margin: 0 !important; border: none !important;
+
+        align-self: stretch !important;
+        position: relative !important;
+        z-index: 1050 !important;
+
+        overflow: visible !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    /* 无论怎么折叠，保住轨道的存活 */
+    body[data-sidebar-primary-collapsed="true"] .bd-page-width > .pst-sidebar-collapse,
+    .bd-sidebar-primary.is-collapsed ~ .pst-sidebar-collapse {
+        display: block !important;
+        visibility: visible !important;
+    }
+
+    /* 2. 按钮本体：永远锚定在左侧 */
+    #pst-collapse-sidebar-button {
+        position: sticky !important;
+        top: calc(var(--pst-header-height, 4rem) + 1.25rem) !important;
+        left: 0 !important;
+
+        /*
+         * 🏆 【核心：永远向左跨越接缝】
+         * 无论展开还是折叠，它始终向左平移自身宽度，待在对齐线的左侧！
+         */
+        transform: translateX(-100%) !important;
+
+        width: 24px !important;
+        height: 32px !important;
+        margin: 0 !important; padding: 0 !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        /* 🏆 【形状：永远左圆右平】 */
+        border-radius: 6px 0 0 6px !important;
+        background-color: var(--pst-color-background) !important;
+        border: 1px solid var(--pst-color-border) !important;
+        /* border-right: none !important; 右侧无缝衔接对齐线 */
+        box-shadow: -2px 0 6px rgba(0,0,0,0.05) !important; /* 阴影永远向左 */
+        color: var(--pst-color-text-muted) !important;
+
+        /* 去除了形状和位移的过渡动画，因为它现在稳如泰山，不再变形 */
+        transition: background-color 0.25s, box-shadow 0.25s, width 0.25s !important;
+
+        pointer-events: auto !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    /* 悬停反馈：永远向左侧优雅地延伸 */
+    #pst-collapse-sidebar-button:hover {
+        width: 28px !important;
+        background-color: var(--pst-color-primary) !important;
+        color: #ffffff !important;
+        border-color: var(--pst-color-primary) !important;
+        box-shadow: -4px 0 12px rgba(0,0,0,0.15) !important;
+    }
+
+    /* =========================================================
+       3. 折叠状态 UI (极简)
+       ========================================================= */
+
+    /* 仅仅让内部箭头翻转 180 度，外壳绝不移动和变形 */
+    #pst-collapse-sidebar-button[aria-expanded="false"] svg {
+        transform: rotate(180deg) !important;
+    }
+
+    /* 隐藏无关文本与调整图标 */
+    #pst-collapse-sidebar-button .pst-collapse-sidebar-label,
+    #pst-collapse-sidebar-button .pst-expand-sidebar-label {
+        display: none !important;
+    }
+    #pst-collapse-sidebar-button svg {
+        width: 14px !important; height: 14px !important;
+        margin: 0 !important; transition: transform 0.3s ease !important;
+    }
+}
+
+/* 移动端防御 (屏幕极小且没有留白时直接隐藏，避免飞出屏幕) */
+@media (max-width: 1199.98px) {
+    .bd-page-width > .sidebar-primary-item.pst-sidebar-collapse {
+        display: none !important;
+    }
+}
+
+/* =========================================================
+   8. 滚动条终极防御 (JS 专属状态接管版)
+   ========================================================= */
+
+/*
+ * 只要侧边栏带有这个 JS 注入的类名，
+ * 侧边栏本身、以及它里面的所有子元素，全部强行切断溢出！
+ */
+.zcnote-hide-scrollbar,
+.zcnote-hide-scrollbar * {
+    overflow: hidden !important;
+    scrollbar-width: none !important; /* Firefox 封杀 */
+    -ms-overflow-style: none !important; /* IE/Edge 封杀 */
+}
+
+/* Webkit (Chrome/Safari) 内核的终极封杀 */
+.zcnote-hide-scrollbar::-webkit-scrollbar,
+.zcnote-hide-scrollbar *::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/*
+ * 布局护航：极其关键！
+ * 让所有文字在折叠时强制不换行，瞬间透明隐藏。
+ * 防止文字被挤压换行导致高度暴增、撑出不可见的滚动区域！
+ */
+.zcnote-hide-scrollbar * {
+    white-space: nowrap !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
