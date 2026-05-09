@@ -1,0 +1,38 @@
+/* =========================================================
+   5. Admonition (提示框) 极简定制 - 四边等宽彩色边框
+   ========================================================= */
+
+/* 基础容器：设置默认主色（Primary）边框 */
+div.admonition {
+    border: 1px solid var(--pst-color-primary) !important;
+    border-radius: 0.25rem !important;
+    box-shadow: none !important;
+}
+
+/* 颜色语义精准映射 */
+div.admonition.note,
+div.admonition.info,
+div.admonition.hint {
+    border-color: var(--pst-color-info) !important;
+}
+
+div.admonition.tip,
+div.admonition.success {
+    border-color: var(--pst-color-success) !important;
+}
+
+div.admonition.warning,
+div.admonition.attention,
+div.admonition.important,
+div.admonition.caution {
+    border-color: var(--pst-color-warning) !important;
+}
+
+div.admonition.danger,
+div.admonition.error {
+    border-color: var(--pst-color-danger) !important;
+}
+
+div.admonition.seealso {
+    border-color: var(--pst-color-secondary) !important;
+}
