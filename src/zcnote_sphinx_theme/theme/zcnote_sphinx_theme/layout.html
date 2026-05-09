@@ -83,15 +83,35 @@
             }
 
             // =========================================================
-            // 模块 3：侧边栏折叠按钮 - 原生物理流布局同步 (100% 无跳动)
+            // 模块 3：侧边栏折叠按钮 - 物理流布局与绝对状态接管
             // =========================================================
             const sidebar = document.querySelector(".bd-sidebar-primary");
             const collapseBtnWrapper = document.querySelector(".sidebar-primary-item.pst-sidebar-collapse");
+            const collapseBtn = document.querySelector("#pst-collapse-sidebar-button");
 
             if (sidebar && collapseBtnWrapper) {
-                // 核心越狱行动：将按钮容器从 overflow: hidden 的侧边栏内部移出，
-                // 精准插入到 "侧边栏" 与 "主内容区" 的物理接缝处！
+                // 1. 移出侧边栏，插入到接缝处 (原生物理轨道)
                 sidebar.parentNode.insertBefore(collapseBtnWrapper, sidebar.nextSibling);
+
+                // 2. 状态接管：死死盯住按钮的展开/折叠状态
+                if (collapseBtn) {
+                    const toggleScrollbar = () => {
+                        if (collapseBtn.getAttribute("aria-expanded") === "false") {
+                            // 折叠时，强行注入我们专属的封杀类名
+                            sidebar.classList.add("zcnote-hide-scrollbar");
+                        } else {
+                            // 展开时恢复
+                            sidebar.classList.remove("zcnote-hide-scrollbar");
+                        }
+                    };
+
+                    // 监听按钮属性变化
+                    const observer = new MutationObserver(toggleScrollbar);
+                    observer.observe(collapseBtn, { attributes: true, attributeFilter: ["aria-expanded"] });
+
+                    // 初始化执行一次
+                    toggleScrollbar();
+                }
             }
         });
     </script>

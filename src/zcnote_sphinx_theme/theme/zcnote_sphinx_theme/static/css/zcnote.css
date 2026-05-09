@@ -324,3 +324,37 @@ mjx-container[display="true"] > mjx-math * {
         display: none !important;
     }
 }
+
+/* =========================================================
+   8. 滚动条终极防御 (JS 专属状态接管版)
+   ========================================================= */
+
+/*
+ * 只要侧边栏带有这个 JS 注入的类名，
+ * 侧边栏本身、以及它里面的所有子元素，全部强行切断溢出！
+ */
+.zcnote-hide-scrollbar,
+.zcnote-hide-scrollbar * {
+    overflow: hidden !important;
+    scrollbar-width: none !important; /* Firefox 封杀 */
+    -ms-overflow-style: none !important; /* IE/Edge 封杀 */
+}
+
+/* Webkit (Chrome/Safari) 内核的终极封杀 */
+.zcnote-hide-scrollbar::-webkit-scrollbar,
+.zcnote-hide-scrollbar *::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/*
+ * 布局护航：极其关键！
+ * 让所有文字在折叠时强制不换行，瞬间透明隐藏。
+ * 防止文字被挤压换行导致高度暴增、撑出不可见的滚动区域！
+ */
+.zcnote-hide-scrollbar * {
+    white-space: nowrap !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
