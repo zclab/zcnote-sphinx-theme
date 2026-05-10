@@ -1,0 +1,24 @@
+/* =========================================================
+   7. 打印模式兼容 (防御文档导出 PDF 崩溃)
+   ========================================================= */
+
+@media print {
+    /* 1. 关闭 Footer 绝对定位，恢复静态流 */
+    .bd-footer {
+        position: static !important;
+    }
+
+    /* 2. 隐藏为绝对定位服务的占位符 */
+    #zcnote-footer-spacer {
+        display: none !important;
+    }
+
+    /* 3. 关闭侧边栏的固定高度限制，让它自然展开以便打印 */
+    #pst-primary-sidebar,
+    #pst-secondary-sidebar {
+        position: static !important;
+        height: auto !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+    }
+}
