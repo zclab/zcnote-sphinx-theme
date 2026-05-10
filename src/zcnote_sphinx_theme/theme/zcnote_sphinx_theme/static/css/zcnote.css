@@ -5,15 +5,19 @@
 /* 1. 变量与基础重置 (必须最先加载) */
 @import url("modules/_variables.css");
 
-/* 2. 核心布局与排版 (Header, Footer, 页面容器) */
+/* 2. 宏观结构与页面骨架 */
 @import url("modules/_layout.css");
 
-/* 3. 侧边栏与导航树特化 (包含折叠按钮和防抖引擎) */
+/* 3. 核心组件 (拆分后的 Header 与 Footer) */
+@import url("modules/_header.css");
+@import url("modules/_footer.css");
+
+/* 4. 侧边栏与导航树特化 */
 @import url("modules/_sidebar.css");
 
-/* 4. 组件定制 */
+/* 5. 内容块组件定制 */
 @import url("modules/_admonitions.css");
 @import url("modules/_math.css");
 
-/* 5. 打印与特殊媒体查询 (必须最后加载，以覆盖前面的样式) */
+/* 6. 打印与特殊媒体查询 */
 @import url("modules/_print.css");

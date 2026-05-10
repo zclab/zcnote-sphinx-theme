@@ -1,53 +1,30 @@
 /* =========================================================
-   3. 核心布局：页面容器、Header 与 Footer 绝对覆盖图层
+   宏观布局 (Macro Layout) - 页面骨架与对齐逻辑
    ========================================================= */
 
-/* 解除 PyData 可能存在的 relative 限制，确保 Footer 能基于 Body 定位 */
+/* --- 1. 页面基准解绑 --- */
+/* 解除 PyData 可能存在的 relative 限制，确保绝对定位的组件能基于 Body 计算 */
 .bd-page-width {
     position: static !important;
 }
 
-/* --- Footer 绝对覆盖图层及版心修复 (MkDocs 零跳动效果基石) --- */
-.bd-footer {
-    position: absolute !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    margin: 0 !important;
-    /* Z-index 必须足够大，确保滑动到底部时能遮盖住侧边栏的底部 */
-    z-index: 100 !important;
-    background-color: var(--pst-color-background) !important;
-    border-top: 1px solid var(--pst-color-border) !important;
-}
-
-/* 修复 Footer 移出容器后的内容宽度，保持与上方正文居中对齐 */
-.bd-footer .bd-footer-content,
-.bd-footer .bd-footer__inner {
-    max-width: 88rem; /* PyData 默认的版心宽度 */
-    margin: 0 auto !important;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-}
-
-.bd-footer-content {
-    display: none !important;
-}
-
-/* --- 大屏布局控制：Header 对齐 --- */
+/* --- 2. 大屏布局控制：Header 与 侧边栏像素级对齐 --- */
 @media (min-width: 1200px) {
-    /* Header 顶部栏与左侧边栏像素级对齐 */
+    /* 强制 Header 左侧区域的宽度与侧边栏宽度保持绝对一致 */
     .bd-header .navbar-header-items__start {
         width: var(--zcnote-sidebar-width) !important;
         flex: 0 0 var(--zcnote-sidebar-width) !important;
         max-width: var(--zcnote-sidebar-width) !important;
     }
 
+    /* 中间和右侧区域自适应占满剩余空间 */
     .bd-header .navbar-header-items {
         flex: 1 1 auto !important;
         width: auto !important;
         max-width: 100% !important;
     }
 
+    /* 优化 Logo 的左侧内边距，使其与下方文字左对齐 */
     .bd-header .navbar-header-items__start .navbar-brand {
         padding-left: 0.5rem !important;
     }
