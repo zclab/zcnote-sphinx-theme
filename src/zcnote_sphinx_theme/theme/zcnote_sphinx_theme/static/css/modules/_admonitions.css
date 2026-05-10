@@ -1,38 +1,165 @@
 /* =========================================================
-   5. Admonition (提示框) 极简定制 - 四边等宽彩色边框
+   5. Admonition (提示框) V5.3 - 雅致现代 (精准安全、完美嵌套版)
    ========================================================= */
 
-/* 基础容器：设置默认主色（Primary）边框 */
+/* =========================================================
+   1. 基础容器：恢复容器内边距，安全包裹所有内容
+   ========================================================= */
 div.admonition {
     border: 1px solid var(--pst-color-primary) !important;
-    border-radius: 0.25rem !important;
-    box-shadow: none !important;
+    border-radius: 0.375rem !important;
+    /* background-color: var(--pst-color-surface) !important; */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+    margin: 1.5rem 0 !important;
+
+    /* 容器兜底内边距，保护内部组件不贴边 */
+    padding: 0 1.25rem 1rem 1.25rem !important;
+    overflow: hidden !important;
 }
 
-/* 颜色语义精准映射 */
-div.admonition.note,
-div.admonition.info,
-div.admonition.hint {
+/* 嵌套的 Admonition 上下间距稍微紧凑一点 */
+div.admonition div.admonition {
+    margin: 1rem 0 !important;
+}
+
+/* =========================================================
+   2. 标题区：利用负边距撑满外层，Flexbox 对齐
+   ========================================================= */
+div.admonition > .admonition-title {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+
+    /* 负外边距：抵消容器 padding，实现通栏效果，这是最安全的 Card Header 做法 */
+    margin: 0 -1.25rem 1rem -1.25rem !important;
+    padding: 0.6rem 1.25rem !important;
+
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    line-height: 1.4 !important;
+    border-bottom: 1px solid var(--pst-color-border) !important;
+    position: relative !important;
+}
+
+/* =========================================================
+   3. 图标精准定位：Flex 子元素前置
+   ========================================================= */
+div.admonition > .admonition-title::after {
+    position: static !important;
+    order: -1 !important;
+    transform: none !important;
+    margin: 0 !important;
+    color: inherit !important;
+    font-size: 1.1em !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* =========================================================
+   4. 内容区排版精准修复 (最小影响原则)
+   ========================================================= */
+/* 精准取消 PyData 针对标题后兄弟节点强加的 1.4rem margin */
+div.admonition > p.admonition-title ~ * {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* 恢复列表(ul/ol)的原生标准缩进，防止文字贴边 */
+div.admonition > p.admonition-title ~ ul,
+div.admonition > p.admonition-title ~ ol {
+    padding-left: 1.5rem !important;
+}
+
+/* 消除最后一个元素的底部外边距，让容器底边距统一由 padding 控制 */
+div.admonition > *:last-child {
+    margin-bottom: 0 !important;
+}
+
+/* =========================================================
+   4.5 兼容 sphinx-togglebutton 插件
+   ========================================================= */
+div.admonition.toggle-hidden {
+    padding-bottom: 0 !important; /* 折叠时抽走底部的包裹边距 */
+}
+
+div.admonition.toggle-hidden > .admonition-title {
+    margin-bottom: 0 !important;
+    border-bottom: none !important;
+}
+
+div.admonition > .admonition-title > .toggle-button {
+    margin-left: auto !important;
+    display: flex;
+    align-items: center;
+}
+
+/* =========================================================
+   5. 颜色语义精准注入 (-bg 背景与主题边框同色系映射)
+   ========================================================= */
+
+div.admonition.note, div.admonition.info, div.admonition.hint {
     border-color: var(--pst-color-info) !important;
 }
+div.admonition.note > .admonition-title, div.admonition.info > .admonition-title, div.admonition.hint > .admonition-title {
+    color: var(--pst-color-info) !important;
+    background-color: var(--pst-color-info-bg) !important;
+}
 
-div.admonition.tip,
-div.admonition.success {
+div.admonition.tip, div.admonition.success {
     border-color: var(--pst-color-success) !important;
 }
-
-div.admonition.warning,
-div.admonition.attention,
-div.admonition.important,
-div.admonition.caution {
-    border-color: var(--pst-color-warning) !important;
+div.admonition.tip > .admonition-title, div.admonition.success > .admonition-title {
+    color: var(--pst-color-success) !important;
+    background-color: var(--pst-color-success-bg) !important;
 }
 
-div.admonition.danger,
-div.admonition.error {
+div.admonition.warning, div.admonition.attention, div.admonition.important, div.admonition.caution {
+    border-color: var(--pst-color-warning) !important;
+}
+div.admonition.warning > .admonition-title, div.admonition.attention > .admonition-title, div.admonition.important > .admonition-title, div.admonition.caution > .admonition-title {
+    color: var(--pst-color-warning) !important;
+    background-color: var(--pst-color-warning-bg) !important;
+}
+
+div.admonition.danger, div.admonition.error {
     border-color: var(--pst-color-danger) !important;
+}
+div.admonition.danger > .admonition-title, div.admonition.error > .admonition-title {
+    color: var(--pst-color-danger) !important;
+    background-color: var(--pst-color-danger-bg) !important;
 }
 
 div.admonition.seealso {
     border-color: var(--pst-color-secondary) !important;
+}
+div.admonition.seealso > .admonition-title {
+    color: var(--pst-color-secondary) !important;
+    background-color: rgba(14, 165, 233, 0.08) !important;
+}
+html[data-theme="dark"] div.admonition.seealso > .admonition-title {
+    background-color: rgba(125, 211, 252, 0.1) !important;
+}
+
+/* =========================================================
+   6. 侧边浮动提示框 (Sidebar Admonition) 兼容修复
+   ========================================================= */
+div.admonition.sidebar {
+    float: right !important;
+    clear: both !important;
+    max-width: 40% !important;
+    margin-top: 0 !important;
+    margin-bottom: 1.5rem !important;
+    margin-left: 1.5rem !important;
+    margin-right: 0 !important;
+}
+
+@media (max-width: 767.98px) {
+    div.admonition.sidebar {
+        float: none !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        margin-top: 1.5rem !important;
+    }
 }

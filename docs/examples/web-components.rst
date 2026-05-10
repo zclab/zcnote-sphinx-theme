@@ -306,3 +306,4 @@ Toggle buttons
 .. toggle::
 
     A standalone toggle button!
+
