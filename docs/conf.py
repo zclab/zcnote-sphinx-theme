@@ -50,7 +50,7 @@ html_theme_options = {
             "name": "Donate to NumFocus",
         },
     ],
-    "header_links_before_dropdown": 2,
+    "header_links_before_dropdown": 3,
     "enable_collapse_sidebar": True,
     "navigation_depth": 5,
     "show_toc_level": 2,

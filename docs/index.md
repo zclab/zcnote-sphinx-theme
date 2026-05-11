@@ -120,4 +120,9 @@ guide/index
 examples/index
 ```
 
+```{toctree}
+:hidden:
+
+Changelog <https://github.com/pydata/pydata-sphinx-theme/releases>
+```
 
