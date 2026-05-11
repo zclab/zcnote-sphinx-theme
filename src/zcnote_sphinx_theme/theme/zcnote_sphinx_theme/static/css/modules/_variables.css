@@ -13,25 +13,43 @@ html {
    ========================================================= */
 
 /* --- [Light 模式] - 清水混凝土般的极简与干净 --- */
+/* =========================================================
+   补充：现代科技感色彩系统 V3.0 的背景变体 (-bg)
+   请将这些变量加入到现有的 [Light 模式] 和 [Dark 模式] 中
+   ========================================================= */
+
+/* --- [Light 模式] --- */
 html[data-theme="light"] {
-    --pst-color-primary: #0284c7;        /* 沉稳的科技蓝 (量子青) */
+    --pst-color-primary: #0284c7;
     --pst-color-secondary: #0ea5e9;
 
     --pst-color-info: #0ea5e9;
     --pst-color-success: #10b981;
     --pst-color-warning: #f59e0b;
     --pst-color-danger: #ef4444;
+
+    /* ★ 新增：极度通透的淡色背景 (Tailwind 50 色系) */
+    --pst-color-info-bg: #f0f9ff;
+    --pst-color-success-bg: #f0fdf4;
+    --pst-color-warning-bg: #fffbeb;
+    --pst-color-danger-bg: #fef2f2;
 }
 
-/* --- [Dark 模式] - 深邃内敛的深空实验室 --- */
+/* --- [Dark 模式] --- */
 html[data-theme="dark"] {
-    --pst-color-primary: #38bdf8;        /* 清透的亮青色 (量子青) */
+    --pst-color-primary: #38bdf8;
     --pst-color-secondary: #7dd3fc;
 
     --pst-color-info: #38bdf8;
     --pst-color-success: #34d399;
     --pst-color-warning: #fbbf24;
     --pst-color-danger: #f87171;
+
+    /* ★ 新增：深邃融合的暗色背景 (Tailwind 900 色系加深，完美融入深空灰) */
+    --pst-color-info-bg: #0c4a6e40;     /* 带有透明度的深渊蓝 */
+    --pst-color-success-bg: #064e3b40;  /* 带有透明度的深渊绿 */
+    --pst-color-warning-bg: #451a0340;  /* 带有透明度的深渊黄 */
+    --pst-color-danger-bg: #450a0a40;   /* 带有透明度的深渊红 */
 }
 
 /* =========================================================

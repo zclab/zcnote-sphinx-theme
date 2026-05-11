@@ -1,0 +1,31 @@
+/* =========================================================
+   Footer 底部栏 (Zero-Jump Rendering)
+   ========================================================= */
+
+/* --- 1. Footer 绝对覆盖图层 --- */
+.bd-footer {
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+
+    /* Z-index 必须足够大，确保滑动到底部时能遮盖住侧边栏的底部滚动区域 */
+    z-index: 100 !important;
+    background-color: var(--pst-color-background) !important;
+    border-top: 1px solid var(--pst-color-border) !important;
+}
+
+/* --- 2. 修复版心对齐 --- */
+.bd-footer .bd-footer-content,
+.bd-footer .bd-footer__inner {
+    max-width: 88rem; /* 匹配 PyData 默认的版心宽度 */
+    margin: 0 auto !important;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+/* --- 3. 隐藏无关内容，保持极简 --- */
+.bd-footer-content {
+    display: none !important;
+}
