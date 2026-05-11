@@ -104,7 +104,13 @@ Added configuration flags to hide the "Collapse Sidebar" buttons.
 :::
 ::::
 
+```{toctree}
+:maxdepth: 2
+:hidden:
+:caption: User Guide
 
+guide/index
+```
 
 ```{toctree}
 :maxdepth: 2
