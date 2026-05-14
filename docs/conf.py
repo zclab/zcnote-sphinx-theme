@@ -27,7 +27,6 @@ exclude_patterns = [
     "Thumbs.db",
     ".DS_Store",
     "**.ipynb_checkpoints",
-    "guide/**"
 ]
 html_theme = 'zcnote_sphinx_theme'
 html_logo = "_static/logo.png"
@@ -37,6 +36,21 @@ html_last_updated_fmt = ""  # to reveal the build date in the pages meta
 
 
 html_theme_options = {
+    "external_links": [
+        {
+            "url": "https://pydata.org",
+            "name": "PyData Website",
+        },
+        {
+            "url": "https://numfocus.org/",
+            "name": "NumFocus",
+        },
+        {
+            "url": "https://numfocus.org/donate",
+            "name": "Donate to NumFocus",
+        },
+    ],
+    "header_links_before_dropdown": 3,
     "enable_collapse_sidebar": True,
     "navigation_depth": 5,
     "show_toc_level": 2,
