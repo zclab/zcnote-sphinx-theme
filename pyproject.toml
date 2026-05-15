@@ -50,5 +50,3 @@ path = "src/zcnote_sphinx_theme/__init__.py"
 [tool.hatch.build.targets.wheel]
 packages = ["src/zcnote_sphinx_theme"]
 
-[tool.hatch.build.targets.wheel.force-include]
-"src/zcnote_sphinx_theme/theme" = "zcnote_sphinx_theme/theme"
