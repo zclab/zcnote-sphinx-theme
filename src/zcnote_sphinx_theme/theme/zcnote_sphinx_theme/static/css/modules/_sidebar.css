@@ -101,7 +101,7 @@
         border-radius: 6px 0 0 6px !important;
         background-color: var(--pst-color-background) !important;
         border: 1px solid var(--pst-color-border) !important;
-        border-right: none !important; /* 右侧贴紧线，不画边框 */
+        /* border-right: none !important;  右侧贴紧线，不画边框 */
         box-shadow: -2px 0 6px rgba(0,0,0,0.05) !important;
         color: var(--pst-color-text-muted) !important;
 
