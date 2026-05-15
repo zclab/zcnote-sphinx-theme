@@ -163,3 +163,109 @@ div.admonition.sidebar {
         margin-top: 1.5rem !important;
     }
 }
+
+
+/* =========================================================
+   7. TODO 提示框 (Todo Directive) 专属强化设计
+   采用现代 UI 的 Violet (紫罗兰色系)，醒目且不引发视觉警报
+   ========================================================= */
+
+/* --- [Light 模式] - 亮眼但柔和的紫罗兰 --- */
+div.admonition.todo,
+div.admonition.admonition-todo {
+    /* 边框：Tailwind Violet-500 */
+    border-color: #8b5cf6 !important;
+}
+
+div.admonition.todo > .admonition-title,
+div.admonition.admonition-todo > .admonition-title {
+    color: #8b5cf6 !important;
+    /* 背景：注入 8% 的紫罗兰色，维持极简通透感 */
+    background-color: rgba(139, 92, 246, 0.08) !important;
+}
+
+/* --- [Dark 模式] - 荧光感与深邃的融合 --- */
+html[data-theme="dark"] div.admonition.todo,
+html[data-theme="dark"] div.admonition.admonition-todo {
+    /* 边框：Tailwind Violet-400 (降低饱和度，提升明度以适应暗色) */
+    border-color: #a78bfa !important;
+}
+
+html[data-theme="dark"] div.admonition.todo > .admonition-title,
+html[data-theme="dark"] div.admonition.admonition-todo > .admonition-title {
+    color: #a78bfa !important;
+    /* 背景：注入 12% 的高明度紫色，完美融入深空灰 */
+    background-color: rgba(167, 139, 250, 0.12) !important;
+}
+
+/* =========================================================
+   8. 版本变更提示 (Version Directives) 统一样式
+   彻底覆盖 PyData 原有的粗糙左侧实线边框，采用现代微光卡片设计
+   ========================================================= */
+
+/* 8.1 基础容器：对齐 Admonition 的现代卡片外观 */
+div.versionadded,
+div.versionchanged,
+div.deprecated,
+div.versionremoved {
+    border: 1px solid transparent !important;
+    border-radius: 0.375rem !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+    margin: 1.5rem 0 !important;
+    padding: 0.85rem 1.25rem !important; /* 均匀的内边距 */
+    break-inside: avoid;
+    overflow: hidden;
+}
+
+/* 8.2 取消默认的伪元素干扰和段落底边距 */
+div.versionadded::before,
+div.versionchanged::before,
+div.deprecated::before,
+div.versionremoved::before {
+    display: none !important;
+}
+
+div.versionadded > p:last-child,
+div.versionchanged > p:last-child,
+div.deprecated > p:last-child,
+div.versionremoved > p:last-child {
+    margin-bottom: 0 !important;
+    line-height: 1.5 !important;
+}
+
+/* 8.3 版本前缀文字 (例如: "New in version 1.0:") */
+span.versionmodified {
+    font-weight: 600 !important;
+    margin-right: 0.4rem !important;
+}
+
+/* --- 8.4 颜色语义精准映射 --- */
+
+/* Version Added -> 成功色系 (Success / Green) */
+div.versionadded {
+    border-color: var(--pst-color-success) !important;
+    background-color: var(--pst-color-success-bg) !important;
+}
+div.versionadded span.versionmodified {
+    color: var(--pst-color-success) !important;
+}
+
+/* Version Changed -> 警告色系 (Warning / Yellow) */
+div.versionchanged {
+    border-color: var(--pst-color-warning) !important;
+    background-color: var(--pst-color-warning-bg) !important;
+}
+div.versionchanged span.versionmodified {
+    color: var(--pst-color-warning) !important;
+}
+
+/* Deprecated / Version Removed -> 危险色系 (Danger / Red) */
+div.deprecated,
+div.versionremoved {
+    border-color: var(--pst-color-danger) !important;
+    background-color: var(--pst-color-danger-bg) !important;
+}
+div.deprecated span.versionmodified,
+div.versionremoved span.versionmodified {
+    color: var(--pst-color-danger) !important;
+}
