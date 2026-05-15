@@ -8,14 +8,13 @@
     .bd-sidebar-primary {
         width: var(--zcnote-sidebar-width);
         max-width: var(--zcnote-sidebar-width);
-        flex: 0 0 auto; /* 放弃 Flex 霸权，听从 width 指挥 */
+        flex: 0 0 auto;
 
-        /* 为 JS 触发的折叠动作注入 Material Design 标准丝滑缓冲动画 */
+        /* 缓冲动画 */
         transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1),
                     max-width 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
-    /* 微调左侧边栏内部留白，向正文归还更多阅读空间 */
     #pst-primary-sidebar .sidebar-primary-item {
         padding-left: 0.5rem !important;
         padding-right: 0.5rem !important;
@@ -25,7 +24,7 @@
         padding-right: 0.5rem !important;
     }
 
-    /* --- 4.2 双侧边栏动态防跳动滚动计算 (终极防抖引擎) --- */
+    /* --- 4.2 双侧边栏动态防跳动滚动计算 --- */
     #pst-primary-sidebar,
     #pst-secondary-sidebar {
         align-self: start !important;
@@ -33,7 +32,6 @@
         top: var(--pst-header-height) !important;
         z-index: 10 !important;
 
-        /* 核心裁剪公式：真实视口高度 - 顶部Header - 底部Footer侵入高度 */
         height: calc(var(--zcnote-vh) - var(--pst-header-height) - var(--zcnote-footer-overlap)) !important;
         max-height: calc(var(--zcnote-vh) - var(--pst-header-height) - var(--zcnote-footer-overlap)) !important;
 
@@ -43,17 +41,16 @@
         scrollbar-width: thin;
     }
 
-    /* --- 4.3 折叠按钮悬浮拉手方案 (全局靠左内嵌) --- */
+    /* --- 4.3 折叠按钮悬浮拉手方案 --- */
 
-    /* ★ 防御性隐藏：杜绝刷新和点击时的 FOUC 闪烁
-       在 JS 将按钮移出原生侧边栏之前，彻底隐藏它 */
+    /* 防御性隐藏：杜绝刷新闪烁 */
     .bd-sidebar-primary > .sidebar-primary-item.pst-sidebar-collapse {
         display: none !important;
         opacity: 0 !important;
         pointer-events: none !important;
     }
 
-    /* 幽灵轨道：当 JS 把它移动到 .bd-page-width 的直接子级后，恢复显示 */
+    /* 幽灵轨道：恢复显示 */
     .bd-page-width > .sidebar-primary-item.pst-sidebar-collapse {
         width: 0 !important;
         flex: 0 0 0 !important;
@@ -65,7 +62,7 @@
         z-index: 1050 !important;
 
         overflow: visible !important;
-        display: block !important;    /* 关键：移出后恢复显示 */
+        display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
     }
@@ -77,38 +74,60 @@
         visibility: visible !important;
     }
 
-    /* 按钮本体：永远锚定在左侧 */
+    /* =========================================================
+       ★ 按钮本体：默认隐藏状态 (纯透明度控制)
+       ========================================================= */
     #pst-collapse-sidebar-button {
         position: sticky !important;
         top: calc(var(--pst-header-height, 4rem) + 1.25rem) !important;
-        left: 0 !important;
 
-        /* 永远向左跨越接缝对齐线 */
+        /* 强制锚定左边界 */
+        left: 0 !important;
+        margin-left: 0 !important;
+
+        /* 永远固定在边界线左侧，不再进行位移动画 */
         transform: translateX(-100%) !important;
+        opacity: 0 !important;
 
         width: 24px !important;
         height: 32px !important;
-        margin: 0 !important; padding: 0 !important;
+        padding: 0 !important;
 
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
 
-        /* 左圆右平 */
+        /* 全局统一形态：永远保持左圆右平，贴在边界线左侧 */
         border-radius: 6px 0 0 6px !important;
         background-color: var(--pst-color-background) !important;
         border: 1px solid var(--pst-color-border) !important;
+        border-right: none !important; /* 右侧贴紧线，不画边框 */
         box-shadow: -2px 0 6px rgba(0,0,0,0.05) !important;
         color: var(--pst-color-text-muted) !important;
 
-        transition: background-color 0.25s, box-shadow 0.25s, width 0.25s !important;
+        /* ★ 核心：仅对 opacity 施加平滑的淡入淡出动画，其余为交互动画 */
+        transition: opacity 0.3s ease-in-out,
+                    background-color 0.2s, box-shadow 0.2s, width 0.2s !important;
 
         pointer-events: auto !important;
-        visibility: visible !important;
+    }
+
+    /* =========================================================
+       ★ 悬浮显现逻辑 (平滑淡入)
+       ========================================================= */
+    .bd-sidebar-primary:hover ~ .pst-sidebar-collapse #pst-collapse-sidebar-button,
+    .pst-sidebar-collapse:hover #pst-collapse-sidebar-button,
+    #pst-collapse-sidebar-button:hover,
+    #pst-collapse-sidebar-button:focus-visible {
+        /* 显示时仅改变透明度，不改变位置 */
         opacity: 1 !important;
     }
 
-    /* 悬停反馈 */
+    /* =========================================================
+       ★ 交互反馈与状态切换
+       ========================================================= */
+
+    /* 悬停时的按钮强化反馈 */
     #pst-collapse-sidebar-button:hover {
         width: 28px !important;
         background-color: var(--pst-color-primary) !important;
@@ -117,7 +136,7 @@
         box-shadow: -4px 0 12px rgba(0,0,0,0.15) !important;
     }
 
-    /* 折叠状态 UI: 箭头翻转 */
+    /* 折叠状态 UI: 仅让箭头翻转，主体保持不动 */
     #pst-collapse-sidebar-button[aria-expanded="false"] svg {
         transform: rotate(180deg) !important;
     }
@@ -140,15 +159,14 @@
     }
 }
 
-/* --- 4.4 滚动条终极防御 (JS 专属状态接管版) --- */
+/* --- 4.4 滚动条终极防御 --- */
 .zcnote-hide-scrollbar,
 .zcnote-hide-scrollbar * {
     overflow: hidden !important;
-    scrollbar-width: none !important; /* Firefox 封杀 */
-    -ms-overflow-style: none !important; /* IE/Edge 封杀 */
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
 }
 
-/* Webkit (Chrome/Safari) 封杀 */
 .zcnote-hide-scrollbar::-webkit-scrollbar,
 .zcnote-hide-scrollbar *::-webkit-scrollbar {
     display: none !important;
@@ -156,7 +174,6 @@
     height: 0 !important;
 }
 
-/* 让所有文字在折叠时强制不换行，瞬间透明隐藏 */
 .zcnote-hide-scrollbar * {
     white-space: nowrap !important;
     visibility: hidden !important;
