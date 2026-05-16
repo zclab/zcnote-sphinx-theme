@@ -1,114 +1,25 @@
 {% extends "pydata_sphinx_theme/layout.html" %}
 
-{# 模块 1：动态控制侧边栏折叠按钮 #}
+{# =========================================================
+   ZC-Note Sphinx Theme
+   极其干净的视图层：所有业务逻辑已下沉至 Webpack 与 SCSS/JS 模块
+   ========================================================= #}
+
 {% block extrahead %}
     {{ super() }}
-    {% if theme_enable_collapse_sidebar | string | lower == 'false' %}
-        <style>
-            .sidebar-primary-item.pst-sidebar-collapse,
-            #pst-collapse-sidebar-button {
-                display: none !important;
-                visibility: hidden !important;
-                height: 0 !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                pointer-events: none !important;
-            }
-        </style>
-    {% endif %}
-{% endblock extrahead %}
 
-{# 模块 2 & 3：JS 布局引擎 #}
-{% block footer %}
-    {{ super() }}
-
+    {#
+       状态桥梁：将 Sphinx/Jinja 配置项无缝传递给前端
+       利用阻塞型内联 script，在浏览器渲染任何 DOM 之前，瞬间将配置写在 html 节点上。
+       这能确保 SCSS 第一时间读取到状态，彻底杜绝闪烁。
+    #}
     <script>
-        // =========================================================
-        // 模块 3：侧边栏折叠按钮 (阻断渲染闪烁)
-        // =========================================================
         (function() {
-            const sidebar = document.querySelector(".bd-sidebar-primary");
-            const collapseBtnWrapper = document.querySelector(".sidebar-primary-item.pst-sidebar-collapse");
-            const collapseBtn = document.querySelector("#pst-collapse-sidebar-button");
+            // 获取用户在 theme.conf 或 conf.py 中配置的侧边栏折叠开关
+            const enableCollapse = "{{ theme_enable_collapse_sidebar | default('true') | string | lower }}";
 
-            if (sidebar && collapseBtnWrapper) {
-                // 1. 抢在浏览器渲染前，瞬间移出侧边栏，插入到接缝处
-                sidebar.parentNode.insertBefore(collapseBtnWrapper, sidebar.nextSibling);
-
-                // 2. 状态接管
-                if (collapseBtn) {
-                    const toggleScrollbar = () => {
-                        if (collapseBtn.getAttribute("aria-expanded") === "false") {
-                            sidebar.classList.add("zcnote-hide-scrollbar");
-                        } else {
-                            sidebar.classList.remove("zcnote-hide-scrollbar");
-                        }
-                    };
-                    const observer = new MutationObserver(toggleScrollbar);
-                    observer.observe(collapseBtn, { attributes: true, attributeFilter: ["aria-expanded"] });
-                    toggleScrollbar();
-                }
-            }
+            // 注入 data-zcnote-collapse 属性到 <html> 标签
+            document.documentElement.setAttribute("data-zcnote-collapse", enableCollapse);
         })();
-
-        // =========================================================
-        // 模块 2：零跳动滚动 (★ 保留在 DOMContentLoaded 中)
-        // 这个模块依赖完整的页面高度、Footer 等，需要等整个页面就绪
-        // =========================================================
-        document.addEventListener("DOMContentLoaded", function() {
-            const footer = document.querySelector(".bd-footer");
-            if (footer) {
-                const targetContainer = document.querySelector(".bd-article-container") ||
-                                        document.querySelector(".bd-content") ||
-                                        document.querySelector(".bd-main") ||
-                                        document.body;
-
-                if (footer.parentNode !== document.body) {
-                    document.body.appendChild(footer);
-                }
-
-                const spacer = document.createElement("div");
-                spacer.id = "zcnote-footer-spacer";
-                spacer.style.cssText = "width: 100%; display: block; clear: both; pointer-events: none; flex-shrink: 0;";
-                targetContainer.appendChild(spacer);
-
-                let ticking = false;
-                const root = document.documentElement;
-
-                function updateLayout() {
-                    const footerHeight = footer.offsetHeight;
-                    const footerTop = footer.getBoundingClientRect().top;
-                    const viewportHeight = window.innerHeight;
-
-                    root.style.setProperty('--zcnote-vh', `${viewportHeight}px`);
-
-                    if (spacer.style.height !== `${footerHeight}px`) {
-                        spacer.style.height = `${footerHeight}px`;
-                    }
-
-                    let overlap = Math.max(0, viewportHeight - footerTop);
-                    root.style.setProperty('--zcnote-footer-overlap', `${overlap}px`);
-
-                    ticking = false;
-                }
-
-                function requestTick() {
-                    if (!ticking) {
-                        window.requestAnimationFrame(updateLayout);
-                        ticking = true;
-                    }
-                }
-
-                window.addEventListener("scroll", requestTick, { passive: true });
-                window.addEventListener("resize", requestTick, { passive: true });
-
-                if (window.ResizeObserver) {
-                    const ro = new ResizeObserver(() => requestTick());
-                    ro.observe(footer);
-                    ro.observe(document.body);
-                }
-                requestTick();
-            }
-        });
     </script>
-{% endblock %}
+{% endblock extrahead %}
