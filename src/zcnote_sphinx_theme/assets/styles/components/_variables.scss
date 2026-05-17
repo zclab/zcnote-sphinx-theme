@@ -24,6 +24,11 @@ html[data-theme="light"] {
     --pst-color-success-bg: #f0fdf4;
     --pst-color-warning-bg: #fffbeb;
     --pst-color-danger-bg: #fef2f2;
+
+    --pst-color-seealso: #0ea5e9;
+    --pst-color-seealso-rgb: 14, 165, 233;
+    --pst-color-todo: #8b5cf6;
+    --pst-color-todo-rgb: 139, 92, 246;
 }
 
 /* --- [Dark 模式] --- */
@@ -40,6 +45,11 @@ html[data-theme="dark"] {
     --pst-color-success-bg: #064e3b40;
     --pst-color-warning-bg: #451a0340;
     --pst-color-danger-bg: #450a0a40;
+
+    --pst-color-seealso: #7dd3fc;
+    --pst-color-seealso-rgb: 125, 211, 252;
+    --pst-color-todo: #a78bfa;
+    --pst-color-todo-rgb: 167, 139, 250;
 }
 
 /* =========================================================

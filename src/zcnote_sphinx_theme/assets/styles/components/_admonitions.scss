@@ -108,13 +108,13 @@ div.admonition {
     }
 
     &.seealso {
-        border-color: var(--pst-color-secondary) !important;
+        border-color: var(--pst-color-seealso) !important;
         > .admonition-title {
-            color: var(--pst-color-secondary) !important;
-            background-color: rgba(14, 165, 233, 0.08) !important;
+            color: var(--pst-color-seealso) !important;
+            background-color: rgba(var(--pst-color-seealso-rgb), 0.08) !important;
 
             html[data-theme="dark"] & {
-                background-color: rgba(125, 211, 252, 0.1) !important;
+                background-color: rgba(var(--pst-color-seealso-rgb), 0.1) !important;
             }
         }
     }
@@ -140,18 +140,18 @@ div.admonition {
 
     /* TODO 提示框 */
     &.todo, &.admonition-todo {
-        border-color: #8b5cf6 !important;
+        border-color: var(--pst-color-todo) !important;
 
         > .admonition-title {
-            color: #8b5cf6 !important;
-            background-color: rgba(139, 92, 246, 0.08) !important;
+            color: var(--pst-color-todo) !important;
+            background-color: rgba(var(--pst-color-todo-rgb), 0.08) !important;
         }
 
         html[data-theme="dark"] & {
-            border-color: #a78bfa !important;
+            border-color: var(--pst-color-todo) !important;
             > .admonition-title {
-                color: #a78bfa !important;
-                background-color: rgba(167, 139, 250, 0.12) !important;
+                color: var(--pst-color-todo) !important;
+                background-color: rgba(var(--pst-color-todo-rgb), 0.12) !important;
             }
         }
     }
@@ -168,14 +168,13 @@ div.versionremoved {
     border-radius: 0.375rem !important;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
     margin: 1.5rem 0 !important;
-    padding: 0.85rem 1.25rem !important;
+    padding: 0 1.25rem !important;
     break-inside: avoid;
     overflow: hidden;
 
     &::before { display: none !important; }
 
     > p:last-child {
-        margin-bottom: 0 !important;
         line-height: 1.5 !important;
     }
 
