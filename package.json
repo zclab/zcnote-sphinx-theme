@@ -1,0 +1,27 @@
+{
+  "name": "zcnote-sphinx-theme",
+  "version": "0.0.5rc",
+  "description": "Frontend build pipeline for zcnote-sphinx-theme",
+  "private": true,
+  "author": "Your Name <your.email@example.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zcnote/zcnote-sphinx-theme.git"
+  },
+  "scripts": {
+    "dev": "webpack --mode development --watch",
+    "build": "webpack --mode production"
+  },
+  "devDependencies": {
+    "css-loader": "^6.8.1",
+    "mini-css-extract-plugin": "^2.7.6",
+    "sass": "^1.69.5",
+    "sass-loader": "^13.3.2",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

@@ -652,3 +652,10 @@ dist
 
 .idea
 .vscode
+.nodeenv
+
+# ==========================================
+# 忽略 Webpack 编译生成的静态产物
+# ==========================================
+src/zcnote_sphinx_theme/theme/zcnote_sphinx_theme/static/styles/
+src/zcnote_sphinx_theme/theme/zcnote_sphinx_theme/static/scripts/

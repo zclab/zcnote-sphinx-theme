@@ -2,9 +2,8 @@ name: Publish Package to PyPI
 
 on:
   push:
-    # 只有当推送了包含特定前缀的 tag 时才触发
     tags:
-      - 'v*'  # 例如：推送 v0.1.0, v1.2.3 等 tag 时会触发此工作流
+      - 'v*'  # 例如：推送 v0.1.0, v1.2.3 等 tag 时会触发
 
 jobs:
   build-and-publish:
@@ -14,19 +13,18 @@ jobs:
     # 定义环境，推荐与 PyPI 配置保持一致
     environment:
       name: pypi
-      url: https://pypi.org/p/zcnote-sphinx-theme  # 这里可以替换为你实际的 PyPI 项目地址
+      url: https://pypi.org/p/zcnote-sphinx-theme
 
-    # 必须配置的权限，用于 OIDC 身份验证
     permissions:
-      id-token: write  # 允许请求 OIDC token (PyPI 验证必须)
-      contents: read   # 允许检出代码仓库
+      id-token: write
+      contents: read
 
     steps:
     # 1. 检出代码
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    # 2. 安装 uv (使用 Astral 官方 Action，速度极快且自带缓存管理)
+    # 2. 安装 uv
     - name: Install uv
       uses: astral-sh/setup-uv@v5
       with:
@@ -36,10 +34,27 @@ jobs:
     - name: Set up Python
       run: uv python install 3.12
 
-    # 4. 构建项目 (uv build 会自动读取 pyproject.toml 并生成 dist/ 目录)
+    # 4. 构建项目
     - name: Build the package
       run: uv build
 
-    # 5. 上传到 PyPI (使用官方 Action)
+    # =========================================================
+    # 如果 Webpack 构建静默失败导致没有生成 CSS/JS，立刻熔断，阻止上传！
+    # =========================================================
+    - name: Verify Wheel Contents Before Publishing
+      run: |
+        WHEEL_FILE=$(ls dist/*.whl)
+        echo "Inspecting contents of $WHEEL_FILE before PyPI upload..."
+
+        # 严格校验：必须同时存在编译后的样式和脚本文件
+        unzip -l "$WHEEL_FILE" | grep -E "styles/.*\.css|scripts/.*\.js" || {
+          echo "❌ Fatal Error: Frontend assets (CSS/JS) are missing in the wheel!"
+          echo "🛑 Publish aborted to prevent releasing a broken package."
+          exit 1
+        }
+
+        echo "✅ Frontend assets verified! The package is completely safe to publish."
+
+    # 5. 上传到 PyPI
     - name: Publish package to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1

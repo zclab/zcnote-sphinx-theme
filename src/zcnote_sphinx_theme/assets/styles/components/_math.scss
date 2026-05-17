@@ -1,8 +1,7 @@
 /* =========================================================
-   6. 修复：MathJax/Sphinx 公式垂直滚动条
+   修复：MathJax/Sphinx 公式垂直滚动条
    ========================================================= */
 
-/* 1. 镇压 Sphinx 的外层容器 */
 .bd-article div.math,
 .bd-article div.math-wrapper,
 div.math.notranslate {
@@ -13,17 +12,16 @@ div.math.notranslate {
     min-height: min-content !important;
 }
 
-/* 2. 镇压 MathJax 3 的原生渲染容器 */
 mjx-container[display="true"],
 .MathJax_Display {
     overflow-y: hidden !important;
     margin-top: 0 !important;
     margin-bottom: 0 !important;
-    outline: none !important; /* 防止内部轮廓线撑破容器 */
-}
+    outline: none !important;
 
-/* 3. 镇压 MathJax 最深层的数学节点 */
-mjx-container[display="true"] > mjx-math,
-mjx-container[display="true"] > mjx-math * {
-    overflow-y: visible !important;
+    > mjx-math {
+        &, & * {
+            overflow-y: visible !important;
+        }
+    }
 }

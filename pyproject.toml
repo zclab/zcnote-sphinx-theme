@@ -1,6 +1,6 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["sphinx-theme-builder>=0.2.0"]
+build-backend = "sphinx_theme_builder"
 
 [project]
 name = "zcnote-sphinx-theme"
@@ -43,10 +43,8 @@ doc = [
 [project.entry-points."sphinx.html_themes"]
 zcnote_sphinx_theme = "zcnote_sphinx_theme"
 
-
-[tool.hatch.version]
-path = "src/zcnote_sphinx_theme/__init__.py"
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/zcnote_sphinx_theme"]
-
+[tool.sphinx-theme-builder]
+theme-name = "zcnote_sphinx_theme"
+node-project-dir = "."
+build-command = ["npm", "run", "build"]
+node-version = "20.11.1"

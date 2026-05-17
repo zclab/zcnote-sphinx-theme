@@ -1,0 +1,27 @@
+/* =========================================================
+   宏观布局 (Macro Layout) - 页面骨架与对齐逻辑
+   ========================================================= */
+
+.bd-page-width {
+    position: static !important;
+}
+
+@media (min-width: 1200px) {
+    .bd-header {
+        .navbar-header-items__start {
+            width: var(--zcnote-sidebar-width) !important;
+            flex: 0 0 var(--zcnote-sidebar-width) !important;
+            max-width: var(--zcnote-sidebar-width) !important;
+
+            .navbar-brand {
+                padding-left: 0.5rem !important;
+            }
+        }
+
+        .navbar-header-items {
+            flex: 1 1 auto !important;
+            width: auto !important;
+            max-width: 100% !important;
+        }
+    }
+}
