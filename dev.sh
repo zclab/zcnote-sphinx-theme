@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # ==============================================================================
-# ZC-Note Sphinx Theme - 本地双引擎开发脚本 (Webpack Watch + Sphinx Autobuild)
+# ZC-Note Sphinx Theme - 本地开发脚本
 # ==============================================================================
 
 # 定义颜色输出
@@ -12,7 +12,7 @@ RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 echo -e "${CYAN}======================================================${NC}"
-echo -e "${CYAN}🚀 启动 ZC-Note 本地开发双引擎...${NC}"
+echo -e "${CYAN}🚀 启动 ZC-Note 本地开发引擎...${NC}"
 echo -e "${CYAN}======================================================${NC}\n"
 
 # ---------------------------------------------------------
@@ -26,12 +26,11 @@ pip install -e . > /dev/null 2>&1 || {
 echo -e "${GREEN}✔ Python 开发环境准备就绪！${NC}\n"
 
 # ---------------------------------------------------------
-# 2. 优雅退出机制 (Trap)
+# 2. 退出机制
 # ---------------------------------------------------------
-# 捕获 Ctrl+C (SIGINT) 或终止信号 (SIGTERM)，确保彻底清理子进程
+# 捕获 Ctrl+C (SIGINT) 或终止信号 (SIGTERM)，确保清理子进程
 cleanup() {
     echo -e "\n${YELLOW}🛑 接收到退出信号，正在安全关闭前端与后端服务...${NC}"
-    # kill 0 会发送 SIGTERM 给当前脚本所在进程组的所有进程，完美避免僵尸进程
     kill 0
     echo -e "${GREEN}✔ 所有开发服务已安全退出。再见！${NC}"
     exit 0
@@ -44,21 +43,26 @@ trap cleanup SIGINT SIGTERM
 echo -e "${YELLOW}⏳ [2/2] 正在启动 Webpack 监听与 Sphinx 实时重载...${NC}"
 echo -e "💡 提示: 开发期间请保持此终端打开。随时按下 ${RED}Ctrl+C${NC} 即可完全退出。\n"
 
-# 启动前端 Webpack 监听 (放入后台运行)
+# 启动前端 Webpack 监听
 echo -e "👉 启动 Webpack (npm run dev)..."
 npm run dev &
 
-# 关键细节：给 Webpack 2秒钟的“抢跑”时间
-# 这样能确保第一次编译出的 CSS/JS 落盘后，Sphinx 才开始读取，防止找不到文件报错
 sleep 2
 
-# 启动后端 Sphinx Autobuild 监听 (放入后台运行，并配置越界监听 src)
+# =========================================================
+# 在启动 Sphinx 前，清理旧的 HTML 构建缓存
+# =========================================================
+echo -e "\n👉 正在清理旧的构建文档 (rm -rf docs/_build/html)..."
+rm -rf docs/_build/html
+# rm -rf docs/_build/doctrees
+echo -e "${GREEN}✔ 清理完毕！${NC}"
+
+# 启动后端 Sphinx Autobuild 监听
 echo -e "\n👉 启动 Sphinx Autobuild..."
 sphinx-autobuild docs docs/_build/html --watch src/zcnote_sphinx_theme/ --port 8888 &
 
 # ---------------------------------------------------------
 # 4. 挂起主进程
 # ---------------------------------------------------------
-# 使用 wait 命令挂起当前 bash 脚本，让它安静地等待后台任务。
-# 只有当你按下 Ctrl+C 时，才会触发上方的 cleanup 函数。
+# 按下 Ctrl+C 时，触发上方的 cleanup 函数。
 wait
