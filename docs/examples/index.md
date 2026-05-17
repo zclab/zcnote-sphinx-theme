@@ -6,11 +6,8 @@ These sections show off various features and styles of this theme. They should h
 :maxdepth: 2
 :caption: Theme-specific styles
 
-theme-elements
 mermaid
-web-components
 kitchen-sink/index
-
 ```
 
 

@@ -8,3 +8,9 @@ You can configure the behavior, look, and feel of the theme in many ways.
 
 install
 ```
+
+```{toctree}
+:caption: Content and features
+theme-elements
+web-components
+```
