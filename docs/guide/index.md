@@ -13,4 +13,5 @@ install
 :caption: Content and features
 theme-elements
 web-components
+ablog
 ```

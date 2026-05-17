@@ -15,6 +15,7 @@ extensions = [
     "myst_parser",
     "sphinx_togglebutton",
     "sphinxcontrib.mermaid",
+    "ablog",
 ]
 
 # This allows us to use ::: to denote directives, useful for admonitions
@@ -28,6 +29,16 @@ exclude_patterns = [
     ".DS_Store",
     "**.ipynb_checkpoints",
 ]
+
+# -- Ablog options -----------------------------------------------------------
+
+blog_path = "examples/blog/index"
+blog_authors = {
+    "pydata": ("PyData", "https://pydata.org"),
+    "jupyter": ("Jupyter", "https://jupyter.org"),
+}
+
+
 html_theme = 'zcnote_sphinx_theme'
 html_logo = "_static/logo.png"
 html_favicon = "_static/logo.png"
@@ -87,6 +98,23 @@ html_context = {
 html_sidebars = {
     "examples/no-sidebar": [],  # Test what page looks like with no sidebar items
     "examples/persistent-search-field": ["search-field"],
+}
+
+html_sidebars = {
+    "examples/no-sidebar": [],  # Test what page looks like with no sidebar items
+    "examples/persistent-search-field": ["search-field"],
+    # Blog sidebars
+    # ref: https://ablog.readthedocs.io/manual/ablog-configuration-options/#blog-sidebars
+    "examples/blog/*": [
+        "ablog/postcard.html",
+        "ablog/recentposts.html",
+        "ablog/tagcloud.html",
+        "ablog/categories.html",
+        "ablog/authors.html",
+        "ablog/languages.html",
+        "ablog/locations.html",
+        "ablog/archives.html",
+    ],
 }
 
 
