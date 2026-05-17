@@ -1,0 +1,48 @@
+# .github/dependabot.yml
+version: 2
+updates:
+  # ==========================================
+  # 1. 监控 Node.js / 前端依赖 (package.json)
+  # ==========================================
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly" # 每周检查一次
+      day: "monday"      # 选在周一早上，方便上班 review
+      timezone: "Asia/Shanghai"
+    commit-message:
+      prefix: "chore(deps-npm)" # 规范化 commit message
+    labels:
+      - "dependencies"
+      - "javascript"
+
+  # ==========================================
+  # 2. 监控 Python 依赖 (pyproject.toml)
+  # ==========================================
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      timezone: "Asia/Shanghai"
+    commit-message:
+      prefix: "chore(deps-python)"
+    labels:
+      - "dependencies"
+      - "python"
+
+  # ==========================================
+  # 3. 监控 GitHub Actions 本身的版本
+  # (例如 actions/checkout@v4 是否出了 v5)
+  # ==========================================
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly" # Actions 变动较慢，每月检查一次即可
+      day: "monday"
+      timezone: "Asia/Shanghai"
+    commit-message:
+      prefix: "chore(deps-actions)"
+    labels:
+      - "dependencies"
+      - "github-actions"
