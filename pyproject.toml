@@ -23,7 +23,6 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
-  "Programming Language :: Python :: 3.14",
   "Framework :: Sphinx",
   "Framework :: Sphinx :: Theme",
   "Operating System :: OS Independent",
@@ -31,6 +30,7 @@ classifiers = [
 
 [project.urls]
 "Source" = "https://github.com/zclab/zcnote-sphinx-theme"
+"Bug Tracker" = "https://github.com/zclab/zcnote-sphinx-theme/issues"
 
 [project.optional-dependencies]
 doc = [
@@ -38,6 +38,11 @@ doc = [
     "myst-parser",
     "sphinx_copybutton",
     "sphinx-togglebutton",
+]
+dev = [
+    "sphinx-autobuild",
+    "build",
+    "twine",
 ]
 
 [project.entry-points."sphinx.html_themes"]
@@ -48,3 +53,11 @@ theme-name = "zcnote_sphinx_theme"
 node-project-dir = "."
 build-command = ["npm", "run", "build"]
 node-version = "20.11.1"
+ignore-files = [
+    ".github",
+    ".idea",
+    ".vscode",
+    "docs",
+    "scripts",
+    "tests"
+]
