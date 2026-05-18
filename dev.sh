@@ -19,7 +19,7 @@ echo -e "${CYAN}======================================================${NC}\n"
 # 1. 前置准备：确保环境以可编辑模式挂载
 # ---------------------------------------------------------
 echo -e "${YELLOW}⏳ [1/2] 正在校验并准备可编辑模式 (pip install -e .)...${NC}"
-pip install -e . > /dev/null 2>&1 || {
+PYTHONUTF8=1 pip install -e . > /dev/null 2>&1 || {
     echo -e "${RED}❌ 环境安装失败，请检查 pyproject.toml 依赖！${NC}"
     exit 1
 }
@@ -31,7 +31,11 @@ echo -e "${GREEN}✔ Python 开发环境准备就绪！${NC}\n"
 # 捕获 Ctrl+C (SIGINT) 或终止信号 (SIGTERM)，确保清理子进程
 cleanup() {
     echo -e "\n${YELLOW}🛑 接收到退出信号，正在安全关闭前端与后端服务...${NC}"
+
+    trap '' SIGINT SIGTERM
+
     kill 0
+
     echo -e "${GREEN}✔ 所有开发服务已安全退出。再见！${NC}"
     exit 0
 }
