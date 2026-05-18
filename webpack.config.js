@@ -11,7 +11,9 @@ module.exports = (env, argv) => {
     mode: isProduction ? 'production' : 'development',
     devtool: isProduction ? 'source-map' : 'eval-source-map',
 
-    cache: false,
+    cache: {
+      type: 'filesystem',
+    },
     // =========================================================
     // 1. 入口
     // =========================================================
@@ -49,6 +51,15 @@ module.exports = (env, argv) => {
               },
             },
             {
+              loader: 'postcss-loader',
+              options: {
+                sourceMap: true,
+                postcssOptions: {
+                  plugins: ['autoprefixer']
+                }
+              }
+            },
+            {
               loader: 'sass-loader',
               options: {
                 sourceMap: true,
@@ -73,7 +84,6 @@ module.exports = (env, argv) => {
     // =========================================================
     optimization: {
       minimize: isProduction,
-      concatenateModules: false,
     },
   };
 };
