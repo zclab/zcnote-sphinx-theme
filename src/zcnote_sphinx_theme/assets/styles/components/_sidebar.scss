@@ -20,6 +20,7 @@ html[data-zcnote-collapse="false"] {
         width: var(--zcnote-sidebar-width);
         max-width: var(--zcnote-sidebar-width);
         flex: 0 0 auto;
+        /* 严禁在此处使用 transition: all，防止与 JS 的高度频繁写入产生动画冲突 */
         transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1),
                     max-width 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
 
@@ -35,19 +36,19 @@ html[data-zcnote-collapse="false"] {
             padding-left: 0.5rem !important;
             padding-right: 0.5rem !important;
         }
-        // .bd-toc-item {
-        //     padding-right: 0.5rem !important;
-        // }
     }
 
     #pst-primary-sidebar,
     #pst-secondary-sidebar {
         align-self: start !important;
         position: sticky !important;
-        top: var(--pst-header-height) !important;
+        /* 使用精准计算的 Header 高度，如果 JS 未就绪则回退到官方默认变量 */
+        top: var(--zcnote-header-height, var(--pst-header-height)) !important;
         z-index: 10 !important;
-        height: calc(var(--zcnote-vh) - var(--pst-header-height) - var(--zcnote-footer-overlap)) !important;
-        max-height: calc(var(--zcnote-vh) - var(--pst-header-height) - var(--zcnote-footer-overlap)) !important;
+
+        height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-footer-overlap)) !important;
+        max-height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-footer-overlap)) !important;
+
         padding-bottom: 0 !important;
         margin-bottom: 0 !important;
         overflow-y: auto !important;
@@ -80,7 +81,8 @@ html[data-zcnote-collapse="false"] {
     /* 按钮本体 */
     #pst-collapse-sidebar-button {
         position: sticky !important;
-        top: calc(var(--pst-header-height, 4rem) + 1.25rem) !important;
+        /* 折叠按钮同样对齐新的动态边界高度 */
+        top: calc(var(--zcnote-header-height, var(--pst-header-height, 4rem)) + 1.25rem) !important;
         left: 0 !important;
         margin-left: 0 !important;
         transform: translateX(-100%) !important;

@@ -4,6 +4,8 @@
 html {
     scrollbar-gutter: stable;
     overflow-y: scroll;
+    /* 覆盖原生跳锚点的边距，留出 Header 高度 + 1.5rem 的呼吸空间，防止被遮挡 */
+    scroll-padding-top: calc(var(--zcnote-header-height, var(--pst-header-height)) + 1.5rem) !important;
 }
 
 /* =========================================================
