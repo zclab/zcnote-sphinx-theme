@@ -1,8 +1,6 @@
 {
   "name": "zcnote-sphinx-theme",
   "description": "Frontend build pipeline for zcnote-sphinx-theme",
-  "private": true,
-  "author": "Your Name <your.email@example.com>",
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
