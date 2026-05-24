@@ -28,10 +28,7 @@ def setup(app):
     components_path = os.path.join(actual_theme_path, "components")
     app.config.templates_path.append(components_path)
 
-    # 加载编译后的 CSS
-    app.add_css_file("styles/zcnote-sphinx-theme.css", priority=900)
-
-    # 加载编译后的 JS (defer="defer" 确保不阻塞 DOM 骨架解析)
+    # 加载编译后的 JS
     app.add_js_file("scripts/zcnote-sphinx-theme.js", defer="defer", priority=900)
     app.connect("html-page-context", override_pydata_sidebar_logic, priority=999)
 
