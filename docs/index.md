@@ -16,7 +16,7 @@ zcnote-sphinx-theme
 ::::
 
 ::::{container} hero-slogan
-A thin customized sphinx theme for my projects.
+A thin customized sphinx theme for zcnote.
 ::::
 
 ::::{container} hero-description
@@ -89,7 +89,7 @@ html_theme = "zcnote_sphinx_theme"
 Sidebars anchored to the viewport. No jumping or shifting when readers scroll to the bottom of documentation.
 :::
 
-:::{grid-item-card}  Slightly modified styles
+:::{grid-item-card}  Slightly modified admonitions styles
 :link: examples-admonitions
 :link-type: ref
 :class-card: ghost-card
@@ -97,10 +97,10 @@ Sidebars anchored to the viewport. No jumping or shifting when readers scroll to
 Symmetrical padding, minimalist borders, and color mapping for admonition.
 :::
 
-:::{grid-item-card}  Hiddable Collapse Sidebar
+:::{grid-item-card}  Collapse Sidebar
 :class-card: ghost-card
 :class-title: font-weight-bold
-Added configuration flags to hide the "Collapse Sidebar" buttons.
+Added configuration flags to hide the "Collapse Sidebar" buttons. Move collapse sidebar button to the border of primary sidebar.
 :::
 ::::
 
