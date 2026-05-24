@@ -89,7 +89,7 @@ html_theme = "zcnote_sphinx_theme"
 Sidebars anchored to the viewport. No jumping or shifting when readers scroll to the bottom of documentation.
 :::
 
-:::{grid-item-card}  Slightly modified admonitions styles
+:::{grid-item-card}  Admonitions styles
 :link: examples-admonitions
 :link-type: ref
 :class-card: ghost-card
