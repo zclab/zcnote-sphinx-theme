@@ -1,5 +1,5 @@
 /* =========================================================
-   侧边栏尺寸、粘性滚动与折叠按钮 (核心逻辑区)
+   侧边栏尺寸、粘性滚动与折叠按钮 (级联断点大统一版)
    ========================================================= */
 
 /* ★ Jinja 变量抽离后的纯 CSS 防御 */
@@ -15,7 +15,51 @@ html[data-zcnote-collapse="false"] {
     }
 }
 
+/* ==========================================================
+   ★ 级联断点 1：中大屏幕以上 >= 960px (接管左侧边栏与主网格)
+   PyData 在 960px 唤出左侧边栏，防遮挡与高度锚定必须在此激活！
+   ========================================================== */
+@media (min-width: 960px) {
+    /* 左侧边栏 (Primary)：全站导航 */
+    #pst-primary-sidebar {
+        align-self: start !important;
+        position: sticky !important;
+        top: var(--zcnote-header-height, var(--pst-header-height)) !important;
+        z-index: 10 !important;
+
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+        overflow-y: auto !important;
+        scrollbar-width: thin;
+
+        /* ★ 切断 height 的动画过渡，交由 JS+RAF 帧级映射，抹除缩放抖动 */
+        transition-property: width, max-width, background-color, border-color, opacity !important;
+        transition-duration: 0.25s !important;
+
+        /* 高度脱钩，严丝合缝贴紧全局最底部的 Footer */
+        height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-overlap-primary, 0px)) !important;
+        max-height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-overlap-primary, 0px)) !important;
+
+        /* 原有的子元素边距配置 */
+        .sidebar-primary-item {
+            padding-left: 0.5rem !important;
+            padding-right: 0.5rem !important;
+        }
+    }
+
+    /* ★ 修复隐患一：主容器弹性最低高度锚定机制
+       当页面内容极短时，卡死容器最低高度，杜绝侧边栏负外边距压扁网格 */
+    .bd-main, .bd-content {
+        min-height: calc(100vh - var(--zcnote-header-height, var(--pst-header-height))) !important;
+    }
+}
+
+/* ==========================================================
+   ★ 级联断点 2：超大屏幕以上 >= 1200px (接管右侧边栏与折叠交互)
+   PyData 在 1200px 唤出右侧边栏，折叠按钮逻辑也在此激活！
+   ========================================================== */
 @media (min-width: 1200px) {
+    /* 原有折叠容器宽度与过渡控制 */
     .bd-sidebar-primary {
         width: var(--zcnote-sidebar-width);
         max-width: var(--zcnote-sidebar-width);
@@ -31,28 +75,27 @@ html[data-zcnote-collapse="false"] {
         }
     }
 
-    #pst-primary-sidebar {
-        .sidebar-primary-item {
-            padding-left: 0.5rem !important;
-            padding-right: 0.5rem !important;
-        }
-    }
-
-    #pst-primary-sidebar,
+    /* ★ 右侧边栏 (Secondary)：页面级目录大纲 */
     #pst-secondary-sidebar {
         align-self: start !important;
         position: sticky !important;
-        /* 使用精准计算的 Header 高度，如果 JS 未就绪则回退到官方默认变量 */
         top: var(--zcnote-header-height, var(--pst-header-height)) !important;
         z-index: 10 !important;
 
-        height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-footer-overlap)) !important;
-        max-height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-footer-overlap)) !important;
-
         padding-bottom: 0 !important;
-        margin-bottom: 0 !important;
         overflow-y: auto !important;
         scrollbar-width: thin;
+
+        transition-property: width, max-width, background-color, border-color, opacity !important;
+        transition-duration: 0.25s !important;
+
+        /* ★ 终极防跳动神技：负外边距减震器
+           向下释放物理底盘，使浏览器误判其永远无法触碰容器边界，彻底防跳动！ */
+        margin-bottom: calc(-1 * (var(--zcnote-a-h, 0px) + var(--zcnote-g-h, 0px) + 200px)) !important;
+
+        /* 高度脱钩，智能避让最高障碍 */
+        height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-overlap-secondary, 0px)) !important;
+        max-height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-overlap-secondary, 0px)) !important;
     }
 
     /* 幽灵轨道与折叠状态 */

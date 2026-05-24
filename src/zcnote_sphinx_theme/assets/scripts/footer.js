@@ -1,98 +1,100 @@
 /**
  * ZC-Note Sphinx Theme
- * 布局动态计算逻辑 (Footer 零跳动与 Header 精确吸顶计算)
+ * 布局精准测量与极简零干预避障引擎 (全端护航版)
  */
 export function initFooter() {
-    const footer = document.querySelector(".bd-footer");
-    // 捕获 PyData 可能注入的各类头部容器
+    const globalFooter = document.querySelector(".bd-footer");
+    let articleFooter = document.querySelector(".bd-main > .bd-footer-content");
     const stickyHeader = document.querySelector(".pst-sticky-header");
     const bdHeader = document.querySelector("#pst-header") || document.querySelector(".bd-header");
-
-    let spacer = null;
-
-    // 1. 如果有 Footer，执行底部占位符注入逻辑
-    if (footer) {
-        const targetContainer = document.querySelector(".bd-article-container") ||
-                                document.querySelector(".bd-content") ||
-                                document.querySelector(".bd-main") ||
-                                document.body;
-
-        // 确保 Footer 被绝对定位到 body 的最底层
-        if (footer.parentNode !== document.body) {
-            document.body.appendChild(footer);
-        }
-
-        // 注入透明的“幽灵占位符”
-        spacer = document.createElement("div");
-        spacer.id = "zcnote-footer-spacer";
-        spacer.style.cssText = "width: 100%; display: block; clear: both; pointer-events: none; flex-shrink: 0;";
-        if (targetContainer) {
-            targetContainer.appendChild(spacer);
-        }
-    }
-
-    // ==========================================
-    // ★ 性能优化核心：状态缓存与帧级节流
-    // ==========================================
-    let ticking = false;
-    let lastFooterHeight = null;
-    let lastOverlap = null;
-    let lastViewportHeight = null;
-    let lastHeaderHeight = null;
+    const bdMain = document.querySelector(".bd-main");
 
     const root = document.documentElement;
+    let ticking = false;
 
-    // 核心布局计算函数
+    // 状态镜像缓存，阻断无效的重排写入
+    let state = {
+        gHeight: null,
+        aHeight: null,
+        oPrimary: null,
+        oSecondary: null,
+        hBottom: null
+    };
+
     function updateLayout() {
-        const viewportHeight = window.innerHeight;
+        const vh = window.innerHeight;
+        root.style.setProperty('--zcnote-vh', `${vh}px`);
 
-        // --- 视口高度更新 ---
-        if (lastViewportHeight !== viewportHeight) {
-            root.style.setProperty('--zcnote-vh', `${viewportHeight}px`);
-            lastViewportHeight = viewportHeight;
-        }
+        // 1. 全局 Footer 高度测量
+        const gHeight = globalFooter ? globalFooter.offsetHeight : 0;
+        let aHeight = 0;
 
-        // --- Footer 逻辑 ---
-        if (footer && spacer) {
-            const footerHeight = footer.offsetHeight;
-            const footerTop = footer.getBoundingClientRect().top;
-            const overlap = Math.max(0, viewportHeight - footerTop);
+        // 2. 文章 Footer 空壳探测与清理
+        if (articleFooter) {
+            const hasItems = articleFooter.querySelectorAll('.footer-article-item').length > 0;
+            const hasText = articleFooter.textContent.trim() !== '';
 
-            if (lastFooterHeight !== footerHeight) {
-                spacer.style.height = `${footerHeight}px`;
-                lastFooterHeight = footerHeight;
-            }
-
-            if (lastOverlap !== overlap) {
-                root.style.setProperty('--zcnote-footer-overlap', `${overlap}px`);
-                lastOverlap = overlap;
+            if (!hasItems && !hasText) {
+                articleFooter.style.setProperty('display', 'none', 'important');
+                articleFooter = null;
+            } else {
+                aHeight = articleFooter.offsetHeight;
             }
         }
 
-        // --- ★ Header 精确吸顶边界追踪 ---
-        // 无论 sticky_banners 是 true/false，getBoundingClientRect().bottom
-        // 都能精准反映当前吸顶层占据了视口上方多少物理像素。
-        let headerBottom = 0;
-        if (stickyHeader) {
-            headerBottom = Math.max(headerBottom, stickyHeader.getBoundingClientRect().bottom);
+        if (state.gHeight !== gHeight) {
+            root.style.setProperty('--zcnote-g-h', `${gHeight}px`);
+            state.gHeight = gHeight;
         }
-        if (bdHeader) {
-            headerBottom = Math.max(headerBottom, bdHeader.getBoundingClientRect().bottom);
+        if (state.aHeight !== aHeight) {
+            root.style.setProperty('--zcnote-a-h', `${aHeight}px`);
+            state.aHeight = aHeight;
         }
 
-        // 防御性处理：确保不会出现负值
-        headerBottom = Math.max(0, headerBottom);
-
-        if (lastHeaderHeight !== headerBottom) {
-            root.style.setProperty('--zcnote-header-height', `${headerBottom}px`);
-            lastHeaderHeight = headerBottom;
+        // 全端生效：为 bd-main 注入等同于 gHeight 的 padding，用来安全接住上浮的 Footer
+        if (bdMain) {
+            bdMain.style.setProperty('padding-bottom', `${gHeight}px`, 'important');
         }
 
-        // 计算完成，释放锁
+        // 3. 计算视口入侵量
+        let oGlobal = 0, oArticle = 0;
+        if (globalFooter && globalFooter.getBoundingClientRect) {
+            oGlobal = Math.max(0, vh - globalFooter.getBoundingClientRect().top);
+        }
+        if (articleFooter && articleFooter.getBoundingClientRect) {
+            oArticle = Math.max(0, vh - articleFooter.getBoundingClientRect().top);
+        }
+
+        const oPrimary = oGlobal;
+        const oSecondary = Math.max(oGlobal, oArticle);
+
+        if (state.oPrimary !== oPrimary) {
+            root.style.setProperty('--zcnote-overlap-primary', `${oPrimary}px`);
+            state.oPrimary = oPrimary;
+        }
+        if (state.oSecondary !== oSecondary) {
+            root.style.setProperty('--zcnote-overlap-secondary', `${oSecondary}px`);
+            state.oSecondary = oSecondary;
+        }
+
+        // 4. 测量 Header 吸顶高度
+        let hBottom = 0;
+        if (stickyHeader && stickyHeader.getBoundingClientRect) {
+            hBottom = Math.max(hBottom, stickyHeader.getBoundingClientRect().bottom);
+        }
+        if (bdHeader && bdHeader.getBoundingClientRect) {
+            hBottom = Math.max(hBottom, bdHeader.getBoundingClientRect().bottom);
+        }
+        hBottom = Math.max(0, hBottom);
+
+        if (state.hBottom !== hBottom) {
+            root.style.setProperty('--zcnote-header-height', `${hBottom}px`);
+            state.hBottom = hBottom;
+        }
+
         ticking = false;
     }
 
-    // 利用 rAF 节流
     function requestTick() {
         if (!ticking) {
             window.requestAnimationFrame(updateLayout);
@@ -100,18 +102,16 @@ export function initFooter() {
         }
     }
 
-    // 绑定生命周期与交互事件 (passive 提升滚动性能)
     window.addEventListener("scroll", requestTick, { passive: true });
     window.addEventListener("resize", requestTick, { passive: true });
 
-    // 监听 DOM 内容引起的容器尺寸变化
     if (window.ResizeObserver) {
         const ro = new ResizeObserver(() => requestTick());
-        if (footer) ro.observe(footer);
-        if (stickyHeader) ro.observe(stickyHeader); // 监听 Banner/Header 的高度突变
+        if (globalFooter) ro.observe(globalFooter);
+        if (articleFooter) ro.observe(articleFooter);
+        if (stickyHeader) ro.observe(stickyHeader);
+        if (bdMain) ro.observe(bdMain);
         ro.observe(document.body);
     }
-
-    // 首次挂载时立即执行一次计算
     requestTick();
 }
