@@ -1,5 +1,7 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
 const assetsDir = path.resolve(__dirname, 'src/zcnote_sphinx_theme/assets');
 const staticDir = path.resolve(__dirname, 'src/zcnote_sphinx_theme/theme/zcnote_sphinx_theme/static');
@@ -29,8 +31,8 @@ module.exports = (env, argv) => {
     // =========================================================
     output: {
       path: staticDir,
-      filename: 'scripts/[name].js', // ★ 此时会输出为 scripts/zcnote-sphinx-theme.js
-      clean: false, // 保持关闭清理
+      filename: 'scripts/[name].js',
+      clean: false,
     },
 
     // =========================================================
@@ -47,7 +49,7 @@ module.exports = (env, argv) => {
               loader: 'css-loader',
               options: {
                 sourceMap: true,
-                url: false // 如果你希望 Webpack 处理 CSS 中的 url(图片/字体)，设为 true 并配置资源 loader
+                url: false // 如果希望 Webpack 处理 CSS 中的 url(图片/字体)，设为 true 并配置资源 loader
               },
             },
             {
@@ -75,15 +77,32 @@ module.exports = (env, argv) => {
     // =========================================================
     plugins: [
       new MiniCssExtractPlugin({
-        filename: 'styles/[name].css', // ★ 此时会输出为 styles/zcnote-sphinx-theme.css
+        filename: 'styles/[name].css',
       }),
     ],
 
-    // =========================================================
-    // 5. 性能与优化
-    // =========================================================
     optimization: {
       minimize: isProduction,
+
+      minimizer: [
+        new TerserPlugin({
+          parallel: true,
+          terserOptions: {
+            compress: {
+              drop_console: true,
+              drop_debugger: true,
+            },
+            format: {
+              comments: false,
+            },
+          },
+          extractComments: false,
+        }),
+
+        new CssMinimizerPlugin({
+          parallel: true,
+        }),
+      ],
     },
   };
 };
