@@ -18,7 +18,7 @@
     "postcss-loader": "^8.2.1",
     "sass": "^1.100.0",
     "sass-loader": "^16.0.8",
-    "webpack": "^5.89.0",
+    "webpack": "^5.107.2",
     "webpack-cli": "^7.0.2"
   },
   "engines": {
