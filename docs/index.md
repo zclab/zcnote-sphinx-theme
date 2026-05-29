@@ -77,7 +77,7 @@ html_theme = "zcnote_sphinx_theme"
 
 ---
 
-## ✨ Minor altered features
+## ✨ Minor features
 ::::{grid} 1 1 3 3
 :gutter: 4
 :padding: 2
@@ -86,7 +86,7 @@ html_theme = "zcnote_sphinx_theme"
 :::{grid-item-card}  Sticky Sidebars
 :class-card: ghost-card
 :class-title: font-weight-bold
-Sidebars anchored to the viewport. No jumping or shifting when readers scroll to the bottom of documentation.
+Sidebars anchored to the viewport. No jumping or shifting when scroll to the bottom of documentation.
 :::
 
 :::{grid-item-card}  Admonitions styles
@@ -100,7 +100,7 @@ Symmetrical padding, minimalist borders, and color mapping for admonition.
 :::{grid-item-card}  Collapse Sidebar
 :class-card: ghost-card
 :class-title: font-weight-bold
-Added configuration flags to hide the "Collapse Sidebar" buttons. Move collapse sidebar button to the border of primary sidebar.
+Added configuration flags to hide the "Collapse Sidebar" buttons. 
 :::
 ::::
 
