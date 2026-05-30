@@ -31,11 +31,14 @@
 /* =========================================================
    文章专属 Footer (返璞归真 + 移动端折叠防裁切)
    ========================================================= */
-// .bd-main > .bd-footer-article,
+.bd-article-container> .bd-footer-article {
+    padding-left: 1.5rem !important;
+}
+
 .bd-main > .bd-footer-content {
     /* 保留原生文档流形态 */
     padding-top: 1.0rem !important;
-    // padding-bottom: 1.5rem !important;
+    padding-left: 1.5rem !important;
     border-top: 1px solid var(--pst-color-border) !important;
     background-color: var(--pst-color-background) !important;
 

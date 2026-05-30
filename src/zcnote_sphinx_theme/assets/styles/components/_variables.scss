@@ -69,11 +69,22 @@ html[data-theme="dark"] {
 /* =========================================================
    4. 基础重置优化
    ========================================================= */
-.bd-article {
-    p, li {
-        text-align: justify;
-        overflow-wrap: break-word;
-        word-wrap: break-word;
+
+@media (min-width: 960px) {
+    .bd-page-width {
+        max-width: 90rem;
+    }
+}
+
+@media (min-width: 960px) {
+    .bd-main .bd-content .bd-article-container .bd-article {
+        padding-left: 1rem !important;
+
+        p, li {
+            text-align: justify;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+        }
     }
 }
 
