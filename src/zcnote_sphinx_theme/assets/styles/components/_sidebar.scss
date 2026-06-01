@@ -31,7 +31,7 @@ html[data-zcnote-collapse="false"] {
         overflow-y: auto !important;
         scrollbar-width: thin;
 
-        // transition-property: width, max-width, background-color, border-color, opacity !important;
+        transition-property: width, max-width, background-color, border-color, opacity !important;
         transition-duration: 0.25s !important;
 
         height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-overlap-primary, 0px)) !important;
@@ -44,8 +44,9 @@ html[data-zcnote-collapse="false"] {
         }
     }
 
-    .bd-main, .bd-content {
-        min-height: calc(100vh - var(--zcnote-header-height, var(--pst-header-height))) !important;
+    .bd-main {
+        min-height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height))) !important;
+        box-sizing: border-box !important;
     }
 }
 
@@ -81,9 +82,11 @@ html[data-zcnote-collapse="false"] {
         overflow-y: auto !important;
         scrollbar-width: thin;
 
-        // transition-property: width, max-width, background-color, border-color, opacity !important;
-        // transition-duration: 0.25s !important;
-        margin-bottom: calc(-1 * (var(--zcnote-a-h, 0px) + var(--zcnote-g-h, 0px) + 200px)) !important;
+        transition-property: width, max-width, background-color, border-color, opacity !important;
+        transition-duration: 0.25s !important;
+
+        margin-bottom: calc(-1 * (var(--zcnote-a-h, 0px) + var(--zcnote-g-h, 0px) + var(--zcnote-scroll-bounce-buffer, 40px))) !important;
+
         height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-overlap-secondary, 0px)) !important;
         max-height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-overlap-secondary, 0px)) !important;
     }

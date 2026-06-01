@@ -59,11 +59,18 @@ html[data-theme="dark"] {
    ========================================================= */
 :root {
     --zcnote-footer-overlap: 0px;
-    --zcnote-vh: 100vh;
+    --zcnote-vh: 100dvh;
     --zcnote-sidebar-width: 19rem;
-
+    --zcnote-scroll-bounce-buffer: 40px;
     --pst-font-family-base: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
     --pst-font-family-monospace: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* 优雅降级：如果浏览器不支持 dvh，则退回原生 vh，最终由 JS 提供覆盖保障 */
+@supports not (height: 100dvh) {
+    :root {
+        --zcnote-vh: 100vh;
+    }
 }
 
 /* =========================================================
