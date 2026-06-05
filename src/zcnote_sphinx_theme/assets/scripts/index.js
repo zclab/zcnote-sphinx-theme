@@ -12,6 +12,8 @@ initSidebar();
 // =========================================================
 // 2. 底部栏逻辑：等待 DOM 完全就绪
 // =========================================================
-document.addEventListener("DOMContentLoaded", () => {
+if (document.readyState === 'loading') {
+    document.addEventListener("DOMContentLoaded", initFooter);
+} else {
     initFooter();
-});
+}

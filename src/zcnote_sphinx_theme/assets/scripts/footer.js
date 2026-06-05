@@ -22,6 +22,7 @@ export function initFooter() {
 
     let isFooterIntersecting = false;
     let ticking = false;
+    let isInitialRun = true;
 
     // ==========================================
     // 阶段 A: 静态与结构性维度测量 (仅 Resize/DOM 变动触发)
@@ -32,12 +33,20 @@ export function initFooter() {
 
         // 1. Header 吸顶高度测量
         let hBottom = 0;
-        if (stickyHeader && stickyHeader.getBoundingClientRect) {
-            hBottom = Math.max(hBottom, stickyHeader.getBoundingClientRect().bottom);
+
+        if (stickyHeader) {
+            const style = window.getComputedStyle(stickyHeader);
+            if (style.position === 'sticky' || style.position === 'fixed') {
+                hBottom = Math.max(hBottom, stickyHeader.offsetHeight || 0);
+            }
         }
-        if (bdHeader && bdHeader.getBoundingClientRect) {
-            hBottom = Math.max(hBottom, bdHeader.getBoundingClientRect().bottom);
+        if (bdHeader) {
+            const style = window.getComputedStyle(bdHeader);
+            if (style.position === 'sticky' || style.position === 'fixed') {
+                hBottom = Math.max(hBottom, bdHeader.offsetHeight || 0);
+            }
         }
+
         hBottom = Math.max(0, hBottom);
 
         if (state.hBottom !== hBottom) {
@@ -83,8 +92,8 @@ export function initFooter() {
     // 阶段 B: 滚动重叠度计算 (极致防抖，仅 Footer 可见时执行)
     // ==========================================
     function updateScrollOverlap() {
-        // 如果 Footer 不在视口内，强制重叠度归零，并阻断所有 DOM 布局读取
-        if (!isFooterIntersecting && globalFooter && articleFooter) {
+        // 如果 Footer 不在视口内，且不是首帧初始化，才执行拦截和归零
+        if (!isInitialRun && !isFooterIntersecting && globalFooter && articleFooter) {
             if (state.oPrimary !== 0 || state.oSecondary !== 0) {
                 state.oPrimary = 0;
                 state.oSecondary = 0;
@@ -115,6 +124,7 @@ export function initFooter() {
             state.oSecondary = oSecondary;
         }
 
+        isInitialRun = false; // ★ 首次同步计算完成，关闭放行标志，将控制权交还给 Observer
         ticking = false;
     }
 

@@ -2,20 +2,14 @@
 
 {# =========================================================
    ZC-Note Sphinx Theme
-   极其干净的视图层：所有业务逻辑已下沉至 Webpack 与 SCSS/JS 模块
    ========================================================= #}
 
 {% block extrahead %}
     {{ super() }}
 
-    {#
-       状态桥梁：将 Sphinx/Jinja 配置项无缝传递给前端
-       利用阻塞型内联 script，在浏览器渲染任何 DOM 之前，瞬间将配置写在 html 节点上。
-       这能确保 SCSS 第一时间读取到状态，彻底杜绝闪烁。
-    #}
     <script>
         (function() {
-            // 获取用户在 theme.conf 或 conf.py 中配置的侧边栏折叠开关
+            // 获取在 theme.conf 或 conf.py 中配置的侧边栏折叠开关
             const enableCollapse = "{{ theme_enable_collapse_sidebar | default('true') | string | lower }}";
 
             // 注入 data-zcnote-collapse 属性到 <html> 标签
