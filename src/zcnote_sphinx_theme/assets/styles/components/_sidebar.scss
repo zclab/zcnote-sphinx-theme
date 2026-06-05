@@ -64,7 +64,9 @@ html[data-zcnote-collapse="false"] {
         transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1),
                     max-width 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
 
-        > .sidebar-primary-item.pst-sidebar-collapse {
+        /* ★ 修复 1：移除原本的 '>' 子代选择符，防止 FOUC 引起的结构闪动。
+           允许穿透查找并隐藏包裹在内部的按钮容器 */
+        .sidebar-primary-item.pst-sidebar-collapse {
             display: none !important;
             opacity: 0 !important;
             pointer-events: none !important;
@@ -101,7 +103,7 @@ html[data-zcnote-collapse="false"] {
         border: none !important;
         align-self: stretch !important;
         position: relative !important;
-        z-index: 1050 !important;
+        z-index: 100 !important;
         overflow: visible !important;
         display: block !important;
         visibility: visible !important;
@@ -181,24 +183,26 @@ html[data-zcnote-collapse="false"] {
     }
 }
 
-/* 滚动条终极防御 */
-.zcnote-hide-scrollbar {
-    &, * {
-        overflow: hidden !important;
-        scrollbar-width: none !important;
-        -ms-overflow-style: none !important;
-    }
 
-    &::-webkit-scrollbar,
-    *::-webkit-scrollbar {
-        display: none !important;
-        width: 0 !important;
-        height: 0 !important;
-    }
+@media (min-width: 1200px) {
+    .zcnote-hide-scrollbar {
+        &, * {
+            overflow: hidden !important;
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+        }
 
-    * {
-        white-space: nowrap !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
+        &::-webkit-scrollbar,
+        *::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+
+        * {
+            white-space: nowrap !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+        }
     }
 }

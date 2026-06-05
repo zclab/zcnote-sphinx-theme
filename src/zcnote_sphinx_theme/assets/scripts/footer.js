@@ -1,5 +1,5 @@
 /**
- * ZC-Note Sphinx Theme
+ * ZC-Note Sphinx Theme (Ultimate FOUC, Bounce & Performance Defense)
  */
 export function initFooter() {
     const globalFooter = document.querySelector(".bd-footer");
@@ -10,35 +10,43 @@ export function initFooter() {
 
     const root = document.documentElement;
 
-    // 状态镜像缓存
+    // 状态镜像缓存，全部初始化为整数 0
     let state = {
-        gHeight: null,
-        aHeight: null,
-        oPrimary: null,
-        oSecondary: null,
-        hBottom: null,
-        vh: window.innerHeight
+        gHeight: 0,
+        aHeight: 0,
+        oPrimary: 0,
+        oSecondary: 0,
+        hBottom: 0,
+        vh: window.innerHeight,
+        vw: window.innerWidth
     };
 
-    let isFooterIntersecting = false;
     let ticking = false;
 
     // ==========================================
-    // 阶段 A: 静态与结构性维度测量 (仅 Resize/DOM 变动触发)
+    // 阶段 A: 静态与结构性维度测量
     // ==========================================
     function updateStaticDimensions() {
         state.vh = window.innerHeight;
+        state.vw = window.innerWidth;
         root.style.setProperty('--zcnote-vh', `${state.vh}px`);
 
-        // 1. Header 吸顶高度测量
+        // 1. Header 吸顶高度测量 (亚像素抹平)
         let hBottom = 0;
-        if (stickyHeader && stickyHeader.getBoundingClientRect) {
-            hBottom = Math.max(hBottom, stickyHeader.getBoundingClientRect().bottom);
+        if (stickyHeader) {
+            const style = window.getComputedStyle(stickyHeader);
+            if (style.position === 'sticky' || style.position === 'fixed') {
+                hBottom = Math.max(hBottom, stickyHeader.offsetHeight || 0);
+            }
         }
-        if (bdHeader && bdHeader.getBoundingClientRect) {
-            hBottom = Math.max(hBottom, bdHeader.getBoundingClientRect().bottom);
+        if (bdHeader) {
+            const style = window.getComputedStyle(bdHeader);
+            if (style.position === 'sticky' || style.position === 'fixed') {
+                hBottom = Math.max(hBottom, bdHeader.offsetHeight || 0);
+            }
         }
-        hBottom = Math.max(0, hBottom);
+
+        hBottom = Math.round(Math.max(0, hBottom));
 
         if (state.hBottom !== hBottom) {
             root.style.setProperty('--zcnote-header-height', `${hBottom}px`);
@@ -46,7 +54,7 @@ export function initFooter() {
         }
 
         // 2. Footer 基础高度测量
-        const gHeight = globalFooter ? globalFooter.offsetHeight : 0;
+        const gHeight = globalFooter ? Math.round(globalFooter.offsetHeight) : 0;
         let aHeight = 0;
 
         if (articleFooter) {
@@ -57,7 +65,7 @@ export function initFooter() {
                 articleFooter.style.setProperty('display', 'none', 'important');
                 articleFooter = null;
             } else {
-                aHeight = articleFooter.offsetHeight;
+                aHeight = Math.round(articleFooter.offsetHeight);
             }
         }
 
@@ -75,37 +83,42 @@ export function initFooter() {
             bdMain.style.setProperty('padding-bottom', `${state.gHeight}px`, 'important');
         }
 
-        // 静态尺寸改变可能影响重叠，静默刷新一次
         updateScrollOverlap();
     }
 
     // ==========================================
-    // 阶段 B: 滚动重叠度计算 (极致防抖，仅 Footer 可见时执行)
+    // 阶段 B: 滚动重叠度计算
     // ==========================================
     function updateScrollOverlap() {
-        // 如果 Footer 不在视口内，强制重叠度归零，并阻断所有 DOM 布局读取
-        if (!isFooterIntersecting && globalFooter && articleFooter) {
-            if (state.oPrimary !== 0 || state.oSecondary !== 0) {
-                state.oPrimary = 0;
-                state.oSecondary = 0;
-                root.style.setProperty('--zcnote-overlap-primary', '0px');
-                root.style.setProperty('--zcnote-overlap-secondary', '0px');
-            }
+        // ★ 性能屏障：如果屏幕小于 960px (移动端)，侧边栏变为抽屉，无需计算滚动，直接释放性能
+        if (state.vw < 960) {
             ticking = false;
             return;
         }
 
         let oGlobal = 0, oArticle = 0;
-        if (globalFooter && globalFooter.getBoundingClientRect) {
-            oGlobal = Math.max(0, state.vh - globalFooter.getBoundingClientRect().top);
+
+        // 真实系统过冲量 (ScrollY + Viewport - DocumentHeight)
+        // 彻底免疫短页面 Bug 和 iOS/Mac 弹性回弹
+        const docHeight = document.documentElement.scrollHeight;
+        const scrollBottom = window.scrollY + state.vh;
+        const fakeScroll = Math.max(0, scrollBottom - docHeight);
+
+        // ★ 抹平亚像素，防御渲染风暴
+        if (globalFooter) {
+            oGlobal = Math.max(0, state.vh - globalFooter.getBoundingClientRect().top - fakeScroll);
+            oGlobal = Math.round(oGlobal);
         }
-        if (articleFooter && articleFooter.getBoundingClientRect) {
-            oArticle = Math.max(0, state.vh - articleFooter.getBoundingClientRect().top);
+
+        if (articleFooter) {
+            oArticle = Math.max(0, state.vh - articleFooter.getBoundingClientRect().top - fakeScroll);
+            oArticle = Math.round(oArticle);
         }
 
         const oPrimary = oGlobal;
         const oSecondary = Math.max(oGlobal, oArticle);
 
+        // 仅在整数像素发生实质改变时写入 DOM
         if (state.oPrimary !== oPrimary) {
             root.style.setProperty('--zcnote-overlap-primary', `${oPrimary}px`);
             state.oPrimary = oPrimary;
@@ -122,30 +135,6 @@ export function initFooter() {
     // 阶段 C: 事件注册与监听器管理
     // ==========================================
 
-    // 引入 IntersectionObserver，监控 Footer 是否即将进入屏幕 (提前 150px 预判)
-    if (window.IntersectionObserver) {
-        const io = new IntersectionObserver((entries) => {
-            let anyIntersecting = false;
-            entries.forEach(entry => {
-                if (entry.isIntersecting) anyIntersecting = true;
-            });
-            isFooterIntersecting = anyIntersecting;
-
-            // 状态反转时立即触发一次计算
-            if (!ticking) {
-                window.requestAnimationFrame(updateScrollOverlap);
-                ticking = true;
-            }
-        }, { rootMargin: "0px 0px 150px 0px" });
-
-        if (globalFooter) io.observe(globalFooter);
-        if (articleFooter) io.observe(articleFooter);
-    } else {
-        // 降级：不支持的古老浏览器默认始终允许计算
-        isFooterIntersecting = true;
-    }
-
-    // 滚动事件，接管给 RAF
     window.addEventListener("scroll", () => {
         if (!ticking) {
             window.requestAnimationFrame(updateScrollOverlap);
@@ -153,12 +142,10 @@ export function initFooter() {
         }
     }, { passive: true });
 
-    // 视口变化事件，重新计算静态尺寸
     window.addEventListener("resize", () => {
         window.requestAnimationFrame(updateStaticDimensions);
     }, { passive: true });
 
-    // DOM 监听器：内容动态展开/收起时重测
     if (window.ResizeObserver) {
         let roTicking = false;
         const ro = new ResizeObserver(() => {
