@@ -1,5 +1,6 @@
 /**
- * ZC-Note Sphinx Theme (Ultimate FOUC, Bounce & Performance Defense)
+ * ZC-Note Sphinx Theme
+ * (Ultimate FOUC, Layout Thrashing & Scroll Restoration Defense)
  */
 export function initFooter() {
     const globalFooter = document.querySelector(".bd-footer");
@@ -10,7 +11,6 @@ export function initFooter() {
 
     const root = document.documentElement;
 
-    // 状态镜像缓存，全部初始化为整数 0
     let state = {
         gHeight: 0,
         aHeight: 0,
@@ -24,14 +24,13 @@ export function initFooter() {
     let ticking = false;
 
     // ==========================================
-    // 阶段 A: 静态与结构性维度测量
+    // 阶段 A: 静态维度测量 (极简且防死循环)
     // ==========================================
     function updateStaticDimensions() {
         state.vh = window.innerHeight;
         state.vw = window.innerWidth;
         root.style.setProperty('--zcnote-vh', `${state.vh}px`);
 
-        // 1. Header 吸顶高度测量 (亚像素抹平)
         let hBottom = 0;
         if (stickyHeader) {
             const style = window.getComputedStyle(stickyHeader);
@@ -45,22 +44,19 @@ export function initFooter() {
                 hBottom = Math.max(hBottom, bdHeader.offsetHeight || 0);
             }
         }
-
         hBottom = Math.round(Math.max(0, hBottom));
 
-        if (state.hBottom !== hBottom) {
+        if (Math.abs(state.hBottom - hBottom) > 1) {
             root.style.setProperty('--zcnote-header-height', `${hBottom}px`);
             state.hBottom = hBottom;
         }
 
-        // 2. Footer 基础高度测量
         const gHeight = globalFooter ? Math.round(globalFooter.offsetHeight) : 0;
         let aHeight = 0;
 
         if (articleFooter) {
             const hasItems = articleFooter.querySelectorAll('.footer-article-item').length > 0;
             const hasText = articleFooter.textContent.trim() !== '';
-
             if (!hasItems && !hasText) {
                 articleFooter.style.setProperty('display', 'none', 'important');
                 articleFooter = null;
@@ -69,28 +65,40 @@ export function initFooter() {
             }
         }
 
-        if (state.gHeight !== gHeight) {
+        let layoutChanged = false;
+
+        // 核心防御：引入 > 1px 的宽容度，防止 ResizeObserver 陷入亚像素死循环
+        if (Math.abs(state.gHeight - gHeight) > 1) {
             root.style.setProperty('--zcnote-g-h', `${gHeight}px`);
             state.gHeight = gHeight;
-        }
-        if (state.aHeight !== aHeight) {
-            root.style.setProperty('--zcnote-a-h', `${aHeight}px`);
-            state.aHeight = aHeight;
+            layoutChanged = true;
         }
 
-        // 3. 注入补偿 Padding
+        if (Math.abs(state.aHeight - aHeight) > 1) {
+            root.style.setProperty('--zcnote-a-h', `${aHeight}px`);
+            state.aHeight = aHeight;
+            layoutChanged = true;
+        }
+
         if (bdMain && state.gHeight > 0) {
-            bdMain.style.setProperty('padding-bottom', `${state.gHeight}px`, 'important');
+            if (bdMain.style.paddingBottom !== `${state.gHeight}px`) {
+                bdMain.style.setProperty('padding-bottom', `${state.gHeight}px`, 'important');
+                layoutChanged = true;
+            }
+        }
+
+        // 强制 Layout Flush 消除 1 帧闪动
+        if (layoutChanged) {
+            void document.body.offsetHeight;
         }
 
         updateScrollOverlap();
     }
 
     // ==========================================
-    // 阶段 B: 滚动重叠度计算
+    // 阶段 B: 滚动重叠度计算 (物理封顶法)
     // ==========================================
     function updateScrollOverlap() {
-        // ★ 性能屏障：如果屏幕小于 960px (移动端)，侧边栏变为抽屉，无需计算滚动，直接释放性能
         if (state.vw < 960) {
             ticking = false;
             return;
@@ -98,27 +106,24 @@ export function initFooter() {
 
         let oGlobal = 0, oArticle = 0;
 
-        // 真实系统过冲量 (ScrollY + Viewport - DocumentHeight)
-        // 彻底免疫短页面 Bug 和 iOS/Mac 弹性回弹
-        const docHeight = document.documentElement.scrollHeight;
-        const scrollBottom = window.scrollY + state.vh;
-        const fakeScroll = Math.max(0, scrollBottom - docHeight);
-
-        // ★ 抹平亚像素，防御渲染风暴
         if (globalFooter) {
-            oGlobal = Math.max(0, state.vh - globalFooter.getBoundingClientRect().top - fakeScroll);
-            oGlobal = Math.round(oGlobal);
+            const top = globalFooter.getBoundingClientRect().top;
+            if (top < state.vh) {
+                oGlobal = Math.max(0, Math.min(state.gHeight, Math.round(state.vh - top)));
+            }
         }
 
         if (articleFooter) {
-            oArticle = Math.max(0, state.vh - articleFooter.getBoundingClientRect().top - fakeScroll);
-            oArticle = Math.round(oArticle);
+            const top = articleFooter.getBoundingClientRect().top;
+            if (top < state.vh) {
+                oArticle = Math.max(0, Math.min(state.aHeight, Math.round(state.vh - top)));
+            }
         }
 
         const oPrimary = oGlobal;
         const oSecondary = Math.max(oGlobal, oArticle);
 
-        // 仅在整数像素发生实质改变时写入 DOM
+        // 使用 !== 即可，因为已经是 round 处理过的整数
         if (state.oPrimary !== oPrimary) {
             root.style.setProperty('--zcnote-overlap-primary', `${oPrimary}px`);
             state.oPrimary = oPrimary;
@@ -132,7 +137,7 @@ export function initFooter() {
     }
 
     // ==========================================
-    // 阶段 C: 事件注册与监听器管理
+    // 阶段 C: 事件注册与性能防护管理
     // ==========================================
 
     window.addEventListener("scroll", () => {
@@ -143,7 +148,18 @@ export function initFooter() {
     }, { passive: true });
 
     window.addEventListener("resize", () => {
-        window.requestAnimationFrame(updateStaticDimensions);
+        // 核心防御：移动端地址栏收缩性能杀手防护
+        if (window.innerWidth !== state.vw) {
+            window.requestAnimationFrame(updateStaticDimensions);
+        } else {
+            state.vh = window.innerHeight;
+            root.style.setProperty('--zcnote-vh', `${state.vh}px`);
+
+            if (!ticking) {
+                window.requestAnimationFrame(updateScrollOverlap);
+                ticking = true;
+            }
+        }
     }, { passive: true });
 
     if (window.ResizeObserver) {
@@ -163,6 +179,5 @@ export function initFooter() {
         if (bdMain) ro.observe(bdMain);
     }
 
-    // 立即执行一次初始化
     updateStaticDimensions();
 }
