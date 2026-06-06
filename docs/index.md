@@ -113,16 +113,23 @@ guide/index
 ```
 
 ```{toctree}
-:maxdepth: 2
 :hidden:
-:caption: Example pages
 
-examples/index
+Changelog <https://github.com/pydata/pydata-sphinx-theme/releases>
 ```
 
 ```{toctree}
 :hidden:
 
-Changelog <https://github.com/pydata/pydata-sphinx-theme/releases>
+Pydata theme <https://pydata-sphinx-theme.readthedocs.io/>
+```
+
+
+```{toctree}
+:maxdepth: 2
+:hidden:
+:caption: Example pages
+
+examples/index
 ```
 
