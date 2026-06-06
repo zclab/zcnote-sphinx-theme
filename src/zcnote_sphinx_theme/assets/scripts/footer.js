@@ -4,7 +4,8 @@
  */
 export function initFooter() {
     const globalFooter = document.querySelector(".bd-footer");
-    let articleFooter = document.querySelector(".bd-main > .bd-footer-content");
+    // ★ 修复 2：改用 const 锁定引用，绝不赋 null，防止内存逃逸与状态丢失
+    const articleFooter = document.querySelector(".bd-main > .bd-footer-content");
     const stickyHeader = document.querySelector(".pst-sticky-header");
     const bdHeader = document.querySelector("#pst-header") || document.querySelector(".bd-header");
     const bdMain = document.querySelector(".bd-main");
@@ -57,17 +58,18 @@ export function initFooter() {
         if (articleFooter) {
             const hasItems = articleFooter.querySelectorAll('.footer-article-item').length > 0;
             const hasText = articleFooter.textContent.trim() !== '';
+
+            // ★ 修复 2：只做 CSS 隐藏/还原，安全保留 DOM 引用
             if (!hasItems && !hasText) {
                 articleFooter.style.setProperty('display', 'none', 'important');
-                articleFooter = null;
             } else {
+                articleFooter.style.removeProperty('display');
                 aHeight = Math.round(articleFooter.offsetHeight);
             }
         }
 
         let layoutChanged = false;
 
-        // 核心防御：引入 > 1px 的宽容度，防止 ResizeObserver 陷入亚像素死循环
         if (Math.abs(state.gHeight - gHeight) > 1) {
             root.style.setProperty('--zcnote-g-h', `${gHeight}px`);
             state.gHeight = gHeight;
@@ -80,9 +82,11 @@ export function initFooter() {
             layoutChanged = true;
         }
 
-        if (bdMain && state.gHeight > 0) {
-            if (bdMain.style.paddingBottom !== `${state.gHeight}px`) {
-                bdMain.style.setProperty('padding-bottom', `${state.gHeight}px`, 'important');
+        // ★ 修复 3：补齐 0 像素的兜底逻辑，防止节点移除时 padding 残留
+        if (bdMain) {
+            const expectedPadding = state.gHeight > 0 ? `${state.gHeight}px` : '0px';
+            if (bdMain.style.paddingBottom !== expectedPadding) {
+                bdMain.style.setProperty('padding-bottom', expectedPadding, 'important');
                 layoutChanged = true;
             }
         }
@@ -116,14 +120,15 @@ export function initFooter() {
         if (articleFooter) {
             const top = articleFooter.getBoundingClientRect().top;
             if (top < state.vh) {
-                oArticle = Math.max(0, Math.min(state.aHeight, Math.round(state.vh - top)));
+                // ★ 修复 1：修正物理上限封顶逻辑！
+                // ArticleFooter 距离文档最底部的最大有效重叠高度，是它自身高度 + GlobalFooter高度
+                oArticle = Math.max(0, Math.min(state.aHeight + state.gHeight, Math.round(state.vh - top)));
             }
         }
 
         const oPrimary = oGlobal;
         const oSecondary = Math.max(oGlobal, oArticle);
 
-        // 使用 !== 即可，因为已经是 round 处理过的整数
         if (state.oPrimary !== oPrimary) {
             root.style.setProperty('--zcnote-overlap-primary', `${oPrimary}px`);
             state.oPrimary = oPrimary;
@@ -148,7 +153,6 @@ export function initFooter() {
     }, { passive: true });
 
     window.addEventListener("resize", () => {
-        // 核心防御：移动端地址栏收缩性能杀手防护
         if (window.innerWidth !== state.vw) {
             window.requestAnimationFrame(updateStaticDimensions);
         } else {
