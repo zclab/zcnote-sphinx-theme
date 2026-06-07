@@ -1,6 +1,0 @@
-sphinx_design
-sphinx_copybutton
-myst_parser
-sphinx_togglebutton
-sphinxcontrib-mermaid
-ablog>=0.11.13
