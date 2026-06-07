@@ -1,5 +1,5 @@
 /* =========================================================
-   侧边栏尺寸、粘性滚动与折叠按钮
+   侧边栏尺寸、粘性滚动与折叠按钮 (The Holy Grail Edition)
    ========================================================= */
 
 html[data-zcnote-collapse="false"] {
@@ -14,33 +14,28 @@ html[data-zcnote-collapse="false"] {
     }
 }
 
-/* ==========================================================
-   ★ 级联断点 1：中大屏幕以上 >= 960px (接管左侧边栏与主网格)
-   PyData 在 960px 唤出左侧边栏，防遮挡与高度锚定必须在此激活！
-   ========================================================== */
 @media (min-width: 960px) {
-    /* 左侧边栏 (Primary)：全站导航 */
     #pst-primary-sidebar {
         align-self: start !important;
         position: sticky !important;
         top: var(--zcnote-header-height, var(--pst-header-height)) !important;
         z-index: 10 !important;
-
-        /* ★ 终极防线 1：严格限制盒模型，防止未来主题更新 padding 时溢出引发双滚动条 */
         box-sizing: border-box !important;
 
-        margin-bottom: 0 !important;
-        padding-bottom: 0 !important;
-        overflow-y: auto !important;
-        scrollbar-width: thin;
-
-        transition-property: width, max-width, background-color, border-color, opacity !important;
-        transition-duration: 0.25s !important;
-
+        /* ★ 视觉层同步：动态扣除 JS 算出的重叠度，防止被 Footer 遮挡 */
         height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-overlap-primary, 0px)) !important;
         max-height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-overlap-primary, 0px)) !important;
 
-        /* 原有的子元素边距配置 */
+        /* ★ 物理层脱轨：阉割 Sticky 碰撞引擎，彻底消灭向上弹跳的抖动 */
+        margin-bottom: -100vh !important;
+        padding-bottom: 0 !important;
+
+        overflow-y: auto !important;
+        scrollbar-width: thin;
+
+        /* 严禁在 height 上加 transition，否则会和 JS 的逐帧运算打架产生拖影 */
+        transition: background-color 0.25s, border-color 0.25s, width 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s !important;
+
         .sidebar-primary-item {
             padding-left: 0.5rem !important;
             padding-right: 0.5rem !important;
@@ -53,22 +48,14 @@ html[data-zcnote-collapse="false"] {
     }
 }
 
-/* ==========================================================
-   ★ 级联断点 2：超大屏幕以上 >= 1200px (接管右侧边栏与折叠交互)
-   PyData 在 1200px 唤出右侧边栏，折叠按钮逻辑也在此激活！
-   ========================================================== */
 @media (min-width: 1200px) {
-    /* 原有折叠容器宽度与过渡控制 */
     .bd-sidebar-primary {
         width: var(--zcnote-sidebar-width);
         max-width: var(--zcnote-sidebar-width);
         flex: 0 0 auto;
-        /* 严禁在此处使用 transition: all，防止与 JS 的高度频繁写入产生动画冲突 */
         transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1),
                     max-width 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
 
-        /* ★ 终极防线 2：移除原本的 '>' 子代选择符，防止 FOUC 引起的结构闪动。
-           允许穿透查找并隐藏包裹在内部的按钮容器 */
         .sidebar-primary-item.pst-sidebar-collapse {
             display: none !important;
             opacity: 0 !important;
@@ -76,27 +63,25 @@ html[data-zcnote-collapse="false"] {
         }
     }
 
-    /* ★ 右侧边栏 (Secondary)：页面级目录大纲 */
     #pst-secondary-sidebar {
         align-self: start !important;
         position: sticky !important;
         top: var(--zcnote-header-height, var(--pst-header-height)) !important;
         z-index: 10 !important;
-
-        /* ★ 终极防线 1：严格限制盒模型 */
         box-sizing: border-box !important;
 
+        /* ★ 视觉层同步：动态扣除 JS 算出的重叠度 */
+        height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-overlap-secondary, 0px)) !important;
+        max-height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-overlap-secondary, 0px)) !important;
+
+        /* ★ 物理层脱轨：永远不会触发向上的触底反弹 */
+        margin-bottom: -100vh !important;
         padding-bottom: 0 !important;
+
         overflow-y: auto !important;
         scrollbar-width: thin;
 
-        transition-property: width, max-width, background-color, border-color, opacity !important;
-        transition-duration: 0.25s !important;
-
-        margin-bottom: calc(-1 * (var(--zcnote-a-h, 0px) + var(--zcnote-g-h, 0px) + var(--zcnote-scroll-bounce-buffer, 40px))) !important;
-
-        height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-overlap-secondary, 0px)) !important;
-        max-height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-overlap-secondary, 0px)) !important;
+        transition: background-color 0.25s, border-color 0.25s, width 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s !important;
     }
 
     /* 幽灵轨道与折叠状态 */
@@ -109,10 +94,7 @@ html[data-zcnote-collapse="false"] {
         border: none !important;
         align-self: stretch !important;
         position: relative !important;
-
-        /* ★ 终极防线 3：将 z-index 从 1050 降级到 100，防止按钮穿透顶部搜索蒙层 */
         z-index: 100 !important;
-
         overflow: visible !important;
         display: block !important;
         visibility: visible !important;
@@ -128,7 +110,6 @@ html[data-zcnote-collapse="false"] {
     /* 按钮本体 */
     #pst-collapse-sidebar-button {
         position: sticky !important;
-        /* 折叠按钮同样对齐新的动态边界高度 */
         top: calc(var(--zcnote-header-height, var(--pst-header-height, 4rem)) + 1.25rem) !important;
         left: 0 !important;
         margin-left: 0 !important;
@@ -148,7 +129,6 @@ html[data-zcnote-collapse="false"] {
         transition: opacity 0.3s ease-in-out, background-color 0.2s, box-shadow 0.2s, width 0.2s !important;
         pointer-events: auto !important;
 
-        /* 悬停与反馈 */
         &:hover, &:focus-visible {
             opacity: 1 !important;
         }
@@ -178,24 +158,18 @@ html[data-zcnote-collapse="false"] {
         }
     }
 
-    /* 触发显现条件 */
     .bd-sidebar-primary:hover ~ .pst-sidebar-collapse #pst-collapse-sidebar-button,
     .pst-sidebar-collapse:hover #pst-collapse-sidebar-button {
         opacity: 1 !important;
     }
 }
 
-/* 移动端防御 */
 @media (max-width: 1199.98px) {
     .bd-page-width > .sidebar-primary-item.pst-sidebar-collapse {
         display: none !important;
     }
 }
 
-/* ==========================================================
-   ★ 终极防线 4：滚动条终极防御 (限制在 1200px 以上桌面端生效)
-   防止当浏览器缩小到移动端尺寸时，抽屉菜单因隐藏滚动条属性而白屏假死。
-   ========================================================== */
 @media (min-width: 1200px) {
     .zcnote-hide-scrollbar {
         &, * {

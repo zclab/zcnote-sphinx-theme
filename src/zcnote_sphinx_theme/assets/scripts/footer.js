@@ -1,6 +1,5 @@
 /**
  * ZC-Note Sphinx Theme
- * (Expert Edition: Double-rAF Separation & Anti-Jitter Bumper)
  */
 export function initFooter() {
     if (window._zcnoteFooterInitialized) return;
@@ -28,9 +27,6 @@ export function initFooter() {
     let resizeObserver = null;
     let isFirstMount = true;
 
-    // ==========================================
-    // 阶段 A1: DOM 集中读取 - 静态维度
-    // ==========================================
     function measureStaticDimensions() {
         const metrics = {
             vw: window.innerWidth,
@@ -72,9 +68,6 @@ export function initFooter() {
         return metrics;
     }
 
-    // ==========================================
-    // 阶段 A2: DOM 集中读取 - 滚动重叠度
-    // ==========================================
     function measureScrollOverlap() {
         const vh = window.innerHeight;
         const metrics = { oGlobal: 0, oArticle: 0 };
@@ -102,12 +95,9 @@ export function initFooter() {
         return metrics;
     }
 
-    // ==========================================
-    // 阶段 B2: DOM 集中写入 - 滚动重叠度
-    // ==========================================
     function applyScrollOverlap(metrics) {
-        // 保留 2px 安全距离，防止与容器底边碰撞引发 Jitter
-        const safeBumper = 2;
+        // 由于已经有 CSS 的 -100vh 防碰撞，这里的 Bumper 只是为了视觉留白
+        const safeBumper = 0;
 
         const oPrimary = Math.max(safeBumper, Math.round(metrics.oGlobal));
         const oSecondary = Math.max(safeBumper, Math.round(Math.max(metrics.oGlobal, metrics.oArticle)));
@@ -122,7 +112,6 @@ export function initFooter() {
         }
     }
 
-    // 抽离 DOM 写入逻辑，以便复用
     function writeStaticDimensionsDOM(staticMetrics) {
         let layoutMutated = false;
 
@@ -166,50 +155,43 @@ export function initFooter() {
         return layoutMutated;
     }
 
-    // ==========================================
-    // 阶段 B1: DOM 集中写入 - 智能调度器
-    // ==========================================
     function applyDimensions() {
         const staticMetrics = measureStaticDimensions();
         state.vw = staticMetrics.vw;
 
-        // 首次渲染策略
+        // ★ 首次挂载：同步重排 + 0ms 瞬移。配合 CSS 动画镇压彻底消灭底部刷新闪烁。
         if (isFirstMount) {
-            // 首次渲染：放弃双帧分离，采取强制同步模式。
-            // 此时执行 measureScrollOverlap 会触发 Forced Reflow，
-            // 但这是为了对抗浏览器 Scroll Restoration 的瞬间闪烁（FOUC）付出的代价。
+            isFirstMount = false;
+
             writeStaticDimensionsDOM(staticMetrics);
             const scrollMetrics = measureScrollOverlap();
             applyScrollOverlap(scrollMetrics);
 
-            isFirstMount = false;
+            // 彻底算准高度后，解除 CSS 动画封印
+            window.requestAnimationFrame(() => {
+                window.requestAnimationFrame(() => {
+                    root.setAttribute('data-zcnote-layout-ready', 'true');
+                });
+            });
             return;
         }
 
-        // ★ 交互渲染策略 (滚动/窗口缩放/内容变化时执行)
-        // Double-rAF 隔离机制，保护 60fps 运行性能
+        // 常规交互的 60fps 异步管线
         window.requestAnimationFrame(() => {
             const layoutMutated = writeStaticDimensionsDOM(staticMetrics);
 
-            // Double-rAF 隔离 (彻底消灭强制同步布局)
-            // 如果发生了布局变更，我们必须等待浏览器在当前帧末尾完成自然重排(Reflow)和重绘(Repaint)，
-            // 才能在下一帧去安全地读取基于新布局的 getBoundingClientRect()。
             if (layoutMutated) {
                 window.requestAnimationFrame(() => {
                     const scrollMetrics = measureScrollOverlap();
                     applyScrollOverlap(scrollMetrics);
                 });
             } else {
-                // 没有改变DOM结构，同一帧读取是安全的
                 const scrollMetrics = measureScrollOverlap();
                 applyScrollOverlap(scrollMetrics);
             }
         });
     }
 
-    // ==========================================
-    // 阶段 C: 事件注册与生命周期
-    // ==========================================
     window.addEventListener("scroll", () => {
         if (!scrollTicking) {
             scrollTicking = true;
@@ -225,7 +207,6 @@ export function initFooter() {
         if (window.innerWidth !== state.vw) {
             applyDimensions();
         } else {
-            // 移动端地址栏收起导致的高度变化，只需重算 Scroll Overlap
             if (!scrollTicking) {
                 scrollTicking = true;
                 window.requestAnimationFrame(() => {
@@ -252,7 +233,6 @@ export function initFooter() {
         if (globalFooter) resizeObserver.observe(globalFooter);
         if (articleFooter) resizeObserver.observe(articleFooter);
         if (stickyHeader) resizeObserver.observe(stickyHeader);
-        // 将监听目标从 bdMain (会被注入 padding) 改为内部的 bdContent (纯净的内容区)
         if (bdContent) resizeObserver.observe(bdContent);
     }
 
