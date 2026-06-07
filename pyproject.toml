@@ -5,7 +5,7 @@ build-backend = "sphinx_theme_builder"
 [project]
 name = "zcnote-sphinx-theme"
 dynamic = ["version"]
-description = "A customized Sphinx theme based on pydata-sphinx-theme."
+description = "A lightweight wrapper theme based on the pydata-sphinx-theme."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "BSD-3-Clause"
@@ -38,6 +38,8 @@ doc = [
     "myst-parser",
     "sphinx_copybutton",
     "sphinx-togglebutton",
+    "sphinxcontrib-mermaid",
+    "ablog>=0.11.13"
 ]
 dev = [
     "sphinx-autobuild",
