@@ -46,7 +46,7 @@ html[data-zcnote-collapse="false"] body {
 }
 
 @media (min-width: 1200px) {
-    #pst-primary-sidebar.bd-sidebar-primary {
+    .bd-sidebar-primary {
         width: var(--zcnote-sidebar-width);
         max-width: var(--zcnote-sidebar-width);
         flex: 0 0 auto;
@@ -59,7 +59,7 @@ html[data-zcnote-collapse="false"] body {
         }
     }
 
-    #pst-secondary-sidebar.bd-sidebar-secondary {
+    #pst-secondary-sidebar {
         align-self: start;
         position: sticky;
         top: var(--zcnote-header-height, var(--pst-header-height));
@@ -168,16 +168,25 @@ html[data-zcnote-collapse="false"] body {
     }
 }
 
-/* ★ 精简版的无滚动条类，摒弃 Hack 行为 */
 @media (min-width: 1200px) {
     .zcnote-hide-scrollbar {
-        scrollbar-width: none;
-        -ms-overflow-style: none;
+        &, * {
+            overflow: hidden !important;
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+        }
 
-        &::-webkit-scrollbar {
-            display: none;
-            width: 0;
-            height: 0;
+        &::-webkit-scrollbar,
+        *::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+
+        * {
+            white-space: nowrap !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
         }
     }
 }
