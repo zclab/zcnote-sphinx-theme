@@ -3,19 +3,21 @@
    ========================================================= */
 
 @media print {
-    .bd-footer {
-        position: static !important;
-    }
+    html body {
+        .bd-footer {
+            position: static;
+        }
 
-    #zcnote-footer-spacer {
-        display: none !important;
-    }
+        #zcnote-footer-spacer {
+            display: none;
+        }
 
-    #pst-primary-sidebar,
-    #pst-secondary-sidebar {
-        position: static !important;
-        height: auto !important;
-        max-height: none !important;
-        overflow-y: visible !important;
+        #pst-primary-sidebar,
+        #pst-secondary-sidebar {
+            position: static;
+            height: auto;
+            max-height: none;
+            overflow-y: visible;
+        }
     }
 }

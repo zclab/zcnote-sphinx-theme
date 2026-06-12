@@ -2,206 +2,208 @@
    Admonition (提示框) V0.0.7dev
    ========================================================= */
 
-div.admonition {
-    border: 1px solid var(--pst-color-primary) !important;
-    border-radius: 0.375rem !important;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
-    margin: 1.5rem 0 !important;
-    padding: 0 1.25rem 1rem 1.25rem !important;
-    background-color: var(--pst-color-background) !important;
-
-    /* 嵌套间距控制 */
+html[data-theme] body {
     div.admonition {
-        margin: 1rem 0 !important;
-    }
+        border: 1px solid var(--pst-color-primary);
+        border-radius: 0.375rem;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+        margin: 1.5rem 0;
+        padding: 0 1.25rem 1rem 1.25rem;
+        background-color: var(--pst-color-background);
 
-    /* 标题区 */
-    > .admonition-title {
-        display: flex !important;
-        align-items: center !important;
-        gap: 0.5rem !important;
-        margin: 0 -1.25rem 1rem -1.25rem !important;
-        padding: 0.6rem 1.25rem !important;
-        font-weight: 600 !important;
-        font-size: 0.95rem !important;
-        line-height: 1.4 !important;
-        border-bottom: 1px solid var(--pst-color-border) !important;
-        position: relative !important;
-        border-top-left-radius: calc(0.375rem - 1px) !important;
-        border-top-right-radius: calc(0.375rem - 1px) !important;
-
-        /* 图标前置 */
-        &::after {
-            position: static !important;
-            order: -1 !important;
-            transform: none !important;
-            margin: 0 !important;
-            color: inherit !important;
-            font-size: 1.1em !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
+        /* 嵌套间距控制 */
+        div.admonition {
+            margin: 1rem 0;
         }
 
-        /* 兼容 toggle-button */
-        > .toggle-button {
-            margin-left: auto !important;
+        /* 标题区 */
+        > .admonition-title {
             display: flex;
             align-items: center;
+            gap: 0.5rem;
+            margin: 0 -1.25rem 1rem -1.25rem;
+            padding: 0.6rem 1.25rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            border-bottom: 1px solid var(--pst-color-border);
+            position: relative;
+            border-top-left-radius: calc(0.375rem - 1px);
+            border-top-right-radius: calc(0.375rem - 1px);
+
+            /* 图标前置 */
+            &::after {
+                position: static;
+                order: -1;
+                transform: none;
+                margin: 0;
+                color: inherit;
+                font-size: 1.1em;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* 兼容 toggle-button */
+            > .toggle-button {
+                margin-left: auto;
+                display: flex;
+                align-items: center;
+            }
         }
-    }
 
-    /* 内容区排版修复 */
-    > p.admonition-title ~ * {
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-    }
-
-    > p.admonition-title ~ ul,
-    > p.admonition-title ~ ol {
-        padding-left: 1.5rem !important;
-    }
-
-    > *:last-child {
-        margin-bottom: 0 !important;
-    }
-
-    /* Toggle 隐藏态 */
-    &.toggle-hidden {
-        padding-bottom: 0 !important;
-
-        > .admonition-title {
-            margin-bottom: 0 !important;
-            border-bottom: none !important;
-            border-bottom-left-radius: calc(0.375rem - 1px) !important;
-            border-bottom-right-radius: calc(0.375rem - 1px) !important;
+        /* 内容区排版修复 */
+        > p.admonition-title ~ * {
+            margin-left: 0;
+            margin-right: 0;
         }
-    }
 
-    /* 颜色语义化注入 */
-    &.note, &.info, &.hint {
-        border-color: var(--pst-color-info) !important;
-        > .admonition-title {
-            color: var(--pst-color-info) !important;
-            background-color: var(--pst-color-info-bg) !important;
+        > p.admonition-title ~ ul,
+        > p.admonition-title ~ ol {
+            padding-left: 1.5rem;
         }
-    }
 
-    &.tip, &.success {
-        border-color: var(--pst-color-success) !important;
-        > .admonition-title {
-            color: var(--pst-color-success) !important;
-            background-color: var(--pst-color-success-bg) !important;
+        > *:last-child {
+            margin-bottom: 0;
         }
-    }
 
-    &.warning, &.attention, &.important, &.caution {
-        border-color: var(--pst-color-warning) !important;
-        > .admonition-title {
-            color: var(--pst-color-warning) !important;
-            background-color: var(--pst-color-warning-bg) !important;
+        /* Toggle 隐藏态 */
+        &.toggle-hidden {
+            padding-bottom: 0;
+
+            > .admonition-title {
+                margin-bottom: 0;
+                border-bottom: none;
+                border-bottom-left-radius: calc(0.375rem - 1px);
+                border-bottom-right-radius: calc(0.375rem - 1px);
+            }
         }
-    }
 
-    &.danger, &.error {
-        border-color: var(--pst-color-danger) !important;
-        > .admonition-title {
-            color: var(--pst-color-danger) !important;
-            background-color: var(--pst-color-danger-bg) !important;
+        /* 颜色语义化注入 */
+        &.note, &.info, &.hint {
+            border-color: var(--pst-color-info);
+            > .admonition-title {
+                color: var(--pst-color-info);
+                background-color: var(--pst-color-info-bg);
+            }
         }
-    }
 
-    &.seealso {
-        border-color: var(--pst-color-seealso) !important;
-        > .admonition-title {
-            color: var(--pst-color-seealso) !important;
-            background-color: color-mix(in srgb, var(--pst-color-seealso) 8%, transparent) !important;
+        &.tip, &.success {
+            border-color: var(--pst-color-success);
+            > .admonition-title {
+                color: var(--pst-color-success);
+                background-color: var(--pst-color-success-bg);
+            }
+        }
+
+        &.warning, &.attention, &.important, &.caution {
+            border-color: var(--pst-color-warning);
+            > .admonition-title {
+                color: var(--pst-color-warning);
+                background-color: var(--pst-color-warning-bg);
+            }
+        }
+
+        &.danger, &.error {
+            border-color: var(--pst-color-danger);
+            > .admonition-title {
+                color: var(--pst-color-danger);
+                background-color: var(--pst-color-danger-bg);
+            }
+        }
+
+        &.seealso {
+            border-color: var(--pst-color-seealso);
+            > .admonition-title {
+                color: var(--pst-color-seealso);
+                background-color: color-mix(in srgb, var(--pst-color-seealso) 8%, transparent);
+
+                html[data-theme="dark"] & {
+                    background-color: color-mix(in srgb, var(--pst-color-seealso) 12%, transparent);
+                }
+            }
+        }
+
+        /* 侧边栏模式 (Sidebar) */
+        &.sidebar {
+            float: right;
+            clear: both;
+            max-width: 40%;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            margin-left: 1.5rem;
+            margin-right: 0;
+
+            @media (max-width: 767.98px) {
+                float: none;
+                max-width: 100%;
+                margin-left: 0;
+                margin-right: 0;
+                margin-top: 1.5rem;
+            }
+        }
+
+        /* TODO 提示框 */
+        &.todo, &.admonition-todo {
+            border-color: var(--pst-color-todo);
+
+            > .admonition-title {
+                color: var(--pst-color-todo);
+                background-color: color-mix(in srgb, var(--pst-color-todo) 8%, transparent);
+            }
 
             html[data-theme="dark"] & {
-                background-color: color-mix(in srgb, var(--pst-color-seealso) 12%, transparent) !important;
+                border-color: var(--pst-color-todo);
+                > .admonition-title {
+                    color: var(--pst-color-todo);
+                    background-color: color-mix(in srgb, var(--pst-color-todo) 12%, transparent);
+                }
             }
         }
     }
 
-    /* 侧边栏模式 (Sidebar) */
-    &.sidebar {
-        float: right !important;
-        clear: both !important;
-        max-width: 40% !important;
-        margin-top: 0 !important;
-        margin-bottom: 1.5rem !important;
-        margin-left: 1.5rem !important;
-        margin-right: 0 !important;
+    /* =========================================================
+       版本变更提示 (Version Directives)
+       ========================================================= */
+    div.versionadded,
+    div.versionchanged,
+    div.deprecated,
+    div.versionremoved {
+        border: 1px solid transparent;
+        border-radius: 0.375rem;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+        margin: 1.5rem 0;
+        padding: 0 1.25rem;
+        break-inside: avoid;
+        overflow: hidden;
 
-        @media (max-width: 767.98px) {
-            float: none !important;
-            max-width: 100% !important;
-            margin-left: 0 !important;
-            margin-right: 0 !important;
-            margin-top: 1.5rem !important;
-        }
-    }
+        &::before { display: none; }
 
-    /* TODO 提示框 */
-    &.todo, &.admonition-todo {
-        border-color: var(--pst-color-todo) !important;
-
-        > .admonition-title {
-            color: var(--pst-color-todo) !important;
-            background-color: color-mix(in srgb, var(--pst-color-todo) 8%, transparent) !important;
+        > p:last-child {
+            line-height: 1.5;
         }
 
-        html[data-theme="dark"] & {
-            border-color: var(--pst-color-todo) !important;
-            > .admonition-title {
-                color: var(--pst-color-todo) !important;
-                background-color: color-mix(in srgb, var(--pst-color-todo) 12%, transparent) !important;
-            }
+        span.versionmodified {
+            font-weight: 600;
+            margin-right: 0.4rem;
         }
-    }
-}
 
-/* =========================================================
-   版本变更提示 (Version Directives)
-   ========================================================= */
-div.versionadded,
-div.versionchanged,
-div.deprecated,
-div.versionremoved {
-    border: 1px solid transparent !important;
-    border-radius: 0.375rem !important;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
-    margin: 1.5rem 0 !important;
-    padding: 0 1.25rem !important;
-    break-inside: avoid;
-    overflow: hidden;
+        &.versionadded {
+            border-color: var(--pst-color-success);
+            background-color: var(--pst-color-success-bg);
+            span.versionmodified { color: var(--pst-color-success); }
+        }
 
-    &::before { display: none !important; }
+        &.versionchanged {
+            border-color: var(--pst-color-warning);
+            background-color: var(--pst-color-warning-bg);
+            span.versionmodified { color: var(--pst-color-warning); }
+        }
 
-    > p:last-child {
-        line-height: 1.5 !important;
-    }
-
-    span.versionmodified {
-        font-weight: 600 !important;
-        margin-right: 0.4rem !important;
-    }
-
-    &.versionadded {
-        border-color: var(--pst-color-success) !important;
-        background-color: var(--pst-color-success-bg) !important;
-        span.versionmodified { color: var(--pst-color-success) !important; }
-    }
-
-    &.versionchanged {
-        border-color: var(--pst-color-warning) !important;
-        background-color: var(--pst-color-warning-bg) !important;
-        span.versionmodified { color: var(--pst-color-warning) !important; }
-    }
-
-    &.deprecated, &.versionremoved {
-        border-color: var(--pst-color-danger) !important;
-        background-color: var(--pst-color-danger-bg) !important;
-        span.versionmodified { color: var(--pst-color-danger) !important; }
+        &.deprecated, &.versionremoved {
+            border-color: var(--pst-color-danger);
+            background-color: var(--pst-color-danger-bg);
+            span.versionmodified { color: var(--pst-color-danger); }
+        }
     }
 }

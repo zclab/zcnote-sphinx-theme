@@ -2,95 +2,86 @@
    Header 顶部导航 (Flat & Modern Header)
    ========================================================= */
 
-.bd-header {
-    /* 提供 rgba 的安全垫，再被 color-mix 覆盖 */
-    background-color: rgba(255, 255, 255, 0.95) !important;
-    background-color: color-mix(in srgb, var(--pst-color-background) 95%, transparent) !important;
+#pst-header.bd-header {
+    background-color: rgba(255, 255, 255, 0.95);
+    background-color: color-mix(in srgb, var(--pst-color-background) 95%, transparent);
+    box-shadow: inset 0 -1px 0 0 var(--pst-color-border);
+    border-bottom: none;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 
     html[data-theme="dark"] & {
-        background-color: rgba(15, 23, 42, 0.95) !important;
-        background-color: color-mix(in srgb, var(--pst-color-background) 95%, transparent) !important;
+        background-color: rgba(15, 23, 42, 0.95);
+        background-color: color-mix(in srgb, var(--pst-color-background) 95%, transparent);
     }
-
-    box-shadow: inset 0 -1px 0 0 var(--pst-color-border) !important;
-    border-bottom: none !important;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 
     ul.navbar-nav {
         > li.nav-item {
             > .nav-link {
-                transition: color 0.2s ease-in-out !important;
+                transition: color 0.2s ease-in-out;
                 position: relative;
             }
 
             /* 普通顶级菜单的 Active 状态 */
             &.current > .nav-link,
             &.active > .nav-link {
-                color: var(--pst-color-primary) !important;
+                color: var(--pst-color-primary);
 
                 &::before {
                     content: "";
                     position: absolute;
                     left: 0;
                     right: 0;
-                    border-bottom: 2px solid var(--pst-color-primary) !important;
-                    bottom: 0 !important;
+                    border-bottom: 2px solid var(--pst-color-primary);
+                    bottom: 0;
                 }
             }
         }
 
         /* =========================================================
-           ★ 下拉菜单 (Dropdown) 与 "More" 按钮的深度状态指示 (修正版)
+           ★ 下拉菜单 (Dropdown) 与 "More" 按钮的深度状态指示
            ========================================================= */
         .dropdown {
-
-            /* 1. 父级护航机制：如果 Dropdown 内部有激活的 li (利用 :has)，
-               则定位到内部的 button 进行高亮 */
             &:has(li.current) > button.dropdown-toggle,
             &:has(li.active) > button.dropdown-toggle {
-                color: var(--pst-color-primary) !important;
-                position: relative; /* 确保底部下划线能绝对定位到按钮边界 */
+                color: var(--pst-color-primary);
+                position: relative;
 
                 &::before {
                     content: "";
                     position: absolute;
                     left: 0;
                     right: 0;
-                    border-bottom: 2px solid var(--pst-color-primary) !important;
-                    bottom: 0 !important;
+                    border-bottom: 2px solid var(--pst-color-primary);
+                    bottom: 0;
                 }
             }
 
-            /* 2. 下拉菜单本体与内部项目样式 */
             .dropdown-menu {
-                background-color: rgba(255, 255, 255, 0.85) !important;
-                background-color: color-mix(in srgb, var(--pst-color-surface) 85%, transparent) !important;
-                backdrop-filter: blur(12px) !important;
-                -webkit-backdrop-filter: blur(12px) !important;
+                background-color: rgba(255, 255, 255, 0.85);
+                background-color: color-mix(in srgb, var(--pst-color-surface) 85%, transparent);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
 
-                border: 1px solid var(--pst-color-border) !important;
-                border-radius: 0.375rem !important;
-                padding: 0.35rem 0 !important;
-                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
+                border: 1px solid var(--pst-color-border);
+                border-radius: 0.375rem;
+                padding: 0.35rem 0;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 
                 html[data-theme="dark"] & {
-                    background-color: rgba(30, 41, 59, 0.85) !important;
-                    background-color: color-mix(in srgb, var(--pst-color-surface) 85%, transparent) !important;
-                    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+                    background-color: rgba(30, 41, 59, 0.85);
+                    background-color: color-mix(in srgb, var(--pst-color-surface) 85%, transparent);
+                    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
                 }
 
-                /* 将 Active 样式的判定提升到 li 层级 */
                 li {
-                    /* 当外部 li 被激活时，给它内部的 a 标签上色 */
                     &.current > .dropdown-item,
                     &.active > .dropdown-item {
-                        color: var(--pst-color-primary) !important;
-                        background-color: rgba(2, 132, 199, 0.08) !important;
-                        background-color: color-mix(in srgb, var(--pst-color-primary) 10%, transparent) !important;
-                        font-weight: 600 !important;
+                        color: var(--pst-color-primary);
+                        background-color: rgba(2, 132, 199, 0.08);
+                        background-color: color-mix(in srgb, var(--pst-color-primary) 10%, transparent);
+                        font-weight: 600;
                         position: relative;
 
-                        /* 左侧竖条视觉锚点 */
                         &::before {
                             content: "";
                             position: absolute;
@@ -103,18 +94,18 @@
                         }
 
                         html[data-theme="dark"] & {
-                            background-color: rgba(56, 189, 248, 0.12) !important;
-                            background-color: color-mix(in srgb, var(--pst-color-primary) 15%, transparent) !important;
+                            background-color: rgba(56, 189, 248, 0.12);
+                            background-color: color-mix(in srgb, var(--pst-color-primary) 15%, transparent);
                         }
                     }
                 }
 
                 .dropdown-item {
-                    transition: background-color 0.2s ease, color 0.2s ease !important;
+                    transition: background-color 0.2s ease, color 0.2s ease;
 
                     &:hover, &:focus {
-                        background-color: var(--pst-color-on-background) !important;
-                        color: var(--pst-color-primary) !important;
+                        background-color: var(--pst-color-on-background);
+                        color: var(--pst-color-primary);
                     }
                 }
             }

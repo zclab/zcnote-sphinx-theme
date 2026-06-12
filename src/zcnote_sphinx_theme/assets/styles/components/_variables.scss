@@ -4,8 +4,8 @@
 html {
     scrollbar-gutter: stable;
     overflow-y: scroll;
-    /* 覆盖原生跳锚点的边距，留出 Header 高度 + 1.5rem 的呼吸空间，防止被遮挡 */
-    scroll-padding-top: calc(var(--zcnote-header-height, var(--pst-header-height)) + 1.5rem) !important;
+    /* 覆盖原生跳锚点的边距 */
+    scroll-padding-top: calc(var(--zcnote-header-height, var(--pst-header-height)) + 1.5rem);
 }
 
 /* =========================================================
@@ -59,7 +59,7 @@ html[data-theme="dark"] {
    ========================================================= */
 :root {
     --zcnote-vh: 100dvh;
-    --zcnote-header-height: 4rem; /* PDST 默认的大致高度 */
+    --zcnote-header-height: 4rem;
     --zcnote-g-h: 0px;
     --zcnote-a-h: 0px;
     --zcnote-overlap-primary: 0px;
@@ -72,7 +72,6 @@ html[data-theme="dark"] {
     --pst-font-family-monospace: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, monospace;
 }
 
-
 @supports not (height: 100dvh) {
     :root {
         --zcnote-vh: 100vh;
@@ -84,25 +83,25 @@ html[data-theme="dark"] {
    ========================================================= */
 
 @media (min-width: 960px) {
-    .bd-page-width {
-        max-width: 90rem;
-    }
-}
+    html body {
+        .bd-page-width {
+            max-width: 90rem;
+        }
 
-@media (min-width: 960px) {
-    .bd-main .bd-content .bd-article-container .bd-article {
-        padding-left: 1rem !important;
+        .bd-main .bd-content .bd-article-container .bd-article {
+            padding-left: 1rem;
 
-        p, li {
-            text-align: justify;
-            overflow-wrap: break-word;
-            word-wrap: break-word;
+            p, li {
+                text-align: justify;
+                overflow-wrap: break-word;
+                word-wrap: break-word;
+            }
         }
     }
 }
 
 body {
-    position: relative !important;
+    position: relative;
     min-height: var(--zcnote-vh);
     overflow-x: clip;
 }
