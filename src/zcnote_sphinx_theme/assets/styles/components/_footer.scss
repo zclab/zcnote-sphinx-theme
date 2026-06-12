@@ -30,23 +30,33 @@ html[data-theme] body {
         }
     }
 
-    /* =========================================================
-       文章专属 Footer (返璞归真 + 移动端折叠防裁切)
-       ========================================================= */
     .bd-article-container > .bd-footer-article {
         padding-left: 1.5rem;
+
+        /* 如果没有实际子元素，彻底抹除占位 */
+        &:not(:has(*)) {
+            display: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
     }
 
     .bd-main > .bd-footer-content {
-        /* 保留原生文档流形态 */
         padding-top: 1.0rem;
         padding-left: 1.5rem;
         border-top: 1px solid var(--pst-color-border);
         background-color: var(--pst-color-background);
-
-        /* 确保容器绝对不超出物理屏幕宽度 */
         width: 100%;
         box-sizing: border-box;
+
+        /* 如果没有实际子元素，彻底抹除占位 */
+        &:not(:has(*)) {
+            display: none !important;
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            height: 0 !important;
+        }
 
         .footer-article-items {
             display: flex;
@@ -75,8 +85,6 @@ html[data-theme] body {
             p {
                 margin: 0;
                 line-height: 1.5;
-
-                /* 终极防裁切：允许超长文本、长链接、时间戳安全换行 */
                 word-wrap: break-word;
                 overflow-wrap: break-word;
                 white-space: normal;
