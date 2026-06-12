@@ -1,5 +1,7 @@
-div.math {
-    mjx-container {
-        overflow: auto hidden !important;
+html[data-theme] body {
+    div.math {
+        mjx-container {
+            overflow: auto hidden;
+        }
     }
 }

@@ -2,193 +2,182 @@
    侧边栏尺寸、粘性滚动与折叠按钮 (The Holy Grail Edition)
    ========================================================= */
 
-html[data-zcnote-collapse="false"] {
+html[data-zcnote-collapse="false"] body {
     .sidebar-primary-item.pst-sidebar-collapse,
     #pst-collapse-sidebar-button {
-        display: none !important;
-        visibility: hidden !important;
-        height: 0 !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        pointer-events: none !important;
+        display: none;
+        visibility: hidden;
+        height: 0;
+        padding: 0;
+        margin: 0;
+        pointer-events: none;
     }
 }
 
 @media (min-width: 960px) {
-    #pst-primary-sidebar {
-        align-self: start !important;
-        position: sticky !important;
-        top: var(--zcnote-header-height, var(--pst-header-height)) !important;
-        z-index: 10 !important;
-        box-sizing: border-box !important;
+    #pst-primary-sidebar.bd-sidebar-primary {
+        align-self: start;
+        position: sticky;
+        top: var(--zcnote-header-height, var(--pst-header-height));
+        z-index: 10;
+        box-sizing: border-box;
 
-        /* ★ 视觉层同步：动态扣除 JS 算出的重叠度，防止被 Footer 遮挡 */
-        height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-overlap-primary, 0px)) !important;
-        max-height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-overlap-primary, 0px)) !important;
+        height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-overlap-primary, 0px));
+        max-height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-overlap-primary, 0px));
 
-        /* ★ 物理层脱轨：阉割 Sticky 碰撞引擎，彻底消灭向上弹跳的抖动 */
-        margin-bottom: -100vh !important;
-        padding-bottom: 0 !important;
+        margin-bottom: -100vh;
+        padding-bottom: 0;
 
-        overflow-y: auto !important;
+        overflow-y: auto;
         scrollbar-width: thin;
 
-        /* 严禁在 height 上加 transition，否则会和 JS 的逐帧运算打架产生拖影 */
-        transition: background-color 0.25s, border-color 0.25s, width 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s !important;
+        transition: background-color 0.25s, border-color 0.25s, width 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s;
 
         .sidebar-primary-item {
-            padding-left: 0.5rem !important;
-            padding-right: 0.5rem !important;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
         }
     }
 
-    .bd-main {
-        min-height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height))) !important;
-        box-sizing: border-box !important;
+    html body .bd-main {
+        min-height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)));
+        box-sizing: border-box;
     }
 }
 
 @media (min-width: 1200px) {
-    .bd-sidebar-primary {
+    #pst-primary-sidebar.bd-sidebar-primary {
         width: var(--zcnote-sidebar-width);
         max-width: var(--zcnote-sidebar-width);
         flex: 0 0 auto;
-        transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-                    max-width 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1), max-width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 
         .sidebar-primary-item.pst-sidebar-collapse {
-            display: none !important;
-            opacity: 0 !important;
-            pointer-events: none !important;
+            display: none;
+            opacity: 0;
+            pointer-events: none;
         }
     }
 
-    #pst-secondary-sidebar {
-        align-self: start !important;
-        position: sticky !important;
-        top: var(--zcnote-header-height, var(--pst-header-height)) !important;
-        z-index: 10 !important;
-        box-sizing: border-box !important;
+    #pst-secondary-sidebar.bd-sidebar-secondary {
+        align-self: start;
+        position: sticky;
+        top: var(--zcnote-header-height, var(--pst-header-height));
+        z-index: 10;
+        box-sizing: border-box;
 
-        /* ★ 视觉层同步：动态扣除 JS 算出的重叠度 */
-        height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-overlap-secondary, 0px)) !important;
-        max-height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-overlap-secondary, 0px)) !important;
+        height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-overlap-secondary, 0px));
+        max-height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-overlap-secondary, 0px));
 
-        /* ★ 物理层脱轨：永远不会触发向上的触底反弹 */
-        margin-bottom: -100vh !important;
-        padding-bottom: 0 !important;
+        margin-bottom: -100vh;
+        padding-bottom: 0;
 
-        overflow-y: auto !important;
+        overflow-y: auto;
         scrollbar-width: thin;
 
-        transition: background-color 0.25s, border-color 0.25s, width 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s !important;
+        transition: background-color 0.25s, border-color 0.25s, width 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s;
     }
 
     /* 幽灵轨道与折叠状态 */
-    .bd-page-width > .sidebar-primary-item.pst-sidebar-collapse {
-        width: 0 !important;
-        flex: 0 0 0 !important;
-        min-width: 0 !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        border: none !important;
-        align-self: stretch !important;
-        position: relative !important;
-        z-index: 100 !important;
-        overflow: visible !important;
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-    }
+    html body {
+        .bd-page-width > .sidebar-primary-item.pst-sidebar-collapse {
+            width: 0;
+            flex: 0 0 0;
+            min-width: 0;
+            padding: 0;
+            margin: 0;
+            border: none;
+            align-self: stretch;
+            position: relative;
+            z-index: 100;
+            overflow: visible;
+            display: block;
+            visibility: visible;
+            opacity: 1;
+        }
 
-    body[data-sidebar-primary-collapsed="true"] .bd-page-width > .pst-sidebar-collapse,
-    .bd-sidebar-primary.is-collapsed ~ .pst-sidebar-collapse {
-        display: block !important;
-        visibility: visible !important;
+        &[data-sidebar-primary-collapsed="true"] .bd-page-width > .pst-sidebar-collapse,
+        .bd-sidebar-primary.is-collapsed ~ .pst-sidebar-collapse {
+            display: block;
+            visibility: visible;
+        }
     }
 
     /* 按钮本体 */
     #pst-collapse-sidebar-button {
-        position: sticky !important;
-        top: calc(var(--zcnote-header-height, var(--pst-header-height, 4rem)) + 1.25rem) !important;
-        left: 0 !important;
-        margin-left: 0 !important;
-        transform: translateX(-100%) !important;
-        opacity: 0 !important;
-        width: 24px !important;
-        height: 32px !important;
-        padding: 0 !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        border-radius: 6px 0 0 6px !important;
-        background-color: var(--pst-color-background) !important;
-        border: 1px solid var(--pst-color-border) !important;
-        box-shadow: -2px 0 6px rgba(0,0,0,0.05) !important;
-        color: var(--pst-color-text-muted) !important;
-        transition: opacity 0.3s ease-in-out, background-color 0.2s, box-shadow 0.2s, width 0.2s !important;
-        pointer-events: auto !important;
+        position: sticky;
+        top: calc(var(--zcnote-header-height, var(--pst-header-height, 4rem)) + 1.25rem);
+        left: 0;
+        margin-left: 0;
+        transform: translateX(-100%);
+        opacity: 0;
+        width: 24px;
+        height: 32px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px 0 0 6px;
+        background-color: var(--pst-color-background);
+        border: 1px solid var(--pst-color-border);
+        box-shadow: -2px 0 6px rgba(0,0,0,0.05);
+        color: var(--pst-color-text-muted);
+        transition: opacity 0.3s ease-in-out, background-color 0.2s, box-shadow 0.2s, width 0.2s;
+        pointer-events: auto;
 
         &:hover, &:focus-visible {
-            opacity: 1 !important;
+            opacity: 1;
         }
 
         &:hover {
-            width: 28px !important;
-            background-color: var(--pst-color-primary) !important;
-            color: #ffffff !important;
-            border-color: var(--pst-color-primary) !important;
-            box-shadow: -4px 0 12px rgba(0,0,0,0.15) !important;
+            width: 28px;
+            background-color: var(--pst-color-primary);
+            color: #ffffff;
+            border-color: var(--pst-color-primary);
+            box-shadow: -4px 0 12px rgba(0,0,0,0.15);
         }
 
         &[aria-expanded="false"] svg {
-            transform: rotate(180deg) !important;
+            transform: rotate(180deg);
         }
 
         .pst-collapse-sidebar-label,
         .pst-expand-sidebar-label {
-            display: none !important;
+            display: none;
         }
 
         svg {
-            width: 14px !important;
-            height: 14px !important;
-            margin: 0 !important;
-            transition: transform 0.3s ease !important;
+            width: 14px;
+            height: 14px;
+            margin: 0;
+            transition: transform 0.3s ease;
         }
     }
 
-    .bd-sidebar-primary:hover ~ .pst-sidebar-collapse #pst-collapse-sidebar-button,
-    .pst-sidebar-collapse:hover #pst-collapse-sidebar-button {
-        opacity: 1 !important;
+    html body {
+        .bd-sidebar-primary:hover ~ .pst-sidebar-collapse #pst-collapse-sidebar-button,
+        .pst-sidebar-collapse:hover #pst-collapse-sidebar-button {
+            opacity: 1;
+        }
     }
 }
 
 @media (max-width: 1199.98px) {
-    .bd-page-width > .sidebar-primary-item.pst-sidebar-collapse {
-        display: none !important;
+    html body .bd-page-width > .sidebar-primary-item.pst-sidebar-collapse {
+        display: none;
     }
 }
 
+/* ★ 精简版的无滚动条类，摒弃 Hack 行为 */
 @media (min-width: 1200px) {
     .zcnote-hide-scrollbar {
-        &, * {
-            overflow: hidden !important;
-            scrollbar-width: none !important;
-            -ms-overflow-style: none !important;
-        }
+        scrollbar-width: none;
+        -ms-overflow-style: none;
 
-        &::-webkit-scrollbar,
-        *::-webkit-scrollbar {
-            display: none !important;
-            width: 0 !important;
-            height: 0 !important;
-        }
-
-        * {
-            white-space: nowrap !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
+        &::-webkit-scrollbar {
+            display: none;
+            width: 0;
+            height: 0;
         }
     }
 }
