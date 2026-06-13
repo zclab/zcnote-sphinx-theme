@@ -1,40 +1,52 @@
 /**
- * ZC-Note Sphinx Theme
+ * ZC-Note Sphinx Theme - Footer (Bulletproof Industrial Edition)
+ * Features: Strict FastDOM, Async Lock Delegation, GC Optimized, Subpixel Safe, DOM-Agnostic.
  */
 export function initFooter() {
-    if (window._zcnoteFooterInitialized) return;
-    window._zcnoteFooterInitialized = true;
+    if (window._zcnoteFooterCleanup) {
+        window._zcnoteFooterCleanup();
+    }
 
-    const globalFooter = document.querySelector(".bd-footer");
-    const articleFooter = document.querySelector(".bd-main > .bd-footer-content");
-    const stickyHeader = document.querySelector(".pst-sticky-header");
-    const bdHeader = document.querySelector("#pst-header") || document.querySelector(".bd-header");
-    const bdMain = document.querySelector(".bd-main");
-    const bdContent = document.querySelector(".bd-content");
+    const els = { root: document.documentElement };
 
-    const root = document.documentElement;
-
-    const state = {
-        gHeight: 0,
-        aHeight: 0,
-        oPrimary: 0,
-        oSecondary: 0,
-        hBottom: 0,
-        vw: window.innerWidth
+    const getEl = (selector, cacheKey) => {
+        if (!els[cacheKey] || !els[cacheKey].isConnected) {
+            els[cacheKey] = document.querySelector(selector);
+        }
+        return els[cacheKey];
     };
 
-    let scrollTicking = false;
+    if (!getEl(".bd-main", 'bdMain')) return;
+
+    const state = {
+        gHeight: 0, cHeight: 0, oPrimary: 0, oSecondary: 0, hBottom: 0,
+        vw: window.innerWidth, vh: window.innerHeight
+    };
+
+    const metrics = {
+        vw: 0, vh: 0, hBottom: 0, gHeight: 0, cHeight: 0,
+        hideContent: false, contentIsHiddenInDOM: false,
+        oGlobal: 0, oContent: 0
+    };
+
+    let isUpdating = false;
     let resizeObserver = null;
     let isFirstMount = true;
 
+    // =========================================
+    // Phase 1: STRICT READ
+    // =========================================
     function measureStaticDimensions() {
-        const metrics = {
-            vw: window.innerWidth,
-            hBottom: 0,
-            gHeight: 0,
-            aHeight: 0,
-            hideArticle: false
-        };
+        metrics.vw = window.innerWidth;
+        metrics.vh = window.innerHeight;
+        metrics.hBottom = 0; metrics.gHeight = 0; metrics.cHeight = 0;
+        metrics.hideContent = false; metrics.contentIsHiddenInDOM = false;
+
+        const stickyHeader = getEl(".pst-sticky-header", 'stickyHeader');
+        const bdHeader = getEl("#pst-header", 'bdHeader') || getEl(".bd-header", 'fallbackHeader');
+        const globalFooter = getEl(".bd-footer", 'globalFooter');
+
+        const mainContentFooter = getEl(".bd-main > .bd-footer-content", 'mainContentFooter');
 
         if (stickyHeader) {
             const style = window.getComputedStyle(stickyHeader);
@@ -48,102 +60,90 @@ export function initFooter() {
                 metrics.hBottom = Math.max(metrics.hBottom, bdHeader.offsetHeight || 0);
             }
         }
-        metrics.hBottom = Math.round(Math.max(0, metrics.hBottom));
+        metrics.hBottom = Math.ceil(Math.max(0, metrics.hBottom));
 
         if (globalFooter) {
-            metrics.gHeight = Math.round(globalFooter.getBoundingClientRect().height);
+            metrics.gHeight = Math.ceil(globalFooter.getBoundingClientRect().height);
         }
 
-        if (articleFooter) {
-            const hasItems = articleFooter.querySelectorAll('.footer-article-item').length > 0;
-            const hasText = articleFooter.textContent.trim() !== '';
+        if (mainContentFooter) {
+            metrics.contentIsHiddenInDOM = window.getComputedStyle(mainContentFooter).display === 'none';
 
-            if (!hasItems && !hasText) {
-                metrics.hideArticle = true;
+            // 只要里面没有实际的子标签且没有非空字符，即视为 Empty State
+            const hasElements = mainContentFooter.childElementCount > 0;
+            const hasText = mainContentFooter.textContent.trim() !== '';
+
+            if (!hasElements && !hasText) {
+                metrics.hideContent = true;
             } else {
-                metrics.aHeight = Math.round(articleFooter.getBoundingClientRect().height);
+                metrics.cHeight = Math.ceil(mainContentFooter.getBoundingClientRect().height);
             }
         }
-
-        return metrics;
     }
 
     function measureScrollOverlap() {
-        const vh = window.innerHeight;
-        const metrics = { oGlobal: 0, oArticle: 0 };
+        metrics.oGlobal = 0;
+        metrics.oContent = 0;
 
-        if (state.vw < 960) return metrics;
+        if (state.vw < 960) return;
 
         let fakeScroll = 0;
-        const docHeight = document.documentElement.scrollHeight;
+        const docHeight = els.root.scrollHeight;
+        const globalFooter = getEl(".bd-footer", 'globalFooter');
+        const mainContentFooter = getEl(".bd-main > .bd-footer-content", 'mainContentFooter');
 
-        if (globalFooter && docHeight > vh + 5) {
+        if (globalFooter && docHeight > metrics.vh + 5) {
             const bottom = globalFooter.getBoundingClientRect().bottom;
-            if (bottom < vh) fakeScroll = vh - bottom;
+            if (bottom < metrics.vh) fakeScroll = metrics.vh - bottom;
         }
 
         if (globalFooter && state.gHeight > 0) {
             const top = globalFooter.getBoundingClientRect().top;
-            metrics.oGlobal = Math.max(0, vh - top - fakeScroll);
+            metrics.oGlobal = Math.max(0, metrics.vh - top - fakeScroll);
         }
 
-        if (articleFooter && state.aHeight > 0) {
-            const top = articleFooter.getBoundingClientRect().top;
-            metrics.oArticle = Math.max(0, vh - top - fakeScroll);
-        }
-
-        return metrics;
-    }
-
-    function applyScrollOverlap(metrics) {
-        // 由于已经有 CSS 的 -100vh 防碰撞，这里的 Bumper 只是为了视觉留白
-        const safeBumper = 0;
-
-        const oPrimary = Math.max(safeBumper, Math.round(metrics.oGlobal));
-        const oSecondary = Math.max(safeBumper, Math.round(Math.max(metrics.oGlobal, metrics.oArticle)));
-
-        if (state.oPrimary !== oPrimary) {
-            root.style.setProperty('--zcnote-overlap-primary', `${oPrimary}px`);
-            state.oPrimary = oPrimary;
-        }
-        if (state.oSecondary !== oSecondary) {
-            root.style.setProperty('--zcnote-overlap-secondary', `${oSecondary}px`);
-            state.oSecondary = oSecondary;
+        if (mainContentFooter && state.cHeight > 0) {
+            const top = mainContentFooter.getBoundingClientRect().top;
+            metrics.oContent = Math.max(0, metrics.vh - top - fakeScroll);
         }
     }
 
-    function writeStaticDimensionsDOM(staticMetrics) {
+    // =========================================
+    // Phase 2: STRICT WRITE
+    // =========================================
+    function writeStaticDimensionsDOM() {
         let layoutMutated = false;
 
-        if (Math.abs(state.hBottom - staticMetrics.hBottom) > 1) {
-            root.style.setProperty('--zcnote-header-height', `${staticMetrics.hBottom}px`);
-            state.hBottom = staticMetrics.hBottom;
+        if (state.hBottom !== metrics.hBottom) {
+            els.root.style.setProperty('--zcnote-header-height', `${metrics.hBottom}px`);
+            state.hBottom = metrics.hBottom;
             layoutMutated = true;
         }
 
-        if (articleFooter) {
-            const currentDisplay = articleFooter.style.display === 'none';
-            if (staticMetrics.hideArticle && !currentDisplay) {
-                articleFooter.style.setProperty('display', 'none', 'important');
+        const mainContentFooter = getEl(".bd-main > .bd-footer-content", 'mainContentFooter');
+        if (mainContentFooter) {
+            if (metrics.hideContent && !metrics.contentIsHiddenInDOM) {
+                mainContentFooter.style.setProperty('display', 'none', 'important');
                 layoutMutated = true;
-            } else if (!staticMetrics.hideArticle && currentDisplay) {
-                articleFooter.style.removeProperty('display');
+            } else if (!metrics.hideContent && metrics.contentIsHiddenInDOM && mainContentFooter.style.display === 'none') {
+                mainContentFooter.style.removeProperty('display');
                 layoutMutated = true;
             }
         }
 
-        if (Math.abs(state.gHeight - staticMetrics.gHeight) > 1) {
-            root.style.setProperty('--zcnote-g-h', `${staticMetrics.gHeight}px`);
-            state.gHeight = staticMetrics.gHeight;
+        if (state.gHeight !== metrics.gHeight) {
+            els.root.style.setProperty('--zcnote-g-h', `${metrics.gHeight}px`);
+            state.gHeight = metrics.gHeight;
             layoutMutated = true;
         }
 
-        if (Math.abs(state.aHeight - staticMetrics.aHeight) > 1) {
-            root.style.setProperty('--zcnote-a-h', `${staticMetrics.aHeight}px`);
-            state.aHeight = staticMetrics.aHeight;
+        if (state.cHeight !== metrics.cHeight) {
+            els.root.style.setProperty('--zcnote-a-h', `${metrics.cHeight}px`);
+            state.cHeight = metrics.cHeight;
             layoutMutated = true;
         }
 
+        const bdMain = getEl(".bd-main", 'bdMain');
         if (bdMain) {
             const expectedPadding = state.gHeight > 0 ? `${state.gHeight}px` : '0px';
             if (bdMain.style.paddingBottom !== expectedPadding) {
@@ -155,91 +155,108 @@ export function initFooter() {
         return layoutMutated;
     }
 
-    function applyDimensions() {
-        const staticMetrics = measureStaticDimensions();
-        state.vw = staticMetrics.vw;
+    function applyScrollOverlap() {
+        const oPrimary = Math.ceil(metrics.oGlobal);
+        const oSecondary = Math.ceil(Math.max(metrics.oGlobal, metrics.oContent));
 
-        // ★ 首次挂载：同步重排 + 0ms 瞬移。配合 CSS 动画镇压彻底消灭底部刷新闪烁。
-        if (isFirstMount) {
-            isFirstMount = false;
-
-            writeStaticDimensionsDOM(staticMetrics);
-            const scrollMetrics = measureScrollOverlap();
-            applyScrollOverlap(scrollMetrics);
-
-            // 彻底算准高度后，解除 CSS 动画封印
-            window.requestAnimationFrame(() => {
-                window.requestAnimationFrame(() => {
-                    root.setAttribute('data-zcnote-layout-ready', 'true');
-                });
-            });
-            return;
+        if (state.oPrimary !== oPrimary) {
+            els.root.style.setProperty('--zcnote-overlap-primary', `${oPrimary}px`);
+            state.oPrimary = oPrimary;
         }
-
-        // 常规交互的 60fps 异步管线
-        window.requestAnimationFrame(() => {
-            const layoutMutated = writeStaticDimensionsDOM(staticMetrics);
-
-            if (layoutMutated) {
-                window.requestAnimationFrame(() => {
-                    const scrollMetrics = measureScrollOverlap();
-                    applyScrollOverlap(scrollMetrics);
-                });
-            } else {
-                const scrollMetrics = measureScrollOverlap();
-                applyScrollOverlap(scrollMetrics);
-            }
-        });
+        if (state.oSecondary !== oSecondary) {
+            els.root.style.setProperty('--zcnote-overlap-secondary', `${oSecondary}px`);
+            state.oSecondary = oSecondary;
+        }
     }
 
-    window.addEventListener("scroll", () => {
-        if (!scrollTicking) {
-            scrollTicking = true;
-            window.requestAnimationFrame(() => {
-                const scrollMetrics = measureScrollOverlap();
-                applyScrollOverlap(scrollMetrics);
-                scrollTicking = false;
-            });
-        }
-    }, { passive: true });
+    // =========================================
+    // 调度中心：RAF 流水线与严格锁控制
+    // =========================================
+    function performUpdate() {
+        let delegatedUnlock = false;
 
-    window.addEventListener("resize", () => {
-        if (window.innerWidth !== state.vw) {
-            applyDimensions();
-        } else {
-            if (!scrollTicking) {
-                scrollTicking = true;
+        try {
+            measureStaticDimensions();
+
+            const isMobileUrlBarShift = metrics.vw === state.vw &&
+                                        Math.abs(metrics.vh - state.vh) > 0 &&
+                                        Math.abs(metrics.vh - state.vh) < 150;
+            state.vw = metrics.vw;
+            state.vh = metrics.vh;
+
+            const layoutMutated = writeStaticDimensionsDOM();
+
+            if (layoutMutated && !isFirstMount) {
+                delegatedUnlock = true;
                 window.requestAnimationFrame(() => {
-                    const scrollMetrics = measureScrollOverlap();
-                    applyScrollOverlap(scrollMetrics);
-                    scrollTicking = false;
+                    try {
+                        measureScrollOverlap();
+                        applyScrollOverlap();
+                    } finally {
+                        isUpdating = false;
+                    }
+                });
+                return;
+            }
+
+            if (!isMobileUrlBarShift || isFirstMount) {
+                measureScrollOverlap();
+                applyScrollOverlap();
+            }
+
+            if (isFirstMount) {
+                isFirstMount = false;
+                window.requestAnimationFrame(() => {
+                    window.requestAnimationFrame(() => {
+                        els.root.setAttribute('data-zcnote-layout-ready', 'true');
+                    });
                 });
             }
+
+        } catch (error) {
+            console.warn("[zcnote-theme] Footer calculation gracefully skipped:", error);
+        } finally {
+            if (!delegatedUnlock) {
+                isUpdating = false;
+            }
         }
-    }, { passive: true });
+    }
+
+    function scheduleUpdate() {
+        if (!isUpdating) {
+            isUpdating = true;
+            window.requestAnimationFrame(performUpdate);
+        }
+    }
+
+    // =========================================
+    // 绑定与全量销毁
+    // =========================================
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate, { passive: true });
 
     if (window.ResizeObserver) {
-        let roTicking = false;
-        resizeObserver = new ResizeObserver(() => {
-            if (!roTicking) {
-                roTicking = true;
-                window.requestAnimationFrame(() => {
-                    applyDimensions();
-                    roTicking = false;
-                });
-            }
-        });
-
-        if (globalFooter) resizeObserver.observe(globalFooter);
-        if (articleFooter) resizeObserver.observe(articleFooter);
-        if (stickyHeader) resizeObserver.observe(stickyHeader);
-        if (bdContent) resizeObserver.observe(bdContent);
+        resizeObserver = new ResizeObserver(scheduleUpdate);
+        const gb = getEl(".bd-footer", 'globalFooter');
+        const mcf = getEl(".bd-main > .bd-footer-content", 'mainContentFooter');
+        const sh = getEl(".pst-sticky-header", 'stickyHeader');
+        const bc = getEl(".bd-content", 'bdContent');
+        if (gb) resizeObserver.observe(gb);
+        if (mcf) resizeObserver.observe(mcf);
+        if (sh) resizeObserver.observe(sh);
+        if (bc) resizeObserver.observe(bc);
     }
 
-    window.addEventListener("beforeunload", () => {
+    window._zcnoteFooterCleanup = () => {
+        window.removeEventListener("scroll", scheduleUpdate);
+        window.removeEventListener("resize", scheduleUpdate);
         if (resizeObserver) resizeObserver.disconnect();
         window._zcnoteFooterInitialized = false;
-    });
+        window._zcnoteFooterCleanup = null;
+    };
 
-    applyDimensions();
+    window.addEventListener("beforeunload", window._zcnoteFooterCleanup);
+
+    // 立即执行首次计算
+    performUpdate();
 }
