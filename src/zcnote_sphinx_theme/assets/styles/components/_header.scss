@@ -14,6 +14,10 @@
         background-color: color-mix(in srgb, var(--pst-color-background) 95%, transparent);
     }
 
+    .bd-header__inner {
+        padding: 0 1rem;
+    }
+
     ul.navbar-nav {
         > li.nav-item {
             > .nav-link {
@@ -38,7 +42,7 @@
         }
 
         /* =========================================================
-           ★ 下拉菜单 (Dropdown) 与 "More" 按钮的深度状态指示
+           下拉菜单 (Dropdown) 与 "More" 按钮的状态指示
            ========================================================= */
         .dropdown {
             &:has(li.current) > button.dropdown-toggle,
