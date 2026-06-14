@@ -8,48 +8,54 @@ def get_html_theme_path():
     return os.path.abspath(os.path.join(os.path.dirname(__file__), "theme"))
 
 
+# 防止配置参数为字符串时被 list() 强行打碎成字符数组
+def _ensure_list(val):
+    if not val:
+        return []
+    if isinstance(val, str):
+        return [val]
+    return list(val)
+
 def override_pydata_sidebar_logic(app, pagename, templatename, context, doctree):
-    """
-    拦截并覆盖 PyData 默认的上下文变量，实现配置联动与动态组件注入。
-    """
     context["zcnote_theme_version"] = __version__
 
-    # 1. 解析 hide_header 变量
     hide_header_raw = context.get("theme_hide_header", False)
     if isinstance(hide_header_raw, str):
         is_header_hidden = hide_header_raw.lower() in ("true", "1", "yes")
     else:
         is_header_hidden = bool(hide_header_raw)
 
-    # 2. 隐藏 Header 时的全局联动逻辑
     if is_header_hidden:
         context["theme_nav_style"] = "sidebar"
         current_sidebars = context.get("sidebars")
 
-        # 仅当该页面没有显式禁用侧边栏 (html_sidebars = False) 时才注入
         if current_sidebars is not False:
             if current_sidebars is None:
                 current_sidebars = ["search-field.html", "sidebar-nav-bs.html"]
 
             if isinstance(current_sidebars, list):
-                sidebars_list = list(current_sidebars)
+                top_components = [
+                    "components/sidebar-brand.html",
+                    "components/sidebar-utilities.html"
+                ]
 
-                brand_tpl = "components/sidebar-brand.html"
-                search_tpl = "search-field.html"  # PyData 原生搜索组件
+                navbar_end_items = _ensure_list(context.get("theme_navbar_end"))
+                navbar_persistent_items = _ensure_list(context.get("theme_navbar_persistent"))
 
-                # 先清洗队列，防止用户配置导致的重复或顺序错乱
-                if brand_tpl in sidebars_list:
-                    sidebars_list.remove(brand_tpl)
-                if search_tpl in sidebars_list:
-                    sidebars_list.remove(search_tpl)
+                components_to_remove = set(
+                    top_components +
+                    navbar_end_items +
+                    navbar_persistent_items +
+                    ["search-field.html"]
+                )
 
-                sidebars_list.insert(0, search_tpl)
-                sidebars_list.insert(0, brand_tpl)
+                cleaned_sidebars = [
+                    item for item in current_sidebars
+                    if item not in components_to_remove
+                ]
 
-                # 写回上下文
-                context["sidebars"] = sidebars_list
+                context["sidebars"] = top_components + cleaned_sidebars
 
-    # 3. 释放侧边栏树的渲染权限
     nav_style = context.get("theme_nav_style", "header")
     if nav_style == "sidebar":
         context["suppress_sidebar_toctree"] = lambda **kwargs: False

@@ -192,51 +192,178 @@ html[data-zcnote-collapse="false"] body {
 }
 
 /* =========================================================
-   Sidebar 顶部特化样式 (Brand 注入与搜索框紧跟布局)
+   Sidebar 顶部特化样式 (Brand ->  Utilities 组)
    ========================================================= */
 
 .bd-sidebar-primary {
 
-    .zcnote-sidebar-brand-wrapper {
-        display: flex;
-        align-items: center;
-        padding: 1.5rem 0;
-        border-bottom: 1px solid var(--pst-color-border);
-
+    /* 1. 移动端防御：直接选中注入组件，隐藏以释放原生抽屉 */
+    .zcnote-sidebar-brand-wrapper,
+    .zcnote-sidebar-utilities-wrapper {
         @media (max-width: 959.98px) {
             display: none !important;
         }
+    }
 
-        .navbar-brand {
-            margin: 0;
-            padding: 0;
-            white-space: normal;
-            word-wrap: break-word;
+    /* 2. 桌面端特化排版 */
+    @media (min-width: 960px) {
 
-            p, span {
-                font-size: 1.25rem;
-                font-weight: 600;
-            }
+        .zcnote-sidebar-brand-wrapper.sidebar-primary-item,
+        .zcnote-sidebar-utilities-wrapper.sidebar-primary-item {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
 
-            img, svg {
-                display: block;
-                width: auto !important;
-                height: auto !important;
-                max-height: 2.5rem !important;
+        /* --- A. Brand 样式 --- */
+        .zcnote-sidebar-brand-wrapper {
+            display: flex;
+            align-items: center;
+            padding: 1.5rem 1.25rem 0.5rem 0rem !important;
+            border-bottom: none;
+
+            .navbar-brand {
+                margin: 0;
+                padding: 0;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                white-space: normal;
+                word-wrap: break-word;
+                text-decoration: none;
+                transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+                &:hover {
+                    opacity: 0.8;
+                }
+
+                p, span, .text-logo, .site-title {
+                    font-size: 1.25rem;
+                    font-weight: 700;
+                    letter-spacing: -0.025em;
+                    color: var(--pst-color-text-base);
+                    line-height: 1.2;
+                    margin: 0;
+                }
+
+                /* Logo 图片的精细约束 */
+                img, svg {
+                    display: block;
+                    width: auto !important;
+                    height: auto !important;
+                    max-height: 2.25rem !important;
+                    object-fit: contain;
+                }
             }
         }
 
-        /* 寻找紧跟在 Brand 下方的搜索框容器 (利用 SCSS 的 & 引用父级) */
-        & + .sidebar-primary-item {
-            padding-top: 0.5rem;
-            padding-bottom: 1rem;
-            margin-bottom: 1rem;
+        /* --- B. Utilities 包装器 (负责闭环与收尾) --- */
+        .zcnote-sidebar-utilities-wrapper {
+            /* 统一由父容器管理左右对称留白 */
+            padding: 0 1.25rem 1.5rem 1.25rem !important;
+            margin-bottom: 1.5rem;
             border-bottom: 1px solid var(--pst-color-border);
+            width: 100%;
+            box-sizing: border-box;
 
-            /* 移除搜索表单的默认外边距，改由外层统一控制 */
-            .bd-search {
-                margin: 0 !important;
-                padding: 0 1rem; /* 合并左右 padding */
+            /* 内部结构 1: 同行显示的图标与按钮组 */
+            .zcnote-sidebar-utilities-inline {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: flex-start;
+                flex-wrap: wrap;
+                gap: 0.75rem;
+                padding: 0.5rem 0;
+
+                .utilities-item {
+                    display: flex;
+                    align-items: center;
+
+                    > * { margin: 0 !important; }
+
+                    .theme-switch-button,
+                    .search-button__button {
+                        border-radius: 0.375rem !important;
+                    }
+                }
+
+                .navbar-icon-links {
+                    padding: 0;
+                    gap: 0.25rem;
+
+                    .nav-link {
+                        padding: 0.4rem;
+                        border-radius: 0.375rem;
+                        &:hover {
+                            background-color: var(--pst-color-surface);
+                            color: var(--pst-color-primary);
+                        }
+                    }
+                }
+            }
+
+            /* =========================================================
+               内部结构 2: 独占一行的搜索框组 (支持 Field 和 Button)
+               ========================================================= */
+            .zcnote-sidebar-utilities-block {
+                padding: 0.5rem 0;
+                width: 100%;
+
+                .zcnote-sidebar-utilities-inline + & {
+                    margin-top: 1rem;
+                }
+
+                .utilities-block-item {
+                    width: 100%;
+                }
+
+                /* 场景 A: 当组件为 search-field 时 */
+                .bd-search {
+                    margin: 0 !important;
+                    padding: 0;
+                    width: 100% !important;
+                    box-sizing: border-box;
+
+                    .form-control {
+                        width: 100% !important;
+                    }
+                }
+
+                /* 场景 B: 当组件为 search-button-field 时 */
+                .search-button-field {
+                    margin: 0 !important;
+                    width: 100% !important;
+                    max-width: 100% !important;
+                    box-sizing: border-box;
+                    display: flex;
+                    align-items: center;
+
+                    background-color: var(--pst-color-surface);
+                    border: 1px solid var(--pst-color-border);
+                    color: var(--pst-color-text-muted);
+                    border-radius: 0.375rem;
+                    padding: 0.45rem 0.85rem;
+                    transition: all 0.2s ease;
+                    box-shadow: none;
+
+                    &:hover, &:focus {
+                        background-color: var(--pst-color-background);
+                        border-color: var(--pst-color-primary);
+                        color: var(--pst-color-text-base);
+                    }
+
+                    .search-button__default-text {
+                        margin-left: 0.6rem;
+                        font-weight: 400;
+                    }
+
+                    .search-button__kbd-shortcut {
+                        margin-left: auto;
+                        display: flex;
+                        align-items: center;
+                        opacity: 0.8;
+                    }
+                }
             }
         }
     }
