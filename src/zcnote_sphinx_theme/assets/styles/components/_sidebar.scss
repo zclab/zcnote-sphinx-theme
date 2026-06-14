@@ -190,3 +190,54 @@ html[data-zcnote-collapse="false"] body {
         }
     }
 }
+
+/* =========================================================
+   Sidebar 顶部特化样式 (Brand 注入与搜索框紧跟布局)
+   ========================================================= */
+
+.bd-sidebar-primary {
+
+    .zcnote-sidebar-brand-wrapper {
+        display: flex;
+        align-items: center;
+        padding: 1.5rem 0;
+        border-bottom: 1px solid var(--pst-color-border);
+
+        @media (max-width: 959.98px) {
+            display: none !important;
+        }
+
+        .navbar-brand {
+            margin: 0;
+            padding: 0;
+            white-space: normal;
+            word-wrap: break-word;
+
+            p, span {
+                font-size: 1.25rem;
+                font-weight: 600;
+            }
+
+            img, svg {
+                display: block;
+                width: auto !important;
+                height: auto !important;
+                max-height: 2.5rem !important;
+            }
+        }
+
+        /* 寻找紧跟在 Brand 下方的搜索框容器 (利用 SCSS 的 & 引用父级) */
+        & + .sidebar-primary-item {
+            padding-top: 0.5rem;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--pst-color-border);
+
+            /* 移除搜索表单的默认外边距，改由外层统一控制 */
+            .bd-search {
+                margin: 0 !important;
+                padding: 0 1rem; /* 合并左右 padding */
+            }
+        }
+    }
+}
