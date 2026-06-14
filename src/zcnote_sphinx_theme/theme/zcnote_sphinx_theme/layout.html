@@ -9,11 +9,15 @@
 
     <script>
         (function() {
-            // 获取在 theme.conf 或 conf.py 中配置的侧边栏折叠开关
+            // 获取侧边栏折叠开关
             const enableCollapse = "{{ theme_enable_collapse_sidebar | default('true') | string | lower }}";
-
-            // 注入 data-zcnote-collapse 属性到 <html> 标签
             document.documentElement.setAttribute("data-zcnote-collapse", enableCollapse);
+
+            // 获取隐藏 Header 配置
+            const hideHeader = "{{ theme_hide_header | default('false') | string | lower }}";
+            if (hideHeader === "true" || hideHeader === "1") {
+                document.documentElement.setAttribute("data-hide-header", "true");
+            }
         })();
     </script>
 {% endblock extrahead %}
