@@ -73,6 +73,12 @@ html_theme_options = {
             "url": "https://github.com/zclab/zcnote-sphinx-theme",
             "icon": "fa-brands fa-github",
         },
+        {
+            "name": "PyPI",
+            "url": "https://pypi.org/project/zcnote-sphinx-theme/",
+            "icon": "https://pypi.org/static/images/logo-small.8998e9d1.svg",
+            "type": "url",
+        },
     ],
     "logo": {
         "text": "ZCNote Theme",
