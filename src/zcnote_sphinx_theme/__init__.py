@@ -1,14 +1,13 @@
 import os
 from pathlib import Path
 
-__version__ = "0.0.10dev"
+__version__ = "0.0.10"
 
 def get_html_theme_path():
     """返回主题文件夹的绝对路径"""
     return os.path.abspath(os.path.join(os.path.dirname(__file__), "theme"))
 
 
-# 防止配置参数为字符串时被 list() 强行打碎成字符数组
 def _ensure_list(val):
     if not val:
         return []
