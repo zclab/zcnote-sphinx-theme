@@ -115,7 +115,7 @@ guide/index
 ```{toctree}
 :hidden:
 
-Changelog <https://github.com/pydata/pydata-sphinx-theme/releases>
+Changelog <https://github.com/zclab/zcnote-sphinx-theme/releases>
 ```
 
 ```{toctree}
