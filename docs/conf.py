@@ -1,5 +1,6 @@
 import os
 import sys
+import zcnote_sphinx_theme
 
 sys.path.insert(0, os.path.abspath('../src'))
 
@@ -45,6 +46,17 @@ html_favicon = "_static/logo.png"
 html_sourcelink_suffix = ""
 html_last_updated_fmt = ""  # to reveal the build date in the pages meta
 
+json_url = "https://zcnote-sphinx-theme.readthedocs.io/en/latest/_static/switcher.json"
+version_match = os.environ.get("READTHEDOCS_VERSION")
+release = zcnote_sphinx_theme.__version__
+if not version_match or version_match.isdigit() or version_match == "latest":
+    if "dev" in release or "rc" in release:
+        version_match = "dev"
+        json_url = "_static/switcher.json"
+    else:
+        version_match = f"v{release}"
+elif version_match == "stable":
+    version_match = f"v{release}"
 
 html_theme_options = {
     "external_links": [
@@ -98,6 +110,12 @@ html_theme_options = {
     # "home_page_in_toc": True,
     # "sticky_banners": True,
     # "announcement": "https://raw.githubusercontent.com/pydata/pydata-sphinx-theme/main/docs/_templates/custom-template.html",
+    "navbar_end": ["version-switcher", "theme-switcher", "navbar-icon-links"],
+    "switcher": {
+        "json_url": json_url,
+        "version_match": version_match,
+    },
+    "check_switcher": False
 }
 
 html_context = {
