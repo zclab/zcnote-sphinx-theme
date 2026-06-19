@@ -191,13 +191,13 @@ html[data-zcnote-collapse="false"] body {
     }
 }
 
+
 /* =========================================================
    Sidebar 顶部特化样式 (Brand ->  Utilities 组)
    ========================================================= */
 
 .bd-sidebar-primary {
 
-    /* 1. 移动端防御：直接选中注入组件，隐藏以释放原生抽屉 */
     .zcnote-sidebar-brand-wrapper,
     .zcnote-sidebar-utilities-wrapper {
         @media (max-width: 959.98px) {
@@ -205,7 +205,6 @@ html[data-zcnote-collapse="false"] body {
         }
     }
 
-    /* 2. 桌面端特化排版 */
     @media (min-width: 960px) {
 
         .zcnote-sidebar-brand-wrapper.sidebar-primary-item,
@@ -214,12 +213,15 @@ html[data-zcnote-collapse="false"] body {
             padding: 0 !important;
         }
 
-        /* --- A. Brand 样式 --- */
         .zcnote-sidebar-brand-wrapper {
             display: flex;
             align-items: center;
             padding: 1.5rem 1.25rem 0.5rem 0rem !important;
             border-bottom: none;
+
+            width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
 
             .navbar-brand {
                 margin: 0;
@@ -227,8 +229,10 @@ html[data-zcnote-collapse="false"] body {
                 display: flex;
                 align-items: center;
                 gap: 0.75rem;
-                white-space: normal;
-                word-wrap: break-word;
+
+                width: 100%;
+                min-width: 0;
+
                 text-decoration: none;
                 transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -236,36 +240,52 @@ html[data-zcnote-collapse="false"] body {
                     opacity: 0.8;
                 }
 
-                p, span, .text-logo, .site-title {
-                    font-size: 1.25rem;
+                p, span, .text-logo, .site-title, .logo__title {
+                    flex: 1 1 0%;
+                    min-width: 0;
+
+                    font-size: 1.45rem;
                     font-weight: 700;
                     letter-spacing: -0.025em;
                     color: var(--pst-color-text-base);
-                    line-height: 1.2;
+                    line-height: 1.3;
                     margin: 0;
+
+                    overflow-wrap: break-word;
+                    word-wrap: break-word;
+                    word-break: break-word;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                 }
 
-                /* Logo 图片的精细约束 */
-                img, svg {
+                img, svg, .logo__image {
                     display: block;
+                    flex: 0 0 auto;
                     width: auto !important;
                     height: auto !important;
                     max-height: 2.25rem !important;
+                    max-width: 100%;
                     object-fit: contain;
+                }
+
+                &:has(.logo__image):has(.logo__title) {
+                    img, svg, .logo__image {
+                        max-width: 45%;
+                    }
                 }
             }
         }
 
-        /* --- B. Utilities 包装器 (负责闭环与收尾) --- */
         .zcnote-sidebar-utilities-wrapper {
-            /* 统一由父容器管理左右对称留白 */
             padding: 0 1.25rem 1.5rem 1.25rem !important;
             margin-bottom: 1.5rem;
             border-bottom: 1px solid var(--pst-color-border);
             width: 100%;
             box-sizing: border-box;
 
-            /* 内部结构 1: 同行显示的图标与按钮组 */
             .zcnote-sidebar-utilities-inline {
                 display: flex;
                 flex-direction: row;
@@ -302,9 +322,6 @@ html[data-zcnote-collapse="false"] body {
                 }
             }
 
-            /* =========================================================
-               内部结构 2: 独占一行的搜索框组 (支持 Field 和 Button)
-               ========================================================= */
             .zcnote-sidebar-utilities-block {
                 padding: 0.5rem 0;
                 width: 100%;
@@ -317,7 +334,6 @@ html[data-zcnote-collapse="false"] body {
                     width: 100%;
                 }
 
-                /* 场景 A: 当组件为 search-field 时 */
                 .bd-search {
                     margin: 0 !important;
                     padding: 0;
@@ -329,7 +345,6 @@ html[data-zcnote-collapse="false"] body {
                     }
                 }
 
-                /* 场景 B: 当组件为 search-button-field 时 */
                 .search-button-field {
                     margin: 0 !important;
                     width: 100% !important;
