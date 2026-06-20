@@ -7,8 +7,8 @@ def get_html_theme_path():
     """返回主题文件夹的绝对路径"""
     return os.path.abspath(os.path.join(os.path.dirname(__file__), "theme"))
 
-
 def _ensure_list(val):
+    """确保传入的值始终为一个列表"""
     if not val:
         return []
     if isinstance(val, str):
@@ -26,34 +26,73 @@ def override_pydata_sidebar_logic(app, pagename, templatename, context, doctree)
 
     if is_header_hidden:
         context["theme_nav_style"] = "sidebar"
+
+        all_header_items = (
+            _ensure_list(context.get("theme_navbar_start")) +
+            _ensure_list(context.get("theme_navbar_center")) +
+            _ensure_list(context.get("theme_navbar_end")) +
+            _ensure_list(context.get("theme_navbar_persistent"))
+        )
+
+        exclude_items = {"navbar-logo.html", "navbar-nav.html"}
+        orphans = []
+        for item in all_header_items:
+            if item not in exclude_items and item not in orphans:
+                orphans.append(item)
+
+        default_route = context.get("theme_relocate_header_default", "sidebar")
+        if not default_route:
+            default_route = "sidebar"
+
+        raw_routing_map = context.get("theme_relocate_header_components")
+        routing_map = raw_routing_map if isinstance(raw_routing_map, dict) else {}
+
+        to_sidebar = []
+        to_article_end = []
+        to_article_start = []
+
+        for item in orphans:
+            target = routing_map.get(item, default_route)
+            if target == "sidebar":
+                to_sidebar.append(item)
+            elif target == "article_header_end":
+                to_article_end.append(item)
+            elif target == "article_header_start":
+                to_article_start.append(item)
+            elif target == "drop":
+                pass
+
+        context["zcnote_sidebar_tools"] = to_sidebar
+
+        if to_article_end:
+            original_end = _ensure_list(context.get("theme_article_header_end", []))
+            new_end = list(original_end)
+            for item in to_article_end:
+                if item not in new_end:
+                    new_end.append(item)
+            context["theme_article_header_end"] = new_end
+
+        if to_article_start:
+            original_start = _ensure_list(context.get("theme_article_header_start", ["breadcrumbs.html"]))
+            new_start = list(original_start)
+            for item in to_article_start:
+                if item not in new_start:
+                    new_start.append(item)
+            context["theme_article_header_start"] = new_start
+
         current_sidebars = context.get("sidebars")
-
         if current_sidebars is not False:
-            if current_sidebars is None:
-                current_sidebars = ["search-field.html", "sidebar-nav-bs.html"]
+            cleaned_sidebars = [
+                i for i in (current_sidebars or ["sidebar-nav-bs.html"])
+                if i not in orphans + ["search-field.html", "search-button-field.html"]
+            ]
 
-            if isinstance(current_sidebars, list):
-                top_components = [
-                    "components/sidebar-brand.html",
-                    "components/sidebar-utilities.html"
-                ]
+            top_components = ["components/sidebar-brand.html"]
+            if to_sidebar:
+                top_components.append("components/sidebar-utilities.html")
 
-                navbar_end_items = _ensure_list(context.get("theme_navbar_end"))
-                navbar_persistent_items = _ensure_list(context.get("theme_navbar_persistent"))
-
-                components_to_remove = set(
-                    top_components +
-                    navbar_end_items +
-                    navbar_persistent_items +
-                    ["search-field.html"]
-                )
-
-                cleaned_sidebars = [
-                    item for item in current_sidebars
-                    if item not in components_to_remove
-                ]
-
-                context["sidebars"] = top_components + cleaned_sidebars
+            cleaned_sidebars = [c for c in cleaned_sidebars if c not in top_components]
+            context["sidebars"] = top_components + cleaned_sidebars
 
     nav_style = context.get("theme_nav_style", "header")
     if nav_style == "sidebar":
@@ -64,12 +103,9 @@ def setup(app):
     """Sphinx 扩展注册入口"""
     base_theme_path = get_html_theme_path()
     actual_theme_path = os.path.join(base_theme_path, "zcnote_sphinx_theme")
-
     app.add_html_theme("zcnote_sphinx_theme", actual_theme_path)
     components_path = os.path.join(actual_theme_path, "components")
     app.config.templates_path.append(components_path)
-
-    # 加载编译后的 JS
     app.add_js_file("scripts/zcnote-sphinx-theme.js", defer="defer", priority=900)
     app.connect("html-page-context", override_pydata_sidebar_logic, priority=999)
 

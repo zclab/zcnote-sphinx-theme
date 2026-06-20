@@ -115,7 +115,12 @@ html_theme_options = {
         "json_url": json_url,
         "version_match": version_match,
     },
-    "check_switcher": False
+    "check_switcher": False,
+    "relocate_header_components": {
+        "navbar-icon-links.html": "article_header_end",
+        "theme-switcher.html": "article_header_end",
+        "version-switcher.html": "sidebar"
+    }
 }
 
 html_context = {

@@ -1,66 +1,57 @@
 {# =========================================================
-   Sidebar Utilities Wrapper (智能排版版 + 绝对容错版)
-   - 图标与小按钮 (Inline): 聚合在一行
-   - 完整搜索框 (Block): 独立下方一行
+   Sidebar Utilities Wrapper
+   - 消费从 Python 层路由分配来的 zcnote_sidebar_tools 变量
    ========================================================= #}
 
-{# 核心修复：使用 namespace 跨域保存变量，打破 for 循环的作用域壁垒 #}
-{% set ns = namespace(inline=[], block=[]) %}
+{% set items_to_render = zcnote_sidebar_tools | default([]) %}
 
-{# 1. 智能分拣 Persistent 中的元素 #}
-{% set persistent_items = theme_navbar_persistent %}
-{# 容错：如果系统传入的是字符串，将其包裹为列表 #}
-{% if persistent_items is string %}
-    {% set persistent_items = [persistent_items] %}
-{% endif %}
+{% if items_to_render %}
+    {% set block_components = [
+        "search-field.html",
+        "search-button-field.html",
+        "version-switcher.html",
+        "components/version-switcher.html"
+    ] %}
 
-{% if persistent_items %}
-    {% for item in persistent_items %}
-        {# 准确命中宽大的搜索框形态 #}
-        {% if item in ["search-field.html", "search-button-field.html"] %}
+    {% set ns = namespace(inline=[], block=[]) %}
+
+    {% for item in items_to_render %}
+        {% if item in block_components %}
             {% set ns.block = ns.block + [item] %}
         {% else %}
-            {# search-button.html 会走到这里，与 icon-links 同行 #}
             {% set ns.inline = ns.inline + [item] %}
         {% endif %}
     {% endfor %}
-{% endif %}
 
-{# 2. 合并 End 中的图标与工具 #}
-{% set end_items = theme_navbar_end %}
-{% if end_items is string %}
-    {% set end_items = [end_items] %}
-{% endif %}
+    <div class="zcnote-sidebar-utilities-wrapper d-print-none">
 
-{% if end_items %}
-    {% set ns.inline = ns.inline + end_items | list %}
-{% endif %}
+        {# =========================================================
+           渲染区域 A: 内联组 (同行排列，自动折行)
+           适用于: Theme Switcher, Icon Links, 纯图标 Button
+           ========================================================= #}
+        {% if ns.inline %}
+        <div class="zcnote-sidebar-utilities-inline">
+            {% for item in ns.inline %}
+                <div class="utilities-item">
+                    {% include item ignore missing with context %}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
 
-{# 3. 最终渲染 #}
-{% if ns.inline or ns.block %}
-<div class="sidebar-primary-item zcnote-sidebar-utilities-wrapper d-print-none">
+        {# =========================================================
+           渲染区域 B: 块级组 (垂直堆叠，宽度 100%)
+           适用于: 完整搜索框, 版本选择下拉菜单
+           ========================================================= #}
+        {% if ns.block %}
+        <div class="zcnote-sidebar-utilities-block">
+            {% for item in ns.block %}
+                <div class="utilities-block-item">
+                    {% include item ignore missing with context %}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
 
-    {# 渲染同行组 (Icons, Theme Switcher, Search Button 等) #}
-    {% if ns.inline %}
-    <div class="zcnote-sidebar-utilities-inline">
-        {% for item in ns.inline %}
-            <div class="utilities-item">
-                {% include item with context %}
-            </div>
-        {% endfor %}
     </div>
-    {% endif %}
-
-    {# 渲染独占行组 (全尺寸 Search Field) #}
-    {% if ns.block %}
-    <div class="zcnote-sidebar-utilities-block">
-        {% for item in ns.block %}
-            <div class="utilities-block-item">
-                {% include item with context %}
-            </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-</div>
 {% endif %}
