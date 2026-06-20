@@ -1,0 +1,57 @@
+/* =========================================================
+   Article Header (文章顶栏/面包屑行)
+   ========================================================= */
+
+html body .bd-main .bd-header-article {
+
+    .header-article__inner {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        width: 100%;
+    }
+
+    .header-article-items__start {
+        display: flex;
+        align-items: center;
+        flex: 1 1 0%;
+        min-width: 0;
+
+        .header-article-item {
+            margin-bottom: 0;
+            min-width: 0;
+            width: 100%;
+        }
+
+        .bd-breadcrumbs {
+            margin-bottom: 0;
+        }
+    }
+
+    .header-article-items__end {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        flex: 0 0 auto;
+        gap: 0.75rem;
+        margin-left: auto;
+
+        .header-article-item,
+        .navbar-icon-links,
+        .theme-switch-container,
+        .version-switcher__container {
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-icon-links {
+            gap: 0.25rem;
+        }
+    }
+}
+
+
+
