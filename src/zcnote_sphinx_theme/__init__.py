@@ -1,5 +1,4 @@
 import os
-from pathlib import Path
 
 __version__ = "0.1.0.dev"
 
@@ -13,11 +12,15 @@ def _ensure_list(val):
         return []
     if isinstance(val, str):
         return [val]
-    return list(val)
+    try:
+        return list(val)
+    except TypeError:
+        return [val]
 
 def override_pydata_sidebar_logic(app, pagename, templatename, context, doctree):
     context["zcnote_theme_version"] = __version__
 
+    # 1. 判定是否隐藏 Header
     hide_header_raw = context.get("theme_hide_header", False)
     if isinstance(hide_header_raw, str):
         is_header_hidden = hide_header_raw.lower() in ("true", "1", "yes")
@@ -27,40 +30,40 @@ def override_pydata_sidebar_logic(app, pagename, templatename, context, doctree)
     if is_header_hidden:
         context["theme_nav_style"] = "sidebar"
 
-        all_header_items = (
-            _ensure_list(context.get("theme_navbar_start")) +
-            _ensure_list(context.get("theme_navbar_center")) +
-            _ensure_list(context.get("theme_navbar_end")) +
-            _ensure_list(context.get("theme_navbar_persistent"))
-        )
+        raw_routing_map = context.get("theme_relocate_header")
+        routing_map = raw_routing_map if isinstance(raw_routing_map, dict) else {}
 
         exclude_items = {"navbar-logo.html", "navbar-nav.html"}
-        orphans = []
-        for item in all_header_items:
-            if item not in exclude_items and item not in orphans:
-                orphans.append(item)
-
-        default_route = context.get("theme_relocate_header_default", "sidebar")
-        if not default_route:
-            default_route = "sidebar"
-
-        raw_routing_map = context.get("theme_relocate_header_components")
-        routing_map = raw_routing_map if isinstance(raw_routing_map, dict) else {}
 
         to_sidebar = []
         to_article_end = []
         to_article_start = []
+        processed_orphans = []
 
-        for item in orphans:
-            target = routing_map.get(item, default_route)
-            if target == "sidebar":
-                to_sidebar.append(item)
-            elif target == "article_header_end":
-                to_article_end.append(item)
-            elif target == "article_header_start":
-                to_article_start.append(item)
-            elif target == "drop":
-                pass
+        def route_items(source_items, smart_default_target):
+            for item in _ensure_list(source_items):
+                if item in exclude_items:
+                    continue
+
+                if item in processed_orphans:
+                    continue
+                processed_orphans.append(item)
+
+                target = routing_map.get(item, smart_default_target)
+
+                if target == "sidebar":
+                    to_sidebar.append(item)
+                elif target == "article_header_end":
+                    to_article_end.append(item)
+                elif target == "article_header_start":
+                    to_article_start.append(item)
+                elif target == "drop":
+                    pass
+
+        route_items(context.get("theme_navbar_start"), "sidebar")
+        route_items(context.get("theme_navbar_center"), "sidebar")
+        route_items(context.get("theme_navbar_persistent"), "sidebar")
+        route_items(context.get("theme_navbar_end"), "article_header_end")
 
         context["zcnote_sidebar_tools"] = to_sidebar
 
@@ -81,10 +84,14 @@ def override_pydata_sidebar_logic(app, pagename, templatename, context, doctree)
             context["theme_article_header_start"] = new_start
 
         current_sidebars = context.get("sidebars")
-        if current_sidebars is not False:
+
+        if current_sidebars is not False and current_sidebars != []:
+            if current_sidebars is None:
+                current_sidebars = ["sidebar-nav-bs.html"]
+
             cleaned_sidebars = [
-                i for i in (current_sidebars or ["sidebar-nav-bs.html"])
-                if i not in orphans + ["search-field.html", "search-button-field.html"]
+                i for i in current_sidebars
+                if i not in processed_orphans
             ]
 
             top_components = ["components/sidebar-brand.html"]

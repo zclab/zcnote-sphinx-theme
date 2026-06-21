@@ -116,7 +116,7 @@ html_theme_options = {
         "version_match": version_match,
     },
     "check_switcher": False,
-    "relocate_header_components": {
+    "relocate_header": {
         "navbar-icon-links.html": "article_header_end",
         "theme-switcher.html": "article_header_end",
         "version-switcher.html": "sidebar"
