@@ -2,7 +2,11 @@
    1. 全局变量与视口定义
    ========================================================= */
 :root {
+    /* 视口高度：利用 CSS 原生层叠特性。
+       老浏览器使用 100vh，支持动态视口的现代浏览器会自动覆盖为 100dvh */
+    --zcnote-vh: 100vh;
     --zcnote-vh: 100dvh;
+
     --zcnote-header-height: 4rem;
     --zcnote-g-h: 0px;
     --zcnote-a-h: 0px;
@@ -14,10 +18,6 @@
 
     --pst-font-family-base: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
     --pst-font-family-monospace: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, monospace;
-
-    @supports not (height: 100dvh) {
-        --zcnote-vh: 100vh;
-    }
 }
 
 /* =========================================================
@@ -33,7 +33,6 @@ html {
         --pst-color-primary: #0284c7;
         --pst-color-secondary: #0ea5e9;
 
-        /* 复用同色变量，减少硬编码 */
         --pst-color-info: var(--pst-color-secondary);
         --pst-color-seealso: var(--pst-color-secondary);
 
@@ -82,11 +81,12 @@ html {
             --pst-header-height: 0px !important;
             scroll-padding-top: 1.5rem;
 
-            #pst-header.bd-header {
+            /* 增加 body 提高选择器权重，确保万无一失地覆盖 PyData 原生样式 */
+            body #pst-header.bd-header {
                 display: none !important;
             }
 
-            .pst-sticky-header {
+            body .pst-sticky-header {
                 position: static !important;
                 height: 0 !important;
                 min-height: 0 !important;
@@ -115,6 +115,8 @@ html body {
 
             p, li {
                 text-align: justify;
+                -webkit-hyphens: auto;
+                hyphens: auto;
                 overflow-wrap: break-word;
                 word-wrap: break-word;
             }
