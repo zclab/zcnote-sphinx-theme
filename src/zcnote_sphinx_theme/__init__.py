@@ -20,7 +20,13 @@ def _ensure_list(val):
 def override_pydata_sidebar_logic(app, pagename, templatename, context, doctree):
     context["zcnote_theme_version"] = __version__
 
-    # 1. 判定是否隐藏 Header
+    root_doc = context.get("root_doc") or context.get("master_doc") or "index"
+
+    if hasattr(app, "env") and hasattr(app.env, "titles") and root_doc in app.env.titles:
+        context["root_title"] = app.env.titles[root_doc].astext()
+    else:
+        context["root_title"] = context.get("project") or "Home"
+
     hide_header_raw = context.get("theme_hide_header", False)
     if isinstance(hide_header_raw, str):
         is_header_hidden = hide_header_raw.lower() in ("true", "1", "yes")
