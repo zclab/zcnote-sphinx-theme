@@ -1,0 +1,44 @@
+{% set items_to_render = zcnote_sidebar_tools_end | default([]) %}
+
+{% if items_to_render %}
+    {% set block_components = [
+        "search-field.html",
+        "search-button-field.html",
+        "version-switcher.html",
+        "components/version-switcher.html"
+    ] %}
+
+    {% set ns = namespace(inline=[], block=[]) %}
+
+    {% for item in items_to_render %}
+        {% if item in block_components %}
+            {% set ns.block = ns.block + [item] %}
+        {% else %}
+            {% set ns.inline = ns.inline + [item] %}
+        {% endif %}
+    {% endfor %}
+
+    <div class="zcnote-sidebar-utilities-wrapper is-end d-print-none">
+
+        {% if ns.inline %}
+        <div class="zcnote-sidebar-utilities-inline">
+            {% for item in ns.inline %}
+                <div class="utilities-item">
+                    {% include item ignore missing with context %}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if ns.block %}
+        <div class="zcnote-sidebar-utilities-block">
+            {% for item in ns.block %}
+                <div class="utilities-block-item">
+                    {% include item ignore missing with context %}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+    </div>
+{% endif %}

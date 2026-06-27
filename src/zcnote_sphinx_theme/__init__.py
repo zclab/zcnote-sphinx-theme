@@ -11,7 +11,7 @@ def _ensure_list(val):
     if not val:
         return []
     if isinstance(val, str):
-        return [val]
+        return [x.strip() for x in val.split(",") if x.strip()]
     try:
         return list(val)
     except TypeError:
@@ -42,6 +42,7 @@ def override_pydata_sidebar_logic(app, pagename, templatename, context, doctree)
         exclude_items = {"navbar-logo.html", "navbar-nav.html"}
 
         to_sidebar = []
+        to_sidebar_end = []
         to_article_end = []
         to_article_start = []
         processed_orphans = []
@@ -59,6 +60,8 @@ def override_pydata_sidebar_logic(app, pagename, templatename, context, doctree)
 
                 if target == "sidebar":
                     to_sidebar.append(item)
+                elif target == "primary_sidebar_end":
+                    to_sidebar_end.append(item)
                 elif target == "article_header_end":
                     to_article_end.append(item)
                 elif target == "article_header_start":
@@ -72,6 +75,16 @@ def override_pydata_sidebar_logic(app, pagename, templatename, context, doctree)
         route_items(context.get("theme_navbar_end"), "article_header_end")
 
         context["zcnote_sidebar_tools"] = to_sidebar
+        context["zcnote_sidebar_tools_end"] = to_sidebar_end
+
+        if to_sidebar_end:
+            current_end = context.get("theme_primary_sidebar_end")
+            new_primary_end = list(_ensure_list(current_end))
+            wrapper_tpl = "components/sidebar-utilities-end.html"
+            if wrapper_tpl not in new_primary_end:
+                new_primary_end.insert(0, wrapper_tpl)
+
+            context["theme_primary_sidebar_end"] = new_primary_end
 
         if to_article_end:
             original_end = _ensure_list(context.get("theme_article_header_end", []))
