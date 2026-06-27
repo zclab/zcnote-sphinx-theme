@@ -284,7 +284,7 @@ html[data-zcnote-collapse="false"] body {
 
             .navbar-brand {
                 margin: 0;
-                padding: 0;
+                padding: 1.0rem 0.5rem;
                 display: flex;
                 align-items: center;
                 gap: 0.75rem;
@@ -325,7 +325,7 @@ html[data-zcnote-collapse="false"] body {
                     flex: 0 0 auto;
                     width: auto !important;
                     height: auto !important;
-                    max-height: 2.25rem !important;
+                    max-height: 4.25rem !important;
                     max-width: 100%;
                     object-fit: contain;
                 }

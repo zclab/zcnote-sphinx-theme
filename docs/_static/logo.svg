@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 120" width="450" height="120">
+  <defs>
+    <linearGradient id="quillGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="50%" stop-color="#0ea5e9" />
+      <stop offset="100%" stop-color="#38bdf8" />
+    </linearGradient>
+
+    <linearGradient id="inkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0369a1" />
+    </linearGradient>
+
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="50%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#334155" />
+    </linearGradient>
+
+    <filter id="softShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#0284c7" flood-opacity="0.15" />
+    </filter>
+  </defs>
+
+  <g transform="translate(15, 12)">
+    <path d="M 20 90 C 10 60, 30 15, 88 8 C 75 22, 80 40, 85 50 L 72 45 C 75 58, 65 72, 70 80 L 58 72 C 50 82, 35 90, 20 90 Z" fill="url(#quillGrad)" opacity="0.2" transform="translate(5, 5)" />
+    <g filter="url(#softShadow)">
+      <path d="M 12 90 C 2 55, 25 10, 85 5 C 70 20, 78 35, 75 46 L 62 40 C 68 52, 65 62, 68 68 L 55 60 C 58 68, 48 78, 50 82 L 38 75 C 32 82, 22 88, 12 90 Z" fill="url(#quillGrad)" />
+      <path d="M 12 90 C 25 65, 45 28, 83 7" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.85" />
+      <path d="M 28 62 C 35 55, 42 50, 48 42" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" opacity="0.4" />
+      <path d="M 38 72 C 45 65, 52 60, 58 52" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" opacity="0.4" />
+      <path d="M 45 80 C 52 75, 58 70, 65 65" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round" opacity="0.4" />
+      <path d="M 22 55 C 20 50, 18 45, 17 38" fill="none" stroke="#ffffff" stroke-width="1" stroke-linecap="round" opacity="0.3" />
+      <path d="M 32 40 C 30 35, 28 28, 28 20" fill="none" stroke="#ffffff" stroke-width="1" stroke-linecap="round" opacity="0.3" />
+    </g>
+    <circle cx="8" cy="98" r="3.5" fill="url(#inkGrad)" />
+    <circle cx="2" cy="106" r="2" fill="url(#inkGrad)" opacity="0.7" />
+  </g>
+
+  <g transform="translate(125, 75)">
+    
+    <text x="0" y="-5" font-size="76" font-weight="normal" font-family="'Snell Roundhand', 'Bickham Script Pro', 'Apple Chancery', 'Monotype Corsiva', 'Brush Script MT', cursive" fill="url(#textGrad)">ZC</text>
+    
+    <text x="96" y="-5" font-size="52" font-weight="300" font-family="'Avenir Next', 'Montserrat', 'Helvetica Neue', system-ui, sans-serif" letter-spacing="1px" fill="#0284c7">Note</text>
+    
+    <path d="M -5 5 C 20 18, 55 22, 90 12 C 105 8, 120 -5, 185 10" fill="none" stroke="url(#textGrad)" stroke-width="1.5" stroke-linecap="round" opacity="0.5" />
+    <circle cx="185" cy="10" r="1.5" fill="#334155" opacity="0.5" />
+
+    <text x="12" y="32" font-size="12" font-weight="600" font-family="system-ui, -apple-system, sans-serif" fill="#64748b" letter-spacing="7px">SPHINX THEME</text>
+  </g>
+
+</svg>

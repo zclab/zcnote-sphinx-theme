@@ -41,8 +41,8 @@ blog_authors = {
 
 
 html_theme = 'zcnote_sphinx_theme'
-html_logo = "_static/logo.png"
-html_favicon = "_static/logo.png"
+html_logo = "_static/logo.svg"
+html_favicon = "_static/favicon.png"
 html_sourcelink_suffix = ""
 html_last_updated_fmt = ""  # to reveal the build date in the pages meta
 
@@ -93,8 +93,7 @@ html_theme_options = {
         },
     ],
     "logo": {
-        "text": "ZCNote Theme",
-        "image_dark": "_static/logo.png",
+        "image_dark": "_static/logo.svg",
     },
     "secondary_sidebar_items": {
         "**/*": ["page-toc", "edit-this-page", "sourcelink"],

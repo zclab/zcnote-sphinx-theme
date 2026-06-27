@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 120" width="450" height="120">
+  <defs>
+    <linearGradient id="quillGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="50%" stop-color="#0ea5e9" />
+      <stop offset="100%" stop-color="#38bdf8" />
+    </linearGradient>
+
+    <linearGradient id="inkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0369a1" />
+    </linearGradient>
+
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#334155" />
+    </linearGradient>
+
+    <filter id="softShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#0284c7" flood-opacity="0.15" />
+    </filter>
+  </defs>
+
+  <g transform="translate(15, 15)">
+    
+    <path d="M 20 85 
+             C 20 50, 45 15, 85 5 
+             C 75 25, 75 45, 85 60 
+             L 70 50 
+             C 55 65, 35 80, 20 85 Z" 
+          fill="url(#quillGrad)" opacity="0.25" transform="translate(6, 4)" />
+
+    <g filter="url(#softShadow)">
+      <path d="M 15 85 
+               C 15 50, 40 10, 85 5 
+               C 70 20, 65 40, 75 55 
+               L 60 45 
+               C 45 60, 25 75, 15 85 Z" 
+            fill="url(#quillGrad)" />
+            
+      <path d="M 15 85 C 30 60, 50 25, 83 6" 
+            fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.8" />
+      
+      <path d="M 32 55 C 40 50, 45 45, 52 35" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" opacity="0.4" />
+      <path d="M 45 70 C 55 65, 60 55, 65 48" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" opacity="0.4" />
+    </g>
+
+    <circle cx="10" cy="92" r="3.5" fill="url(#inkGrad)" />
+    <circle cx="2" cy="100" r="2" fill="url(#inkGrad)" opacity="0.7" />
+  </g>
+
+  <g transform="translate(120, 75)" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" letter-spacing="-1px">
+    
+    <text x="0" y="0" font-size="58" font-weight="800" fill="url(#textGrad)">ZC</text>
+    
+    <text x="78" y="0" font-size="58" font-weight="400" fill="#0284c7">Note</text>
+    
+    <text x="4" y="24" font-size="14" font-weight="600" fill="#64748b" letter-spacing="5.5px">SPHINX THEME</text>
+  </g>
+
+</svg>
