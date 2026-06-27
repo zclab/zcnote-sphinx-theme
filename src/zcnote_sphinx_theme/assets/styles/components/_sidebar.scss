@@ -247,7 +247,7 @@ html[data-zcnote-collapse="false"] body {
 
     @media (max-width: 959.98px) {
         .sidebar-primary-item:has(.zcnote-sidebar-brand-wrapper),
-        .sidebar-primary-item:has(.zcnote-sidebar-utilities-wrapper) {
+        .sidebar-primary-item:has(.zcnote-sidebar-utilities-wrapper:not(.is-end)) {
             display: none !important;
             margin: 0 !important;
             padding: 0 !important;
@@ -256,7 +256,7 @@ html[data-zcnote-collapse="false"] body {
         }
 
         .zcnote-sidebar-brand-wrapper,
-        .zcnote-sidebar-utilities-wrapper {
+        .zcnote-sidebar-utilities-wrapper:not(.is-end) {
             display: none !important;
         }
     }
@@ -342,6 +342,15 @@ html[data-zcnote-collapse="false"] body {
             padding: 1.5rem 0.5rem 0rem 0.5rem !important;
             width: 100%;
             box-sizing: border-box;
+
+            &.is-end {
+                padding: 0 !important;
+                &:empty, &:not(:has(*)) {
+                    display: none !important;
+                    margin-bottom: 0 !important;
+                    height: 0 !important;
+                }
+            }
 
             .zcnote-sidebar-utilities-inline {
                 display: flex;
