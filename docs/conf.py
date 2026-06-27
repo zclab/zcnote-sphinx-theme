@@ -100,7 +100,7 @@ html_theme_options = {
         "**/*": ["page-toc", "edit-this-page", "sourcelink"],
         "examples/no-sidebar": [],
     },
-    "primary_sidebar_end":[],
+    "primary_sidebar_end":["indices"],
     "hide_header": True,
     # "article_footer_items": ["copyright", "sphinx-version"],
     "content_footer_items": ["copyright", "sphinx-version", "zcnote-theme-version"],

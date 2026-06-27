@@ -1,6 +1,3 @@
-/* =========================================================
-   侧边栏尺寸、粘性滚动与折叠按钮 (The Holy Grail Edition)
-   ========================================================= */
 
 html[data-zcnote-collapse="false"] body {
     .sidebar-primary-item.pst-sidebar-collapse,
@@ -14,6 +11,8 @@ html[data-zcnote-collapse="false"] body {
     }
 }
 
+
+
 @media (min-width: 960px) {
     #pst-primary-sidebar.bd-sidebar-primary {
         align-self: start;
@@ -26,12 +25,59 @@ html[data-zcnote-collapse="false"] body {
         max-height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-overlap-primary, 0px));
 
         margin-bottom: -100vh;
-        padding-bottom: 0;
-
-        overflow-y: auto;
-        scrollbar-width: thin;
-
         transition: background-color 0.25s, border-color 0.25s, width 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s;
+
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        padding: 0 !important;
+        gap: 0 !important;
+
+        > .sidebar-primary__section {
+            margin: 0 !important;
+        }
+
+        > .sidebar-header-items {
+            flex-shrink: 0;
+            padding: 1rem 0.5rem 0.5rem 0.5rem;
+
+            &:empty, &:not(:has(*)) {
+                display: none !important;
+                padding: 0 !important;
+            }
+        }
+
+        > .sidebar-primary-items__start {
+            flex: 1 1 0%;
+            min-height: 0;
+            min-width: 0;
+
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+
+            padding-top: 0.5rem;
+            padding-bottom: 1.5rem;
+            padding-left: 0;
+            padding-right: 1.0rem;
+        }
+
+        > .sidebar-primary-items__end {
+            flex-shrink: 0;
+
+            margin-top: auto !important;
+
+            background-color: var(--pst-color-background);
+            border-top: 1px solid var(--pst-color-border);
+
+            padding: 0rem 0.5rem;
+
+            &:empty, &:not(:has(*)) {
+                display: none !important;
+                padding: 0 !important;
+                border: none !important;
+            }
+        }
 
         .sidebar-primary-item {
             padding-left: 0.5rem;
@@ -44,6 +90,7 @@ html[data-zcnote-collapse="false"] body {
         box-sizing: border-box;
     }
 }
+
 
 @media (min-width: 1200px) {
     .bd-sidebar-primary {
@@ -293,8 +340,6 @@ html[data-zcnote-collapse="false"] body {
 
         .zcnote-sidebar-utilities-wrapper {
             padding: 1.5rem 0.5rem 0rem 0.5rem !important;
-            // margin-bottom: 0.65rem;
-            // border-bottom: 1px solid var(--pst-color-border);
             width: 100%;
             box-sizing: border-box;
 
