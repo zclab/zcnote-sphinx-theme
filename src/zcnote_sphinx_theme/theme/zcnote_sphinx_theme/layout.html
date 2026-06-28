@@ -21,3 +21,83 @@
         })();
     </script>
 {% endblock extrahead %}
+
+
+{% block docs_main %}
+    <script>
+        (function() {
+            const scrollContainer = document.querySelector('.sidebar-primary-items__start');
+            if (!scrollContainer) return;
+
+            let storage;
+            try { storage = window.sessionStorage; storage.setItem('__t', '1'); storage.removeItem('__t'); }
+            catch (e) { storage = null; }
+
+            const STORAGE_KEY = 'zcnote_sidebar_scroll_state';
+            let targetScroll = null;
+
+            const calculateTarget = () => {
+                const saved = storage ? storage.getItem(STORAGE_KEY) : null;
+                if (saved !== null) return parseInt(saved, 10);
+
+                const currentItems = scrollContainer.querySelectorAll('.current');
+                const activeItem = currentItems.length > 0 ? currentItems[currentItems.length - 1] : null;
+
+                if (activeItem) {
+                    const itemRect = activeItem.getBoundingClientRect();
+                    const containerRect = scrollContainer.getBoundingClientRect();
+                    const absoluteTop = (itemRect.top - containerRect.top) + scrollContainer.scrollTop;
+                    return Math.max(0, absoluteTop - (containerRect.height / 3));
+                }
+                return 0;
+            };
+
+            const applyScroll = () => {
+                if (scrollContainer.clientHeight === 0) return;
+
+                if (targetScroll === null) targetScroll = calculateTarget();
+
+                const originalBehavior = scrollContainer.style.scrollBehavior;
+                scrollContainer.style.scrollBehavior = 'auto';
+                scrollContainer.scrollTop = targetScroll;
+
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        if (originalBehavior) scrollContainer.style.scrollBehavior = originalBehavior;
+                        else scrollContainer.style.removeProperty('scroll-behavior');
+                    });
+                });
+            };
+
+            applyScroll();
+
+            window.addEventListener('load', applyScroll);
+
+            if (storage) {
+                const saveScroll = () => {
+                    if (scrollContainer.clientHeight > 0) {
+                        const maxScroll = Math.max(0, scrollContainer.scrollHeight - scrollContainer.clientHeight);
+                        const clampedScroll = Math.max(0, Math.min(scrollContainer.scrollTop, maxScroll));
+                        storage.setItem(STORAGE_KEY, clampedScroll);
+                    }
+                };
+
+                scrollContainer.addEventListener('click', function(e) {
+                    if (e.target.closest('a')) saveScroll();
+                });
+
+                window.addEventListener('pagehide', saveScroll);
+                window.addEventListener('beforeunload', saveScroll);
+
+                window.addEventListener('pageshow', function(e) {
+                    if (e.persisted) {
+                        targetScroll = null;
+                        applyScroll();
+                    }
+                });
+            }
+        })();
+    </script>
+
+    {{ super() }}
+{% endblock docs_main %}

@@ -11,8 +11,6 @@ html[data-zcnote-collapse="false"] body {
     }
 }
 
-
-
 @media (min-width: 960px) {
     #pst-primary-sidebar.bd-sidebar-primary {
         align-self: start;
@@ -25,6 +23,8 @@ html[data-zcnote-collapse="false"] body {
         max-height: calc(var(--zcnote-vh) - var(--zcnote-header-height, var(--pst-header-height)) - var(--zcnote-overlap-primary, 0px));
 
         margin-bottom: -100vh;
+        padding-bottom: 0;
+
         transition: background-color 0.25s, border-color 0.25s, width 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s;
 
         display: flex;
@@ -40,11 +40,6 @@ html[data-zcnote-collapse="false"] body {
         > .sidebar-header-items {
             flex-shrink: 0;
             padding: 1rem 0.5rem 0.5rem 0.5rem;
-
-            &:empty, &:not(:has(*)) {
-                display: none !important;
-                padding: 0 !important;
-            }
         }
 
         > .sidebar-primary-items__start {
@@ -56,6 +51,7 @@ html[data-zcnote-collapse="false"] body {
             overflow-x: hidden;
             scrollbar-width: thin;
 
+            overscroll-behavior: contain;
             padding-top: 0.5rem;
             padding-bottom: 1.5rem;
             padding-left: 0;
@@ -64,13 +60,14 @@ html[data-zcnote-collapse="false"] body {
 
         > .sidebar-primary-items__end {
             flex-shrink: 0;
-
             margin-top: auto !important;
 
             background-color: var(--pst-color-background);
             border-top: 1px solid var(--pst-color-border);
+            padding: 0;
 
-            padding: 0rem 0.5rem;
+            position: relative;
+            z-index: 2;
 
             &:empty, &:not(:has(*)) {
                 display: none !important;
