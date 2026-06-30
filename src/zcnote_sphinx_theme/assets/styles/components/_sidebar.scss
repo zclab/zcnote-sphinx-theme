@@ -13,6 +13,14 @@ html[data-zcnote-collapse="false"] body {
 
 @media (min-width: 960px) {
     #pst-primary-sidebar.bd-sidebar-primary {
+        &.hide-on-wide {
+            display: none !important;
+            width: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border: none !important;
+        }
+
         align-self: start;
         position: sticky;
         top: var(--zcnote-header-height, var(--pst-header-height));
