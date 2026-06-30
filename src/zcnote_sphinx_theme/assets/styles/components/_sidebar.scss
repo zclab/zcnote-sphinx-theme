@@ -30,7 +30,7 @@ html[data-zcnote-collapse="false"] body {
         display: flex;
         flex-direction: column;
         overflow: hidden;
-        padding: 0 !important;
+        padding: 0 0 0 1rem !important;
         gap: 0 !important;
 
         > .sidebar-primary__section {
