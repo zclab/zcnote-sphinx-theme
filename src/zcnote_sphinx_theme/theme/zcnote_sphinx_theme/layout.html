@@ -30,41 +30,66 @@
             if (!scrollContainer) return;
 
             let storage;
-            try { storage = window.sessionStorage; storage.setItem('__t', '1'); storage.removeItem('__t'); }
-            catch (e) { storage = null; }
+            try {
+                storage = window.sessionStorage;
+                storage.setItem('__t', '1');
+                storage.removeItem('__t');
+            } catch (e) {
+                storage = null;
+            }
 
             const STORAGE_KEY = 'zcnote_sidebar_scroll_state';
-            let targetScroll = null;
 
             const calculateTarget = () => {
                 const saved = storage ? storage.getItem(STORAGE_KEY) : null;
-                if (saved !== null) return parseInt(saved, 10);
+                const parsedScroll = saved ? parseInt(saved, 10) : NaN;
+                const savedScroll = !isNaN(parsedScroll) ? parsedScroll : null;
 
                 const currentItems = scrollContainer.querySelectorAll('.current');
                 const activeItem = currentItems.length > 0 ? currentItems[currentItems.length - 1] : null;
 
                 if (activeItem) {
                     const itemRect = activeItem.getBoundingClientRect();
-                    const containerRect = scrollContainer.getBoundingClientRect();
-                    const absoluteTop = (itemRect.top - containerRect.top) + scrollContainer.scrollTop;
-                    return Math.max(0, absoluteTop - (containerRect.height / 3));
+
+                    if (itemRect.height > 0) {
+                        const containerRect = scrollContainer.getBoundingClientRect();
+
+                        const absoluteItemTop = Math.round(itemRect.top - containerRect.top + scrollContainer.scrollTop);
+                        const itemHeight = Math.round(itemRect.height);
+                        const containerHeight = Math.round(scrollContainer.clientHeight);
+
+                        if (savedScroll !== null) {
+                            const topVisible = absoluteItemTop >= (savedScroll - 30);
+                            const bottomVisible = (absoluteItemTop + itemHeight) <= (savedScroll + containerHeight + 30);
+                            const isOversized = itemHeight > containerHeight;
+
+                            if ((topVisible && bottomVisible) || (isOversized && topVisible)) {
+                                return savedScroll;
+                            }
+                        }
+
+                        return Math.max(0, absoluteItemTop - (containerHeight / 3));
+                    }
                 }
-                return 0;
+
+                return savedScroll !== null ? savedScroll : 0;
             };
 
+            let isRestoring = false;
+
             const applyScroll = () => {
-                if (scrollContainer.clientHeight === 0) return;
+                if (scrollContainer.clientHeight === 0 || isRestoring) return;
+                isRestoring = true;
 
-                if (targetScroll === null) targetScroll = calculateTarget();
+                const targetScroll = calculateTarget();
 
-                const originalBehavior = scrollContainer.style.scrollBehavior;
-                scrollContainer.style.scrollBehavior = 'auto';
+                scrollContainer.style.setProperty('scroll-behavior', 'auto', 'important');
                 scrollContainer.scrollTop = targetScroll;
 
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
-                        if (originalBehavior) scrollContainer.style.scrollBehavior = originalBehavior;
-                        else scrollContainer.style.removeProperty('scroll-behavior');
+                        scrollContainer.style.removeProperty('scroll-behavior');
+                        isRestoring = false;
                     });
                 });
             };
@@ -88,12 +113,12 @@
 
                 window.addEventListener('pagehide', saveScroll);
                 window.addEventListener('beforeunload', saveScroll);
+                document.addEventListener('visibilitychange', () => {
+                    if (document.visibilityState === 'hidden') saveScroll();
+                });
 
                 window.addEventListener('pageshow', function(e) {
-                    if (e.persisted) {
-                        targetScroll = null;
-                        applyScroll();
-                    }
+                    if (e.persisted) applyScroll();
                 });
             }
         })();
