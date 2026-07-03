@@ -1,23 +1,51 @@
-/* =========================================================
-   打印模式兼容 (防御文档导出 PDF 崩溃)
-   ========================================================= */
+
 
 @media print {
     html body {
-        .bd-footer {
-            position: static;
-        }
-
-        #zcnote-footer-spacer {
-            display: none;
-        }
-
+        #pst-header,
+        .pst-sticky-header,
         #pst-primary-sidebar,
-        #pst-secondary-sidebar {
-            position: static;
-            height: auto;
-            max-height: none;
-            overflow-y: visible;
+        #pst-secondary-sidebar,
+        #pst-back-to-top,
+        .d-print-none,
+        .prev-next-footer,
+        #zcnote-footer-spacer {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .bd-main {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            min-height: auto !important;
+        }
+
+        .bd-content {
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 0 !important;
+        }
+
+        pre, code, .highlight {
+            white-space: pre-wrap !important;
+            word-break: break-all !important;
+            overflow-wrap: break-word !important;
+        }
+
+        .bd-footer {
+            position: static !important;
+            margin-top: 2rem !important;
+        }
+
+        a[href^="http"]::after {
+            content: " (" attr(href) ")";
+            font-size: 0.85em;
+            color: #666;
         }
     }
 }
