@@ -1,6 +1,5 @@
 /**
  * ZC-Note Sphinx Theme
- * 侧边栏折叠逻辑与防闪烁处理
  */
 export function initSidebar() {
     const sidebar = document.querySelector(".bd-sidebar-primary");
@@ -23,7 +22,6 @@ export function initSidebar() {
         collapseBtn.setAttribute("data-bs-placement", "right");
     }
 
-    // 全局状态管理
     let lastLayoutState = null;
     let isSyncing = false;
 
@@ -37,13 +35,15 @@ export function initSidebar() {
         }
 
         if (window.bootstrap && window.bootstrap.Tooltip) {
-            const tip = window.bootstrap.Tooltip.getInstance(collapseBtn);
+            const tip = window.bootstrap.Tooltip.getOrCreateInstance(collapseBtn, {
+                placement: 'right',
+                title: targetText
+            });
+
             if (tip) {
-                // 1. 覆盖只读配置
                 if (tip._config) tip._config.title = targetText;
                 if (tip.config) tip.config.title = targetText;
 
-                // 2. 强刷底层 DOM (移除 show 判定，即便是游离内存中的 DOM 也要刷)
                 try {
                     const tipElem = typeof tip.getTipElement === 'function' ? tip.getTipElement() : tip.tip;
                     if (tipElem) {
@@ -93,6 +93,5 @@ export function initSidebar() {
 
     collapseBtn.addEventListener('show.bs.tooltip', syncState);
 
-    // 初始执行
     syncState();
 }
