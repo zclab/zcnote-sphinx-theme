@@ -226,6 +226,7 @@ html[data-zcnote-collapse="false"] body {
             overflow: hidden;
             scrollbar-width: none;
             -ms-overflow-style: none;
+            pointer-events: none;
         }
 
         &::-webkit-scrollbar,

@@ -1,9 +1,5 @@
-/* =========================================================
-   1. 全局变量与视口定义
-   ========================================================= */
+
 :root {
-    /* 视口高度：利用 CSS 原生层叠特性。
-       老浏览器使用 100vh，支持动态视口的现代浏览器会自动覆盖为 100dvh */
     --zcnote-vh: 100vh;
     --zcnote-vh: 100dvh;
 
@@ -20,15 +16,12 @@
     --pst-font-family-monospace: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, monospace;
 }
 
-/* =========================================================
-   2. HTML 根节点与全局状态管理 (主题 & 布局联动)
-   ========================================================= */
+
 html {
     scrollbar-gutter: stable;
     overflow-y: scroll;
     scroll-padding-top: calc(var(--zcnote-header-height, var(--pst-header-height)) + 1.5rem);
 
-    /* --- [Light 模式] --- */
     &[data-theme="light"] {
         --pst-color-primary: #0284c7;
         --pst-color-secondary: #0ea5e9;
@@ -50,12 +43,10 @@ html {
         --pst-color-todo-rgb: 139, 92, 246;
     }
 
-    /* --- [Dark 模式] --- */
     &[data-theme="dark"] {
         --pst-color-primary: #38bdf8;
         --pst-color-secondary: #7dd3fc;
 
-        /* 复用同色变量 */
         --pst-color-info: var(--pst-color-primary);
         --pst-color-seealso: var(--pst-color-secondary);
 
@@ -73,15 +64,12 @@ html {
         --pst-color-todo-rgb: 167, 139, 250;
     }
 
-    /* --- [Header 隐藏联动] --- */
     &[data-hide-header="true"] {
-        /* 仅在桌面端 (>= 960px) 执行彻底的 Header 隐藏和侧边栏升顶，移动端保留汉堡菜单顶栏 */
         @media (min-width: 960px) {
             --zcnote-header-height: 0px !important;
             --pst-header-height: 0px !important;
             scroll-padding-top: 1.5rem;
 
-            /* 增加 body 提高选择器权重，确保万无一失地覆盖 PyData 原生样式 */
             body #pst-header.bd-header {
                 display: none !important;
             }
@@ -96,15 +84,12 @@ html {
     }
 }
 
-/* =========================================================
-   3. 基础排版重置
-   ========================================================= */
+
 html body {
     position: relative;
     min-height: var(--zcnote-vh);
     overflow-x: clip;
 
-    /* 将媒体查询嵌套在对应的 DOM 树结构下 */
     @media (min-width: 960px) {
         .bd-page-width {
             max-width: 90rem;
