@@ -1,5 +1,5 @@
 /**
- * ZC-Note Sphinx Theme
+ * ZC-Note Sphinx Theme Sidebar Module
  */
 export function initSidebar() {
     const sidebar = document.querySelector(".bd-sidebar-primary");
@@ -94,4 +94,52 @@ export function initSidebar() {
     collapseBtn.addEventListener('show.bs.tooltip', syncState);
 
     syncState();
+    initSidebarScrollManager();
+}
+
+
+function initSidebarScrollManager() {
+    const scrollContainer = document.querySelector('.sidebar-primary-items__start');
+    if (!scrollContainer) return;
+
+    const STORAGE_KEY = 'zcnote_sidebar_scroll_state';
+    let debounceTimer;
+
+    const saveScroll = () => {
+        try {
+            if (scrollContainer.clientHeight > 0) {
+                window.sessionStorage.setItem(STORAGE_KEY, Math.round(scrollContainer.scrollTop));
+            }
+        } catch (e) {}
+    };
+
+    scrollContainer.addEventListener('scroll', () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(saveScroll, 150);
+    }, { passive: true });
+
+    window.addEventListener('pagehide', () => {
+        clearTimeout(debounceTimer);
+        saveScroll();
+    });
+
+    window.addEventListener('pageshow', (e) => {
+        if (e.persisted) {
+            try {
+                const saved = window.sessionStorage.getItem(STORAGE_KEY);
+                if (saved !== null && scrollContainer.clientHeight > 0) {
+                    const originalBehavior = scrollContainer.style.getPropertyValue('scroll-behavior');
+                    scrollContainer.style.setProperty('scroll-behavior', 'auto', 'important');
+
+                    scrollContainer.scrollTop = parseInt(saved, 10);
+
+                    if (originalBehavior) {
+                        scrollContainer.style.setProperty('scroll-behavior', originalBehavior);
+                    } else {
+                        scrollContainer.style.removeProperty('scroll-behavior');
+                    }
+                }
+            } catch (err) {}
+        }
+    });
 }
