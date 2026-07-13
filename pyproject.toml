@@ -13,8 +13,8 @@ authors = [
     {name = "zclab", email = "yshi009@foxmail.com"},
 ]
 dependencies = [
-    "sphinx>=8.0, <10",
-    "pydata-sphinx-theme>=0.16.0, <0.20.0"
+    "sphinx>=8.2, <10",
+    "pydata-sphinx-theme>=0.16.0, <0.21.0"
 ]
 classifiers = [
   "Development Status :: 3 - Alpha",
