@@ -1,5 +1,5 @@
 [build-system]
-requires = ["sphinx-theme-builder>=0.2.0"]
+requires = ["sphinx-theme-builder>=0.3.2"]
 build-backend = "sphinx_theme_builder"
 
 [project]
@@ -54,7 +54,7 @@ zcnote_sphinx_theme = "zcnote_sphinx_theme"
 theme-name = "zcnote_sphinx_theme"
 node-project-dir = "."
 build-command = ["npm", "run", "build"]
-node-version = "20.11.1"
+node-version = "25.2.0"
 ignore-files = [
     ".github",
     ".idea",
