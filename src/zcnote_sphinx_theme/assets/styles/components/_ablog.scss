@@ -1,63 +1,50 @@
 /* =========================================================
-   ABlog 博客流 (GitHub Feed 卡片风格 & 现代交互)
+   ABlog styles
    ========================================================= */
 
 html[data-theme] .bd-main {
     .ablog__collection,
     .ablog-archive {
-        /* 移除默认列表样式与左侧缩进 */
         list-style: none;
         padding-left: 0;
         margin-top: 1rem;
 
-        /* 每一个博客文章作为一个独立的卡片 */
         > .ablog-post {
-            /* 1. 基础卡片外壳 (细边框 + 圆角) */
             background-color: var(--pst-color-background);
             border: 1px solid var(--pst-color-border);
             border-radius: 6px;
             padding: 1.25rem 1.5rem;
             margin-bottom: 1rem;
 
-            /* 增加极弱的底层阴影，提升层次感 */
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 
-            /* 平滑的过渡动画 */
-            transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-
-            /* 暗色模式适配 */
             html[data-theme="dark"] & {
                 box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
                 background-color: color-mix(in srgb, var(--pst-color-surface) 20%, transparent);
             }
 
-            /* 2. 悬停交互 (Hover: 边框高亮 + 阴影加深 + 物理上浮) */
+            hr {
+                border: none;
+                margin: 0;
+            }
+
             &:hover {
                 border-color: var(--pst-color-primary);
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-                transform: translateY(-1px);
+                // transform: translateY(-1px);
 
                 html[data-theme="dark"] & {
                     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
                 }
             }
 
-            /* 3. Meta 头部排版 (作者/日期等) */
             .ablog__postcard2 {
                 display: flex;
                 gap: 0.5rem;
                 align-items: center;
-                margin-bottom: 0.75rem;
-                font-size: 0.85rem;
-                color: var(--pst-color-text-muted);
             }
 
-            /* 4. 文章标题强化 */
             h2 {
-                margin-top: 0;
-                margin-bottom: 0.5rem;
-                font-size: 1.25rem;
-                font-weight: 600;
                 line-height: 1.3;
 
                 a {
@@ -70,7 +57,6 @@ html[data-theme] .bd-main {
                 }
             }
 
-            /* 5. 摘要内容弱化与截断 */
             p {
                 color: var(--pst-color-text-muted);
                 font-size: 0.95rem;
@@ -85,7 +71,7 @@ html[data-theme] .bd-main {
             }
 
             /* =========================================================
-               6. Fancy "Read More" 按钮化
+               Fancy "Read More" button
                ========================================================= */
             > .ablog-post-expand {
                 margin-top: 1.25rem;
@@ -93,7 +79,6 @@ html[data-theme] .bd-main {
                 display: block;
 
                 a {
-                    /* 按钮本体展现形态 */
                     display: inline-flex;
                     align-items: center;
                     padding: 0.45rem 1.25rem;
@@ -102,25 +87,19 @@ html[data-theme] .bd-main {
                     font-weight: 600;
                     text-decoration: none;
 
-                    /* 现代 Soft Button: 主色文字 + 10%主色背景 */
-                    color: var(--pst-color-primary);
                     background-color: color-mix(in srgb, var(--pst-color-primary) 10%, transparent);
                     border: 1px solid transparent;
                     border-radius: 999px;
-
-                    /* 丝滑的交互动画过渡 */
-                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
                     html[data-theme="dark"] & {
                         background-color: color-mix(in srgb, var(--pst-color-primary) 15%, transparent);
                     }
 
-                    /* 悬停 (Hover) 特效 */
                     &:hover, &:focus {
                         color: #ffffff;
                         background-color: var(--pst-color-primary);
-                        box-shadow: 0 4px 12px color-mix(in srgb, var(--pst-color-primary) 40%, transparent);
-                        transform: translateX(6px);
+                        // box-shadow: 0 4px 12px color-mix(in srgb, var(--pst-color-primary) 40%, transparent);
+                        // transform: translateX(6px);
                     }
 
                     &::before, &::after {
@@ -129,40 +108,6 @@ html[data-theme] .bd-main {
 
                     em {
                         font-style: normal;
-                    }
-                }
-            }
-
-            /* =========================================================
-               7. 底部 Meta 标签 (类似 GitHub Topics 胶囊)
-               ========================================================= */
-            ul.ablog-post-meta {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 0.5rem;
-                padding: 0;
-                margin: 1.25rem 0 0 0;
-                list-style: none;
-
-                li {
-                    display: inline-flex;
-                    align-items: center;
-                    font-size: 0.75rem;
-
-                    a {
-                        padding: 0.15rem 0.6rem;
-                        background-color: var(--pst-color-surface);
-                        color: var(--pst-color-text-muted);
-                        border: 1px solid var(--pst-color-border);
-                        border-radius: 2rem;
-                        text-decoration: none;
-                        transition: all 0.2s ease;
-
-                        &:hover {
-                            background-color: var(--pst-color-primary);
-                            color: #ffffff;
-                            border-color: var(--pst-color-primary);
-                        }
                     }
                 }
             }
