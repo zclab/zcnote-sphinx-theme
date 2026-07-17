@@ -19,34 +19,42 @@
         (function(){
             try {
                 var container = document.querySelector('.sidebar-primary-items__start');
-                if (!container || container.clientHeight === 0) return;
+                if (!container) return;
 
-                var storage = window.sessionStorage || null;
-                var saved = storage ? storage.getItem('zcnote_sidebar_scroll_state') : null;
-                var targetScroll = 0;
+                var storage = null;
+                try {
+                    storage = window.sessionStorage;
+                } catch(se) {}
+                if (!storage) return;
+
+                var getStorageKey = function() {
+                    try {
+                        var rootDir = document.documentElement.getAttribute('data-content_root') || './';
+                        var rootPath = new URL(rootDir, window.location.href).pathname;
+                        return 'zcnote_sidebar_scroll_' + rootPath;
+                    } catch (e) {
+                        return 'zcnote_sidebar_scroll_fallback';
+                    }
+                };
+
+                var storageKey = getStorageKey();
+                var saved = storage.getItem(storageKey);
 
                 if (saved !== null) {
-                    targetScroll = parseInt(saved, 10);
-                } else {
-                    var currents = container.querySelectorAll('.current');
-                    var active = currents.length > 0 ? currents[currents.length - 1] : null;
-                    if (active) {
-                        var cRect = container.getBoundingClientRect();
-                        var aRect = active.getBoundingClientRect();
-                        targetScroll = aRect.top - cRect.top + container.scrollTop - (cRect.height / 3);
-                    }
-                }
+                    container.setAttribute('data-zcnote-scroll-restored', 'true');
 
-                if (targetScroll > 0) {
-                    var originalBehavior = container.style.getPropertyValue('scroll-behavior');
-                    container.style.setProperty('scroll-behavior', 'auto', 'important');
+                    var targetScroll = parseInt(saved, 10);
+                    if (!isNaN(targetScroll) && targetScroll > 0) {
+                        var originalBehavior = container.style.getPropertyValue('scroll-behavior');
+                        container.style.setProperty('scroll-behavior', 'auto', 'important');
 
-                    container.scrollTop = Math.round(targetScroll);
+                        container.scrollTop = Math.round(targetScroll);
 
-                    if (originalBehavior) {
-                        container.style.setProperty('scroll-behavior', originalBehavior);
-                    } else {
-                        container.style.removeProperty('scroll-behavior');
+                        if (originalBehavior) {
+                            container.style.setProperty('scroll-behavior', originalBehavior);
+                        } else {
+                            container.style.removeProperty('scroll-behavior');
+                        }
                     }
                 }
             } catch(e) {}
