@@ -1,26 +1,26 @@
 /* =========================================================
-   ZC-Note Sphinx Theme - 主样式入口文件 (SCSS Version)
+   ZC-Note Sphinx Theme
    ========================================================= */
 
-/* 1. 变量与基础重置 (必须最先加载) */
+/* 1. variables (load first) */
 @import "components/variables";
 
-/* 2. 宏观结构与页面骨架 */
+/* 2. layout */
 @import "components/layout";
 
-/* 3. 核心组件 (拆分后的 Header 与 Footer) */
+/* 3. Header and Footer */
 @import "components/header";
-@import "components/header-article";
+@import "components/article-header";
 @import "components/footer";
 
-/* 4. 侧边栏与导航树特化 */
+/* 4. Sidebar and Navigation Tree Specialization */
 @import "components/sidebar";
+@import "components/collapse-button";
+@import "components/sidebar-utilities";
 
-/* 5. 内容块组件定制 */
+/* 5. Content Block Components */
 @import "components/admonitions";
-@import "components/math";
-
 @import "components/ablog";
 
-/* 6. 打印与特殊媒体查询 */
+/* 6. Print and Special Media Queries */
 @import "components/print";
