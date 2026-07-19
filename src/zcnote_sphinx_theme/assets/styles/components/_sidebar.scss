@@ -21,8 +21,6 @@
         margin-bottom: -100vh;
         padding-bottom: 0;
 
-        // transition: background-color 0.25s, border-color 0.25s, width 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s;
-
         display: flex;
         flex-direction: column;
         overflow: hidden;
@@ -84,13 +82,6 @@
         width: var(--zcnote-sidebar-width);
         max-width: var(--zcnote-sidebar-width);
         flex: 0 0 auto;
-        // transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1), max-width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-
-        // .sidebar-primary-item.pst-sidebar-collapse {
-        //     display: none;
-        //     opacity: 0;
-        //     pointer-events: none;
-        // }
     }
 
     #pst-secondary-sidebar {
@@ -108,7 +99,5 @@
 
         overflow-y: auto;
         scrollbar-width: thin;
-
-        // transition: background-color 0.25s, border-color 0.25s, width 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s;
     }
 }

@@ -1,6 +1,6 @@
 import os
 
-__version__ = "0.1.3.dev0"
+__version__ = "0.2.0"
 
 def get_html_theme_path():
     """返回主题文件夹的绝对路径"""
