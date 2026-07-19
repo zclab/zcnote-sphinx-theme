@@ -97,10 +97,10 @@ Sidebars anchored to the viewport. No jumping or shifting when scroll to the bot
 Symmetrical padding, minimalist borders, and color mapping for admonition.
 :::
 
-:::{grid-item-card}  Collapse Sidebar
+:::{grid-item-card}  Hide header
 :class-card: ghost-card
 :class-title: font-weight-bold
-Added configuration flags to hide the "Collapse Sidebar" buttons. 
+Add `hide_header` and `nav_style` (sidebar or header) configuration making layout looks like [sphinx-book-theme](https://sphinx-book-theme.readthedocs.io/en/stable/). 
 :::
 ::::
 

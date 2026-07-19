@@ -4,8 +4,6 @@
     {{ super() }}
     <script>
         (function() {
-            const enableCollapse = "{{ theme_enable_collapse_sidebar | default('true') | string | lower }}";
-            document.documentElement.setAttribute("data-zcnote-collapse", enableCollapse);
             const hideHeader = "{{ theme_hide_header | default('false') | string | lower }}";
             if (hideHeader === "true" || hideHeader === "1") {
                 document.documentElement.setAttribute("data-hide-header", "true");
